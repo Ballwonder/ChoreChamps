@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Home Almanac">
+<meta name="theme-color" content="#F4EFE3">
+<title>Home Almanac</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --paper: #F4EFE3;
+    --paper-dark: #EAE2CF;
+    --ink: #2E2A22;
+    --ink-soft: #746A56;
+    --line: rgba(46,42,34,0.10);
+    --spring: #6B9C5E;
+    --summer: #D9A02C;
+    --fall: #C1602A;
+    --winter: #4A7FA8;
+    --due: #C9A227;
+    --overdue: #B33F2E;
+    --tag-bg: rgba(46,42,34,0.07);
+    --gold: #b8860b;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; }
+  .wrap{ max-width: 720px; margin: 0 auto; padding: 26px 16px 60px; }
+
+  .banner{ text-align:center; padding: 10px 10px 14px; }
+  .banner h1{ font-family:'Fraunces',serif; font-weight:700; font-size:1.9rem; margin:0 0 4px; }
+  .banner p{ margin:0; color: var(--ink-soft); font-size:0.95rem; }
+
+  .player-bar{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-bottom:16px; font-size:0.85rem; color: var(--ink-soft);
+  }
+  .player-chip{
+    display:flex; align-items:center; gap:6px; background: var(--paper-dark);
+    border-radius:20px; padding:6px 12px 6px 6px; cursor:pointer; border:none;
+    font-family:'Inter',sans-serif; font-weight:600; color: var(--ink); font-size:0.85rem;
+  }
+  .avatar{
+    width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:0.75rem; font-weight:700; color:#fff; flex-shrink:0;
+  }
+  .player-chip:hover{ background: #e0d7c1; }
+
+  .view-toggle{
+    display:flex; background: var(--paper-dark); border-radius: 8px; padding:3px;
+    margin-bottom: 14px; gap:3px;
+  }
+  .view-toggle button{
+    flex:1; border:none; background:transparent; padding:9px 6px; border-radius:6px;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:0.82rem; color: var(--ink-soft); cursor:pointer;
+  }
+  .view-toggle button.active{ background: var(--paper); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+
+  .filter-bar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom: 14px; }
+  .btn-filter{
+    display:flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line);
+    padding:8px 14px; border-radius:20px; font-family:'Inter',sans-serif; font-weight:600;
+    font-size:0.85rem; color: var(--ink); cursor:pointer;
+  }
+  .btn-filter .count{
+    background: var(--ink); color: var(--paper); border-radius:10px; font-size:0.7rem;
+    font-weight:700; padding:1px 7px; min-width:16px; text-align:center;
+  }
+  .sort-select{
+    padding:8px 10px; border-radius:20px; border:1px solid var(--line); background:#fff;
+    color: var(--ink); font-family:'Inter',sans-serif; font-size:0.83rem;
+  }
+  .chip-row{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+  .filter-chip{
+    display:flex; align-items:center; gap:5px; background: var(--paper-dark); border-radius:14px;
+    padding:5px 10px; font-size:0.78rem; font-weight:600; color: var(--ink);
+  }
+  .filter-chip button{
+    background:none; border:none; color: var(--ink-soft); cursor:pointer; font-size:0.85rem;
+    line-height:1; padding:0;
+  }
+  .filter-modal-grid label{ margin-top:12px; }
+  .filter-modal-grid label:first-child{ margin-top:0; }
+
+  .add-row{ display:flex; justify-content:flex-end; margin-bottom:14px; gap:8px; }
+  .btn-add{
+    background: var(--ink); color: var(--paper); border:none; padding:8px 16px;
+    border-radius:20px; font-size:0.88rem; font-weight:600; cursor:pointer;
+  }
+  .btn-add:hover{ opacity:0.88; }
+
+  .list{ display:flex; flex-direction:column; gap:10px; }
+
+  .card{
+    border-radius: 12px; padding: 13px 14px;
+    display:flex; align-items:center; gap:12px;
+    box-shadow: 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before{
+    content:''; position:absolute; top:-60%; left:-15%; width:55%; height:220%;
+    background: linear-gradient(120deg, rgba(255,255,255,0.65), rgba(255,255,255,0) 65%);
+    transform: rotate(18deg); pointer-events:none;
+  }
+  .card.tier-bronze{ background: linear-gradient(150deg, #f2c396 0%, #d6944f 30%, #8c5323 85%); }
+  .card.tier-silver{ background: linear-gradient(150deg, #ffffff 0%, #e2e2e2 30%, #9a9a9a 85%); }
+  .card.tier-gold{   background: linear-gradient(150deg, #fff8da 0%, #f3d576 30%, #b8860b 85%); }
+
+  .card.overdue{ box-shadow: 0 0 0 3px var(--overdue), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .card.due{ box-shadow: 0 0 0 3px var(--due), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .card.season-spring{ box-shadow: 0 0 0 3px var(--spring), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .card.season-summer{ box-shadow: 0 0 0 3px var(--summer), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .card.season-fall{ box-shadow: 0 0 0 3px var(--fall), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .card.season-winter{ box-shadow: 0 0 0 3px var(--winter), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
+
+  .check-btn{
+    width: 42px; height: 42px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.7);
+    background: #fff; flex-shrink:0; cursor:pointer; font-size: 1.05rem; color: rgba(0,0,0,0.3);
+    transition: all 0.15s ease; position: relative; z-index: 1;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), inset 0 -2px 3px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.25);
+  }
+  .check-btn:hover{ transform: scale(1.05); }
+  .check-btn:active{ transform: scale(0.9); }
+  .check-btn.tier-bronze{ background: radial-gradient(circle at 33% 28%, #e7ad74, #8c5323); border-color: rgba(255,255,255,0.75); color: rgba(60,30,0,0.55); }
+  .check-btn.tier-silver{ background: radial-gradient(circle at 33% 28%, #f6f6f6, #9a9a9a); border-color: rgba(255,255,255,0.85); color: rgba(0,0,0,0.4); }
+  .check-btn.tier-gold{ background: radial-gradient(circle at 33% 28%, #fff3b0, #b8860b); border-color: rgba(255,255,255,0.8); color: rgba(70,50,0,0.55); }
+  .check-btn.done-flash{ background: var(--spring) !important; border-color: var(--spring) !important; color:#fff !important; animation: pop 0.3s ease; }
+  .tier-label{ font-size:0.62rem; text-transform:uppercase; letter-spacing:0.04em; text-align:center; margin-top:2px; color: rgba(46,42,34,0.65); font-weight:600; position:relative; z-index:1; }
+  .pts-label{ font-size:0.62rem; text-align:center; color: rgba(46,42,34,0.65); font-weight:700; position:relative; z-index:1; }
+  .check-col{ display:flex; flex-direction:column; align-items:center; position:relative; z-index:1; }
+  @keyframes pop{ 0%{transform:scale(1);} 50%{transform:scale(1.25);} 100%{transform:scale(1);} }
+
+  .card-info{
+    flex:1; min-width:0; position:relative; z-index:1;
+    background: rgba(255,255,255,0.55);
+    border-radius: 8px;
+    padding: 7px 10px;
+  }
+  .card-name{ font-family:'Fraunces',serif; font-weight:700; font-size:1.03rem; margin:0 0 4px; color: #201c14; }
+  .card-meta{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:0.79rem; color: #3a3527; font-weight:500; }
+  .tag{ background: rgba(255,255,255,0.85); padding: 2px 8px; border-radius: 10px; color: #201c14; font-weight:600; }
+  .tag.season-tag.spring{ background: rgba(255,255,255,0.9); color: #2f4a28; }
+  .tag.season-tag.summer{ background: rgba(255,255,255,0.9); color: #63480d; }
+  .tag.season-tag.fall{ background: rgba(255,255,255,0.9); color: #723013; }
+  .tag.season-tag.winter{ background: rgba(255,255,255,0.9); color: #234258; }
+  .status-text{ font-weight:800; }
+  .status-text.overdue{ color: #8c2c20; }
+  .status-text.due{ color: #16304a; }
+
+  .del-x{ position:absolute; top:6px; right:8px; background: rgba(255,255,255,0.55); border:none; color: rgba(46,42,34,0.55); opacity:0.8; font-size:0.72rem; cursor:pointer; width:20px; height:20px; border-radius:50%; z-index:1; }
+  .del-x:hover{ opacity:1; color: var(--overdue); background: rgba(255,255,255,0.85); }
+
+  .confetti-piece{
+    position:fixed; width:7px; height:7px; border-radius:2px; pointer-events:none; z-index:200;
+    animation: confetti-fly 0.65s ease-out forwards;
+  }
+  @keyframes confetti-fly{
+    0%{ transform: translate(0,0) rotate(0deg); opacity:1; }
+    100%{ transform: translate(var(--dx), var(--dy)) rotate(280deg); opacity:0; }
+  }
+
+  .notif-toggle{
+    background: var(--paper-dark); border:none; border-radius:50%; width:34px; height:34px;
+    cursor:pointer; font-size:1rem; flex-shrink:0;
+  }
+  .notif-toggle:hover{ background:#e0d7c1; }
+
+  .tip-banner{
+    text-align:center; font-size:0.82rem; font-style:italic; color: var(--ink-soft);
+    margin: -6px 0 16px; padding: 0 14px;
+  }
+
+  .lb-badges{ font-size:0.88rem; margin-top:3px; letter-spacing:1px; }
+
+  .subtask-list{ margin-top:8px; display:flex; flex-direction:column; gap:4px; }
+  .subtask-row{
+    display:flex; align-items:center; gap:8px; font-size:0.83rem; cursor:pointer;
+    background: rgba(255,255,255,0.5); border-radius:6px; padding:5px 8px;
+  }
+  .subtask-row:hover{ background: rgba(255,255,255,0.8); }
+  .subtask-check{
+    width:16px; height:16px; border-radius:4px; border:2px solid rgba(46,42,34,0.35);
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:0.7rem;
+    background: rgba(255,255,255,0.7); color:#fff;
+  }
+  .subtask-row.done .subtask-check{ background: var(--spring); border-color: var(--spring); }
+  .subtask-row.done .subtask-text{ text-decoration: line-through; opacity:0.6; }
+  .subtask-by{ font-size:0.7rem; color: var(--ink-soft); margin-left:auto; font-weight:600; white-space:nowrap; }
+  .subtask-progress{ font-size:0.72rem; color: var(--ink-soft); font-weight:700; margin-top:6px; }
+
+  .settings-room-header{
+    font-family:'Fraunces',serif; font-weight:700; font-size:0.95rem; margin: 16px 0 8px;
+    color: var(--ink); padding-bottom:4px; border-bottom:1px solid var(--line);
+  }
+  .settings-room-header:first-child{ margin-top:4px; }
+  .settings-row{
+    display:flex; align-items:center; gap:10px; padding:8px 4px; border-bottom:1px solid rgba(46,42,34,0.06);
+  }
+  .settings-row-name{ flex:1; font-size:0.88rem; font-weight:600; color: var(--ink); }
+  .settings-row-name.disabled{ color: var(--ink-soft); text-decoration: line-through; opacity:0.65; }
+  .settings-row-meta{ font-size:0.72rem; color: var(--ink-soft); font-weight:500; }
+  .toggle-switch{
+    width:40px; height:22px; border-radius:12px; border:none; background: rgba(46,42,34,0.18);
+    position:relative; cursor:pointer; flex-shrink:0; transition: background 0.15s ease;
+  }
+  .toggle-switch.on{ background: var(--spring); }
+  .toggle-switch::after{
+    content:''; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%;
+    background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.3); transition: transform 0.15s ease;
+  }
+  .toggle-switch.on::after{ transform: translateX(18px); }
+  .settings-trash{
+    background:none; border:none; color: var(--ink-soft); font-size:0.85rem; cursor:pointer;
+    padding:4px; flex-shrink:0;
+  }
+  .settings-trash:hover{ color: var(--overdue); }
+  .settings-search{
+    width:100%; padding:8px 10px; border-radius:7px; border:1px solid var(--line);
+    background:#fff; color: var(--ink); font-family:'Inter',sans-serif; font-size:0.88rem; margin-bottom:4px;
+  }
+  .settings-empty-hint{ font-size:0.8rem; color: var(--ink-soft); font-style:italic; padding:10px 4px; }
+
+  .empty-state{ text-align:center; padding: 50px 20px; color: var(--ink-soft); font-style: italic; }
+
+  .toast{
+    position: fixed; bottom: 22px; left:50%; transform: translateX(-50%) translateY(16px);
+    background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius:8px;
+    font-size:0.9rem; opacity:0; transition: all 0.25s ease; pointer-events:none; z-index:50; max-width:88vw; text-align:center;
+  }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+  .modal-overlay{ position:fixed; inset:0; background:rgba(46,42,34,0.4); display:flex; align-items:center; justify-content:center; padding:20px; z-index:100; overflow-y:auto; }
+  .modal{ background: var(--paper); border-radius:10px; padding:20px 20px 16px; width:100%; max-width:380px; margin:auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+  .modal.modal-wide{ max-width:480px; max-height:82vh; display:flex; flex-direction:column; }
+  .modal.modal-wide .modal-scroll{ overflow-y:auto; flex:1; margin: 0 -6px; padding: 0 6px; }
+  .modal h3{ font-family:'Fraunces',serif; margin:0 0 12px; font-size:1.1rem; }
+  .modal p.hint{ font-size:0.82rem; color: var(--ink-soft); margin: -6px 0 12px; }
+  .modal label{ display:block; font-size:0.78rem; color: var(--ink-soft); margin:10px 0 4px; text-transform:uppercase; letter-spacing:0.03em; }
+  .modal input[type=text], .modal select{
+    width:100%; padding:8px 10px; font-family:'Inter',sans-serif; font-size:0.95rem;
+    border:1px solid var(--line); border-radius:6px; background:#fff; color: var(--ink);
+  }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
+  .btn-plain{ background:none; border:none; color: var(--ink-soft); padding:8px 10px; font-size:0.9rem; cursor:pointer; }
+  .btn-primary{ background: var(--ink); color: var(--paper); border:none; padding:8px 16px; border-radius:6px; font-size:0.9rem; cursor:pointer; }
+
+  .lb-range{ display:flex; gap:8px; margin-bottom:14px; }
+  .lb-range button{
+    flex:1; padding:7px 8px; border-radius:7px; border:1px solid var(--line); background:#fff;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:0.82rem; color: var(--ink-soft); cursor:pointer;
+  }
+  .lb-range button.active{ background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .lb-row{
+    display:flex; align-items:center; gap:12px; background:#fff; border-radius:12px;
+    padding:12px 14px; box-shadow: 0 2px 6px rgba(46,42,34,0.12);
+  }
+  .lb-rank{ font-family:'Fraunces',serif; font-weight:700; font-size:1.1rem; width:22px; text-align:center; color: var(--ink-soft); }
+  .lb-rank.first{ color: var(--gold); }
+  .lb-name{ flex:1; font-weight:700; }
+  .lb-sub{ font-size:0.78rem; color: var(--ink-soft); font-weight:500; }
+  .lb-points{ font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; }
+  .crown{ margin-left:4px; }
+
+  footer{ text-align:center; margin-top:30px; font-size:0.78rem; color: var(--ink-soft); }
+  footer button{ background:none; border:none; color: var(--ink-soft); text-decoration:underline; font-size:0.78rem; cursor:pointer; }
+
+  .loading{ text-align:center; padding:60px 20px; color: var(--ink-soft); font-style:italic; }
+  [hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="loading">Dusting off the almanac…</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// Capture the pristine page source before any JS touches the DOM — this is
+// what gets shared/downloaded when someone taps "Invite", so the recipient
+// gets a clean copy (already configured with your Firebase URL) instead of
+// whatever happens to be on screen at the moment they tap the button.
+const ORIGINAL_HTML = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+// ====================================================================
+// SETUP: paste your Firebase Realtime Database URL below between the
+// quotes. See the setup instructions Claude gave you for how to get
+// this — it looks like: https://YOUR-PROJECT-default-rtdb.firebaseio.com
+// ====================================================================
+const FIREBASE_DB_URL = 'https://chore-champs-2fbea-default-rtdb.firebaseio.com/';
+
+const SHARED_STATE_URL = FIREBASE_DB_URL.replace(/\/$/, '') + '/state.json';
+const PLAYER_KEY = 'almanac-player';       // personal, per-device — stored in localStorage
+const NOTIFY_KEY = 'almanac-notify-opt-in'; // personal, per-device — stored in localStorage
+
+const ROOMS = ['Kitchen','Bathroom','Bedroom','Living Room','Laundry','Yard & Exterior','Garage','Vehicles','Whole Home'];
+const FREQS = [
+  { id: 'daily',     label: 'Daily',     days: 1 },
+  { id: 'weekly',    label: 'Weekly',    days: 7 },
+  { id: 'monthly',   label: 'Monthly',   days: 30 },
+  { id: 'quarterly', label: 'Quarterly', days: 90 },
+  { id: 'yearly',    label: 'Yearly',    days: 365 },
+];
+const SEASONS = ['Spring','Summer','Fall','Winter'];
+const SEASON_ICON = { Spring:'🌱', Summer:'☀️', Fall:'🍂', Winter:'❄️' };
+const TIERS = [
+  { id:'bronze', label:'Bronze', order:0, points:5 },
+  { id:'silver', label:'Silver', order:1, points:10 },
+  { id:'gold',   label:'Gold',   order:2, points:20 },
+];
+const TIER_POINTS = Object.fromEntries(TIERS.map(t => [t.id, t.points]));
+const AVATAR_COLORS = ['#B33F2E','#4A7FA8','#6B9C5E','#D9A02C','#8c5323','#7a4fa0','#2f7a6b','#c1602a'];
+
+const DEFAULT_CHORES = [
+  { id:'a1', name:'Wipe down counters',        room:'Kitchen',          freq:'weekly',    tier:'bronze' },
+  { id:'a2', name:'Clean bathroom',            room:'Bathroom',         freq:'weekly',    tier:'silver' },
+  { id:'a3', name:'Vacuum common areas',        room:'Whole Home',       freq:'weekly',    tier:'bronze' },
+  { id:'a4', name:'Change bedsheets',           room:'Bedroom',          freq:'monthly',   tier:'bronze' },
+  { id:'a5', name:'Windex mirrors & windows',   room:'Whole Home',       freq:'monthly',   tier:'bronze' },
+  { id:'a6', name:'Clean outside windows',      room:'Yard & Exterior',  freq:'quarterly', tier:'gold' },
+  { id:'a7', name:'Change furnace filter',      room:'Whole Home',       freq:'quarterly', tier:'silver' },
+  { id:'a8', name:'Deep clean fridge',          room:'Kitchen',          freq:'quarterly', tier:'silver' },
+  { id:'a9', name:'Test smoke detectors',       room:'Whole Home',       freq:'yearly',    tier:'bronze' },
+  { id:'a10',name:'Flush water heater',         room:'Whole Home',       freq:'yearly',    tier:'gold' },
+  { id:'a11',name:'Clean gutters',              room:'Yard & Exterior',  freq:'seasonal', season:'Fall',   tier:'gold' },
+  { id:'a12',name:'Cover the A/C unit',         room:'Yard & Exterior',  freq:'seasonal', season:'Fall',   tier:'silver' },
+  { id:'a13',name:'Plant / prep garden beds',   room:'Yard & Exterior',  freq:'seasonal', season:'Spring', tier:'silver' },
+  { id:'a14',name:'Flip mattresses',            room:'Bedroom',          freq:'seasonal', season:'Spring', tier:'bronze' },
+  { id:'a15',name:'Aerate the lawn',            room:'Yard & Exterior',  freq:'seasonal', season:'Summer', tier:'silver' },
+  { id:'a16',name:'Drain outdoor hoses/spigots',room:'Yard & Exterior',  freq:'seasonal', season:'Winter', tier:'bronze' },
+
+  // Kitchen
+  { id:'a17', name:'Deep clean oven',            room:'Kitchen', freq:'quarterly', tier:'silver' },
+  { id:'a18', name:'Deep clean dishwasher',      room:'Kitchen', freq:'quarterly', tier:'bronze' },
+  { id:'a19', name:'Clean microwave',            room:'Kitchen', freq:'monthly',   tier:'bronze' },
+  { id:'a20', name:'Descale coffee maker',       room:'Kitchen', freq:'monthly',   tier:'bronze' },
+  { id:'a21', name:'Clean garbage disposal',     room:'Kitchen', freq:'monthly',   tier:'bronze' },
+
+  // Laundry
+  { id:'a22', name:'Wash & fold laundry',            room:'Laundry', freq:'weekly',    tier:'bronze' },
+  { id:'a23', name:'Clean dryer lint trap & vent',   room:'Laundry', freq:'monthly',   tier:'silver' },
+  { id:'a24', name:'Deep clean washing machine',     room:'Laundry', freq:'quarterly', tier:'silver' },
+
+  // Bathroom
+  { id:'a25', name:'Scrub grout & tile',          room:'Bathroom', freq:'quarterly', tier:'gold' },
+  { id:'a26', name:'Descale showerhead',          room:'Bathroom', freq:'quarterly', tier:'bronze' },
+  { id:'a27', name:'Clean bathroom exhaust fan',  room:'Bathroom', freq:'quarterly', tier:'silver' },
+
+  // Bedroom
+  { id:'a28', name:'Wash pillows & bedding',      room:'Bedroom', freq:'quarterly', tier:'bronze' },
+
+  // Living Room
+  { id:'a29', name:'Dust electronics & TV',           room:'Living Room', freq:'monthly', tier:'bronze' },
+  { id:'a30', name:'Vacuum upholstery & cushions',    room:'Living Room', freq:'monthly', tier:'silver' },
+
+  // Whole Home
+  { id:'a31', name:'Dust surfaces & baseboards',        room:'Whole Home', freq:'weekly',    tier:'bronze' },
+  { id:'a32', name:'Mop floors',                        room:'Whole Home', freq:'weekly',    tier:'silver' },
+  { id:'a33', name:'Wipe light switches & doorknobs',   room:'Whole Home', freq:'monthly',   tier:'bronze' },
+  { id:'a34', name:'Clean light fixtures & ceiling fans', room:'Whole Home', freq:'quarterly', tier:'silver' },
+  { id:'a35', name:'Deep clean carpets',                room:'Whole Home', freq:'yearly',    tier:'gold' },
+  { id:'a36', name:'Declutter & donate items',          room:'Whole Home', freq:'quarterly', tier:'silver' },
+  { id:'a37', name:'Service furnace before winter',     room:'Whole Home', freq:'seasonal', season:'Fall',   tier:'gold' },
+  { id:'a38', name:'Service A/C before summer',         room:'Whole Home', freq:'seasonal', season:'Spring', tier:'gold' },
+  { id:'a39', name:'Check for drafts & weatherstripping', room:'Whole Home', freq:'seasonal', season:'Winter', tier:'silver' },
+  { id:'a40', name:'Clean window screens',              room:'Whole Home', freq:'seasonal', season:'Spring', tier:'bronze' },
+
+  // Yard & Exterior (acre property)
+  { id:'a41', name:'Mow the lawn',                  room:'Yard & Exterior', freq:'weekly',    tier:'bronze' },
+  { id:'a42', name:'Edge & trim lawn borders',      room:'Yard & Exterior', freq:'weekly',    tier:'bronze' },
+  { id:'a43', name:'Weed garden beds',              room:'Yard & Exterior', freq:'weekly',    tier:'bronze' },
+  { id:'a44', name:'Water garden & lawn',           room:'Yard & Exterior', freq:'weekly',    tier:'bronze' },
+  { id:'a45', name:'Trim hedges & shrubs',          room:'Yard & Exterior', freq:'monthly',   tier:'silver' },
+  { id:'a46', name:'Fertilize lawn',                room:'Yard & Exterior', freq:'quarterly', tier:'silver' },
+  { id:'a47', name:'Power wash driveway/deck/patio',room:'Yard & Exterior', freq:'yearly',    tier:'gold' },
+  { id:'a48', name:'Seal or stain the deck',        room:'Yard & Exterior', freq:'yearly',    tier:'gold' },
+  { id:'a49', name:'Service lawn mower & equipment',room:'Yard & Exterior', freq:'yearly',    tier:'silver' },
+  { id:'a50', name:'Inspect roof & siding',         room:'Yard & Exterior', freq:'yearly',    tier:'silver' },
+  { id:'a51', name:'Inspect for pests & termites',  room:'Yard & Exterior', freq:'yearly',    tier:'silver' },
+  { id:'a52', name:'Inspect & repair fencing',      room:'Yard & Exterior', freq:'yearly',    tier:'bronze' },
+  { id:'a53', name:'Clean patio furniture',         room:'Yard & Exterior', freq:'seasonal', season:'Spring', tier:'bronze' },
+  { id:'a54', name:'Winterize sprinkler system',    room:'Yard & Exterior', freq:'seasonal', season:'Fall',   tier:'silver' },
+  { id:'a55', name:'Dethatch & overseed lawn',      room:'Yard & Exterior', freq:'seasonal', season:'Fall',   tier:'silver' },
+  { id:'a56', name:'Mulch garden beds',             room:'Yard & Exterior', freq:'seasonal', season:'Spring', tier:'bronze' },
+  { id:'a57', name:'Prep snow removal equipment',   room:'Yard & Exterior', freq:'seasonal', season:'Winter', tier:'bronze' },
+
+  // Garage
+  { id:'a58', name:'Sweep & organize garage',   room:'Garage', freq:'monthly', tier:'bronze' },
+  { id:'a59', name:'Check garage door & tracks',room:'Garage', freq:'yearly',  tier:'bronze' },
+
+  // Vehicles
+  { id:'a60', name:'Wash & vacuum vehicle',        room:'Vehicles', freq:'weekly',    tier:'bronze' },
+  { id:'a61', name:'Wipe down interior & dash',    room:'Vehicles', freq:'monthly',   tier:'bronze' },
+  { id:'a62', name:'Check tire pressure',          room:'Vehicles', freq:'monthly',   tier:'bronze' },
+  { id:'a63', name:'Check fluid levels',           room:'Vehicles', freq:'monthly',   tier:'bronze' },
+  { id:'a64', name:'Rotate tires',                 room:'Vehicles', freq:'quarterly', tier:'silver' },
+  { id:'a65', name:'Oil change',                   room:'Vehicles', freq:'quarterly', tier:'silver' },
+  { id:'a66', name:'Deep clean interior & carpets',room:'Vehicles', freq:'quarterly', tier:'silver' },
+  { id:'a67', name:'Wax / seal exterior',          room:'Vehicles', freq:'seasonal', season:'Spring', tier:'gold' },
+  { id:'a68', name:'Replace wiper blades',         room:'Vehicles', freq:'seasonal', season:'Fall',   tier:'bronze' },
+  { id:'a69', name:'Check battery & antifreeze',   room:'Vehicles', freq:'seasonal', season:'Winter', tier:'bronze' },
+  { id:'a70', name:'Renew registration & inspection', room:'Vehicles', freq:'yearly', tier:'bronze' },
+
+  // A few more Whole Home odds & ends
+  { id:'a71', name:'Empty & clean trash/recycling bins', room:'Whole Home', freq:'monthly',   tier:'bronze' },
+  { id:'a72', name:'Check fire extinguishers & alarms',  room:'Whole Home', freq:'yearly',    tier:'bronze' },
+  { id:'a73', name:'Organize closets & pantry',          room:'Whole Home', freq:'quarterly', tier:'silver' },
+
+  // Multi-step chores with subtasks — check off each piece, or tap the
+  // main button to claim the whole thing at once
+  { id:'a74', name:'Bathroom deep scrub', room:'Bathroom', freq:'weekly', tier:'silver', subtasks:[
+    {id:'a74-1', name:'Scrub the sink'},
+    {id:'a74-2', name:'Scrub the bathtub'},
+    {id:'a74-3', name:'Scrub the shower stall'},
+    {id:'a74-4', name:'Scrub the toilet'},
+    {id:'a74-5', name:'Spray & wipe down the mirrors'},
+  ]},
+  { id:'a75', name:'Kitchen counters & appliances', room:'Kitchen', freq:'weekly', tier:'silver', subtasks:[
+    {id:'a75-1', name:'Clear items off the countertops'},
+    {id:'a75-2', name:'Wash the bare countertops'},
+    {id:'a75-3', name:'Wipe down countertop items'},
+    {id:'a75-4', name:'Put countertop items back'},
+    {id:'a75-5', name:'Scrub the stovetop'},
+    {id:'a75-6', name:'Clean inside the microwave'},
+  ]},
+  { id:'a76', name:'Fridge check & clean-out', room:'Kitchen', freq:'weekly', tier:'bronze', subtasks:[
+    {id:'a76-1', name:'Inspect for expired food'},
+    {id:'a76-2', name:'Throw away food that\u2019s gone bad'},
+    {id:'a76-3', name:'Empty reusable containers'},
+    {id:'a76-4', name:'Wash out the empty containers'},
+  ]},
+  { id:'a77', name:'Kitchen & bath towel laundry', room:'Laundry', freq:'weekly', tier:'bronze', subtasks:[
+    {id:'a77-1', name:'Gather dirty dish & hand towels'},
+    {id:'a77-2', name:'Launder the towels'},
+    {id:'a77-3', name:'Hang up clean towels'},
+  ]},
+  { id:'a78', name:'Floor care routine', room:'Whole Home', freq:'weekly', tier:'silver', subtasks:[
+    {id:'a78-1', name:'Sweep the floors'},
+    {id:'a78-2', name:'Vacuum carpets & rugs'},
+    {id:'a78-3', name:'Mop the hard floors'},
+  ]},
+  { id:'a79', name:'Bedroom refresh', room:'Bedroom', freq:'weekly', tier:'bronze', subtasks:[
+    {id:'a79-1', name:'Strip the dirty sheets'},
+    {id:'a79-2', name:'Put fresh sheets on the bed'},
+    {id:'a79-3', name:'Pick up clutter & tidy up'},
+  ]},
+  { id:'a80', name:'Grocery shopping run', room:'Kitchen', freq:'weekly', tier:'silver', subtasks:[
+    {id:'a80-1', name:'Check pantry & fridge for gaps'},
+    {id:'a80-2', name:'Write the grocery list'},
+    {id:'a80-3', name:'Travel to the store'},
+    {id:'a80-4', name:'Shop for the list'},
+    {id:'a80-5', name:'Unpack groceries at home'},
+    {id:'a80-6', name:'Put items away'},
+  ]},
+  { id:'a81', name:'Cook & clean up a meal', room:'Kitchen', freq:'daily', tier:'bronze', subtasks:[
+    {id:'a81-1', name:'Gather ingredients'},
+    {id:'a81-2', name:'Cook & prepare the meal'},
+    {id:'a81-3', name:'Clear dishes from the table'},
+    {id:'a81-4', name:'Scrub dishes, pots & pans'},
+    {id:'a81-5', name:'Rinse & dry dishes'},
+    {id:'a81-6', name:'Put clean dishes away'},
+  ]},
+  { id:'a82', name:'Kitchen cabinet deep clean', room:'Kitchen', freq:'quarterly', tier:'gold', subtasks:[
+    {id:'a82-1', name:'Empty the cabinets'},
+    {id:'a82-2', name:'Wipe interior shelves'},
+    {id:'a82-3', name:'Scrub exterior cabinet doors'},
+    {id:'a82-4', name:'Put items back'},
+  ]},
+  { id:'a83', name:'Pantry overhaul', room:'Kitchen', freq:'quarterly', tier:'silver', subtasks:[
+    {id:'a83-1', name:'Empty the pantry & cupboards'},
+    {id:'a83-2', name:'Check expiration dates'},
+    {id:'a83-3', name:'Wipe down shelves'},
+    {id:'a83-4', name:'Organize & put items back'},
+  ]},
+  { id:'a84', name:'Deep refrigerator clean', room:'Kitchen', freq:'quarterly', tier:'gold', subtasks:[
+    {id:'a84-1', name:'Remove shelves, drawers & food'},
+    {id:'a84-2', name:'Scrub & rinse the shelves/drawers'},
+    {id:'a84-3', name:'Wipe interior walls & base'},
+    {id:'a84-4', name:'Wipe exterior handle & surface'},
+    {id:'a84-5', name:'Reassemble the fridge'},
+  ]},
+  { id:'a85', name:'Closet cleanout', room:'Bedroom', freq:'quarterly', tier:'silver', subtasks:[
+    {id:'a85-1', name:'Pull all items out of the closet'},
+    {id:'a85-2', name:'Sort keep / donate / discard'},
+    {id:'a85-3', name:'Vacuum or wipe the closet'},
+    {id:'a85-4', name:'Arrange kept items back inside'},
+  ]},
+  { id:'a86', name:'Medicine cabinet clean-out', room:'Bathroom', freq:'quarterly', tier:'bronze', subtasks:[
+    {id:'a86-1', name:'Empty the medicine cabinet'},
+    {id:'a86-2', name:'Discard expired meds & old cosmetics'},
+    {id:'a86-3', name:'Wipe interior shelves'},
+  ]},
+  { id:'a87', name:'Curtains & drapery wash', room:'Whole Home', freq:'seasonal', season:'Spring', tier:'silver', subtasks:[
+    {id:'a87-1', name:'Take down curtains & drapery'},
+    {id:'a87-2', name:'Wash or dry-clean them'},
+  ]},
+  { id:'a88', name:'Deep vacuum & steam upholstery', room:'Whole Home', freq:'quarterly', tier:'gold', subtasks:[
+    {id:'a88-1', name:'Vacuum cloth furniture & sofas'},
+    {id:'a88-2', name:'Deep clean or steam carpets/rugs'},
+  ]},
+  { id:'a89', name:'Scrub floors, walls & trim', room:'Whole Home', freq:'quarterly', tier:'gold', subtasks:[
+    {id:'a89-1', name:'Scrub tough dirt off floors'},
+    {id:'a89-2', name:'Wipe smudges & dirt on walls'},
+    {id:'a89-3', name:'Scrub baseboards & trim'},
+    {id:'a89-4', name:'Scrub tile grout lines'},
+  ]},
+  { id:'a90', name:'Mold & mildew check', room:'Bathroom', freq:'quarterly', tier:'silver', subtasks:[
+    {id:'a90-1', name:'Inspect corners & grout'},
+    {id:'a90-2', name:'Spray & scrub mold treatment'},
+  ]},
+  { id:'a91', name:'Windows & high fixtures', room:'Whole Home', freq:'seasonal', season:'Spring', tier:'gold', subtasks:[
+    {id:'a91-1', name:'Wash inside window glass'},
+    {id:'a91-2', name:'Clean window sills & tracks'},
+    {id:'a91-3', name:'Wash outside window glass'},
+    {id:'a91-4', name:'Dust light fixtures & bulbs'},
+    {id:'a91-5', name:'Wipe ceiling fan blades'},
+  ]},
+
+  // Small daily-routine chores (no subtasks needed)
+  { id:'a92', name:'Shoes off & stowed at the door', room:'Whole Home', freq:'daily', tier:'bronze' },
+  { id:'a93', name:'Tidy up living room clutter',    room:'Living Room', freq:'daily', tier:'bronze' },
+  { id:'a94', name:'Wipe up spills right away',      room:'Whole Home', freq:'daily', tier:'bronze' },
+  { id:'a95', name:'Sweep up stray food scraps',     room:'Kitchen', freq:'daily', tier:'bronze' },
+  { id:'a96', name:'Clear hair from sink & shower drains', room:'Bathroom', freq:'weekly', tier:'bronze' },
+  { id:'a97', name:'Sort through the mail',          room:'Whole Home', freq:'weekly', tier:'bronze' },
+];
+
+let chores = [];
+let completions = [];
+let subtaskProgress = {}; // { [choreId]: { doneIds: string[], by: { [subtaskId]: person } } }
+let player = null;
+let view = 'due'; // 'due' | 'all' | 'leaderboard'
+let lbRange = 'week'; // 'week' | 'all'
+let filterRoom = 'All';
+let filterFreq = 'All';
+let filterSeason = 'All';
+let filterTier = 'All';
+let sortBy = 'name';
+let pollTimer = null;
+let notifyEnabled = false;
+let knownCompletionKeys = new Set();
+
+const DONE_PHRASES = [
+  'crushed', 'knocked out', 'handled', 'demolished', 'dusted off', 'took care of',
+  'nailed', 'swept the board on', 'wrapped up', 'powered through'
+];
+
+const ACHIEVEMENTS = [
+  { id:'first',    icon:'🥉', label:'Getting Started',  test:s => s.count >= 1 },
+  { id:'streak3',  icon:'🔥', label:'3-Day Streak',      test:s => s.streak >= 3 },
+  { id:'streak7',  icon:'🔥🔥', label:'Week Warrior',    test:s => s.streak >= 7 },
+  { id:'gold5',    icon:'🥇', label:'Gold Digger',       test:s => s.tierCounts.gold >= 5 },
+  { id:'century',  icon:'🏆', label:'Century Club',      test:s => s.points >= 100 },
+  { id:'bee',      icon:'🐝', label:'Busy Bee',          test:s => s.count >= 25 },
+];
+
+const ALMANAC_TIPS = [
+  'A ring around the moon means rain may be on the way.',
+  'Clean as you go — five minutes today beats an hour tomorrow.',
+  'Red sky at night, sailor\u2019s delight; red sky in morning, sailor take warning.',
+  'A stitch in time saves nine — small fixes now prevent big repairs later.',
+  'Change your furnace filter with the seasons, not just when it looks dirty.',
+  'Chimney smoke hanging low often signals a change in weather.',
+  'A clean gutter is a dry basement\u2019s best friend.',
+  'When the leaves show their undersides, expect wind or rain.',
+  'The best time to sharpen your mower blade is before you need it.',
+  'Spiders spinning webs in fair weather predict several days of sun.',
+  'A squeaky hinge is just a drop of oil away from silence.',
+  'Cows lying down in a pasture are said to foretell rain.',
+  'Sweep the porch before the dust has a chance to settle.',
+  'Wooly caterpillars with wide brown bands are said to predict a mild winter.',
+  'A tidy garage today saves an afternoon of searching tomorrow.',
+  'If the smoke from a chimney rises straight up, expect fair weather.',
+  'Rotate your mattress with the seasons for even wear.',
+  'Ants marching in a straight line are said to mean rain is coming.',
+  'A well-oiled tool lasts twice as long as a neglected one.',
+  'Frost on the pumpkin in fall is nature\u2019s reminder that winter prep starts now.',
+];
+
+function dailyTip(){
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now - start) / 86400000);
+  return ALMANAC_TIPS[dayOfYear % ALMANAC_TIPS.length];
+}
+
+function uid(){ return 'a' + Math.random().toString(36).slice(2,9); }
+function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
+function daysBetween(a,b){ return Math.round((startOfDay(b)-startOfDay(a))/86400000); }
+
+function getSeason(date){
+  const m = date.getMonth()+1;
+  if([3,4,5].includes(m)) return 'Spring';
+  if([6,7,8].includes(m)) return 'Summer';
+  if([9,10,11].includes(m)) return 'Fall';
+  return 'Winter';
+}
+function seasonCycleId(date){
+  const m = date.getMonth()+1, y = date.getFullYear();
+  const s = getSeason(date);
+  if(s === 'Winter' && m <= 2) return `Winter-${y-1}`;
+  return `${s}-${y}`;
+}
+function seasonStartDate(season, refDate){
+  const y = refDate.getFullYear();
+  const starts = { Spring: [2,1], Summer: [5,1], Fall: [8,1], Winter: [11,1] };
+  const [m, d] = starts[season];
+  let dt = new Date(y, m, d);
+  if(season === 'Winter' && refDate.getMonth() < 2) dt = new Date(y-1, m, d);
+  return startOfDay(dt);
+}
+
+function avatarColor(name){
+  let h = 0;
+  for(let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+function initials(name){
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0]||'') + (parts[1]?.[0]||'')).toUpperCase() || '?';
+}
+
+function computeStreak(personName){
+  const days = new Set(
+    completions.filter(c => c.person === personName).map(c => startOfDay(new Date(c.ts)).getTime())
+  );
+  if(days.size === 0) return 0;
+  let cursor = startOfDay(new Date());
+  if(!days.has(cursor.getTime())){
+    cursor = new Date(cursor.getTime() - 86400000); // allow "yesterday" as anchor so streak isn't lost right at day-start
+    if(!days.has(cursor.getTime())) return 0;
+  }
+  let streak = 0;
+  while(days.has(cursor.getTime())){
+    streak++;
+    cursor = new Date(cursor.getTime() - 86400000);
+  }
+  return streak;
+}
+
+function personStats(name){
+  const list = completions.filter(c => c.person === name);
+  const tierCounts = { bronze:0, silver:0, gold:0 };
+  let points = 0;
+  list.forEach(c => {
+    const chore = chores.find(x => x.id === c.choreId);
+    const tier = chore?.tier || 'bronze';
+    tierCounts[tier] = (tierCounts[tier] || 0) + 1;
+    points += TIER_POINTS[tier] || 5;
+  });
+  return { count: list.length, points, tierCounts, streak: computeStreak(name) };
+}
+
+function earnedAchievements(name){
+  const s = personStats(name);
+  return ACHIEVEMENTS.filter(a => a.test(s));
+}
+
+function keyFor(c){ return `${c.choreId}|${c.ts}|${c.person}`; }
+
+function notify(title, body){
+  showToast(body || title);
+  if(notifyEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted'){
+    try{ new Notification(title, { body: body || '' }); } catch(e){}
+  }
+}
+
+async function toggleNotify(){
+  if(typeof Notification === 'undefined'){
+    showToast('Notifications aren\u2019t supported in this browser');
+    return;
+  }
+  if(!notifyEnabled){
+    const perm = await Notification.requestPermission();
+    if(perm !== 'granted'){
+      showToast('Notifications blocked — you\u2019ll still see in-app alerts');
+      return;
+    }
+    notifyEnabled = true;
+    showToast('Notifications on — you\u2019ll hear about claimed chores');
+  } else {
+    notifyEnabled = false;
+    showToast('Notifications off');
+  }
+  try{ localStorage.setItem(NOTIFY_KEY, JSON.stringify(notifyEnabled)); } catch(e){}
+  render();
+}
+
+async function shareApp(){
+  if(!firebaseConfigured){
+    showToast('Set up your Firebase URL first, so your invite comes pre-configured');
+    return;
+  }
+  const file = new File([ORIGINAL_HTML], 'home-almanac.html', { type: 'text/html' });
+  try{
+    if(navigator.canShare && navigator.canShare({ files: [file] })){
+      await navigator.share({
+        files: [file],
+        title: 'Home Almanac',
+        text: 'Join our household chore board — open this file to start racing me for points!'
+      });
+      return;
+    }
+  } catch(e){
+    if(e.name === 'AbortError') return; // person cancelled the share sheet — not an error
+  }
+  // Fallback: browsers on file:// origins (or without file-sharing support)
+  // can't open a native share sheet, so just download a ready-to-send copy.
+  try{
+    const blob = new Blob([ORIGINAL_HTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'home-almanac.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    showToast('Saved a copy — send that file to your friend to invite them');
+  } catch(e){
+    showToast('Couldn\u2019t prepare a copy to share — try downloading the file manually instead');
+  }
+}
+
+function burstConfetti(el){
+  if(!el) return;
+  const rect = el.getBoundingClientRect();
+  const colors = ['#B33F2E', '#4A7FA8', '#6B9C5E', '#D9A02C', '#b8860b'];
+  for(let i = 0; i < 10; i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = (rect.left + rect.width/2) + 'px';
+    p.style.top = (rect.top + rect.height/2) + 'px';
+    p.style.background = colors[i % colors.length];
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 40 + Math.random() * 45;
+    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 700);
+  }
+}
+
+let firebaseConfigured = FIREBASE_DB_URL && !FIREBASE_DB_URL.includes('PASTE_YOUR');
+
+async function fetchSharedState(){
+  const res = await fetch(SHARED_STATE_URL, { cache: 'no-store' });
+  if(!res.ok) throw new Error('Firebase request failed: ' + res.status);
+  return await res.json(); // null if nothing saved yet
+}
+async function pushSharedState(){
+  const res = await fetch(SHARED_STATE_URL, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chores, completions, subtaskProgress })
+  });
+  if(!res.ok) throw new Error('Firebase save failed: ' + res.status);
+}
+
+async function loadState(){
+  player = JSON.parse(localStorage.getItem(PLAYER_KEY) || 'null');
+  notifyEnabled = JSON.parse(localStorage.getItem(NOTIFY_KEY) || 'false');
+
+  if(!firebaseConfigured){
+    chores = DEFAULT_CHORES;
+    completions = [];
+    subtaskProgress = {};
+    knownCompletionKeys = new Set();
+    return;
+  }
+  try{
+    const data = await fetchSharedState();
+    if(data && data.chores){
+      chores = data.chores;
+      completions = data.completions || [];
+      subtaskProgress = data.subtaskProgress || {};
+    } else {
+      chores = DEFAULT_CHORES;
+      completions = [];
+      subtaskProgress = {};
+      await pushSharedState(); // seed the database the first time
+    }
+  } catch(e){
+    chores = DEFAULT_CHORES;
+    completions = [];
+    subtaskProgress = {};
+    showToast('Couldn\u2019t reach the shared board — check your internet connection');
+  }
+  knownCompletionKeys = new Set(completions.map(keyFor));
+}
+
+async function saveSharedState(){
+  try{ await pushSharedState(); }
+  catch(e){ showToast('Could not save — check your connection and Firebase URL'); }
+}
+function savePlayer(){
+  try{ localStorage.setItem(PLAYER_KEY, JSON.stringify(player)); }
+  catch(e){ showToast('Could not save your name — try again'); }
+}
+
+// re-pull shared data only (chores + completions), leave local player alone
+async function refreshShared(){
+  if(!firebaseConfigured) return;
+  try{
+    const data = await fetchSharedState();
+    if(data){
+      chores = data.chores || chores;
+      completions = data.completions || [];
+      subtaskProgress = data.subtaskProgress || {};
+    }
+  } catch(e){ /* stay on last-known state if the network hiccups */ }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+function lastCompletion(choreId){
+  const list = completions.filter(c => c.choreId === choreId);
+  if(!list.length) return null;
+  return list.reduce((a,b) => a.ts > b.ts ? a : b);
+}
+
+function relTime(ts){
+  if(!ts) return 'never done';
+  const days = daysBetween(new Date(ts), new Date());
+  if(days <= 0) return 'today';
+  if(days === 1) return 'yesterday';
+  if(days < 30) return days + 'd ago';
+  return new Date(ts).toLocaleDateString(undefined,{month:'short', day:'numeric'});
+}
+
+// returns {active(bool, should appear on Due Now), state:'fresh'|'due'|'overdue'|'seasonal', label, seasonClass}
+function getStatus(chore){
+  const today = startOfDay(new Date());
+  const last = lastCompletion(chore.id);
+
+  if(chore.freq === 'seasonal'){
+    const currentlyInSeason = getSeason(today) === chore.season;
+    const doneThisCycle = last && seasonCycleId(new Date(last.ts)) === seasonCycleId(today);
+    if(!currentlyInSeason || doneThisCycle){
+      return { active:false, state:'fresh', label: last ? `done ${relTime(last.ts)}` : `appears in ${chore.season}` };
+    }
+    const start = seasonStartDate(chore.season, today);
+    const daysIn = daysBetween(start, today);
+    const overdue = daysIn > 55;
+    return {
+      active: true,
+      state: overdue ? 'overdue' : 'seasonal',
+      seasonClass: `season-${chore.season.toLowerCase()}`,
+      label: overdue ? `${daysIn}d into ${chore.season}` : `${SEASON_ICON[chore.season]} ${chore.season} — due`
+    };
+  }
+
+  const freqDef = FREQS.find(f => f.id === chore.freq);
+  const freqDays = freqDef ? freqDef.days : 30;
+  if(!last) return { active:true, state:'overdue', label:'never done' };
+  const age = daysBetween(new Date(last.ts), today);
+  if(age < freqDays) return { active:false, state:'fresh', label:`due in ${freqDays-age}d` };
+  if(age <= freqDays * 1.5) return { active:true, state:'due', label:'due now' };
+  return { active:true, state:'overdue', label:`${age-freqDays}d overdue` };
+}
+
+function ensurePlayer(next){
+  if(player && player.name){ next(); return; }
+  const overlay = openModal(`
+    <h3>Who's playing?</h3>
+    <p class="hint">Pick a name so points and chores get credited to you on this device.</p>
+    <label>Your name</label>
+    <input type="text" id="pName" maxlength="20" placeholder="e.g. Jim">
+    <div class="modal-actions">
+      <button class="btn-plain" id="pCancel">Cancel</button>
+      <button class="btn-primary" id="pConfirm">Start playing</button>
+    </div>
+  `);
+  overlay.querySelector('#pCancel').onclick = () => overlay.remove();
+  overlay.querySelector('#pConfirm').onclick = async () => {
+    const name = overlay.querySelector('#pName').value.trim();
+    if(!name){ showToast('Enter a name first'); return; }
+    player = { name };
+    await savePlayer();
+    overlay.remove();
+    render();
+    next();
+  };
+}
+
+function openSwitchPlayer(){
+  const overlay = openModal(`
+    <h3>Switch player</h3>
+    <p class="hint">Playing on this device as someone else? Enter their name.</p>
+    <label>Name</label>
+    <input type="text" id="pName2" maxlength="20" value="${player ? player.name.replace(/"/g,'&quot;') : ''}" placeholder="e.g. Sam">
+    <div class="modal-actions">
+      <button class="btn-plain" id="pCancel2">Cancel</button>
+      <button class="btn-primary" id="pConfirm2">Save</button>
+    </div>
+  `);
+  overlay.querySelector('#pCancel2').onclick = () => overlay.remove();
+  overlay.querySelector('#pConfirm2').onclick = async () => {
+    const name = overlay.querySelector('#pName2').value.trim();
+    if(!name){ showToast('Enter a name first'); return; }
+    player = { name };
+    await savePlayer();
+    overlay.remove();
+    render();
+  };
+}
+
+async function markDone(choreId, btnEl){
+  ensurePlayer(async () => {
+    await refreshShared(); // pull latest first so we don't clobber someone else's recent update
+    const beforeIds = new Set(earnedAchievements(player.name).map(a => a.id));
+    const entry = { choreId, ts: Date.now(), person: player.name };
+    completions.push(entry);
+    knownCompletionKeys.add(keyFor(entry));
+    delete subtaskProgress[choreId]; // fresh cycle — clear any partial checklist progress
+    const chore = chores.find(c => c.id === choreId);
+    const pts = TIER_POINTS[chore?.tier] || 5;
+    if(btnEl){ btnEl.classList.add('done-flash'); btnEl.textContent = '✓'; burstConfetti(btnEl); }
+    await saveSharedState();
+    const phrase = DONE_PHRASES[Math.floor(Math.random() * DONE_PHRASES.length)];
+    showToast(`${player.name} ${phrase} "${chore ? chore.name : 'a chore'}" — +${pts} pts! 🌿`);
+    const newlyEarned = earnedAchievements(player.name).filter(a => !beforeIds.has(a.id));
+    newlyEarned.forEach((a, i) => {
+      setTimeout(() => notify(`Achievement unlocked ${a.icon}`, `${player.name} earned "${a.label}"`), 1000 + i * 1600);
+    });
+    setTimeout(render, 350);
+  });
+}
+
+async function toggleSubtask(choreId, subtaskId){
+  ensurePlayer(async () => {
+    await refreshShared();
+    const chore = chores.find(c => c.id === choreId);
+    if(!chore || !chore.subtasks) return;
+    const prog = subtaskProgress[choreId] || { doneIds: [], by: {} };
+    const isDone = prog.doneIds.includes(subtaskId);
+    if(isDone){
+      prog.doneIds = prog.doneIds.filter(id => id !== subtaskId);
+      delete prog.by[subtaskId];
+    } else {
+      prog.doneIds = [...prog.doneIds, subtaskId];
+      prog.by[subtaskId] = player.name;
+    }
+    subtaskProgress[choreId] = prog;
+
+    const subtask = chore.subtasks.find(s => s.id === subtaskId);
+    const allDone = !isDone && prog.doneIds.length === chore.subtasks.length;
+
+    if(allDone){
+      // last piece just got checked off — claim the whole chore
+      const beforeIds = new Set(earnedAchievements(player.name).map(a => a.id));
+      const entry = { choreId, ts: Date.now(), person: player.name };
+      completions.push(entry);
+      knownCompletionKeys.add(keyFor(entry));
+      delete subtaskProgress[choreId];
+      const pts = TIER_POINTS[chore.tier] || 5;
+      await saveSharedState();
+      showToast(`${player.name} finished the last step of "${chore.name}" — +${pts} pts! 🌿`);
+      const newlyEarned = earnedAchievements(player.name).filter(a => !beforeIds.has(a.id));
+      newlyEarned.forEach((a, i) => {
+        setTimeout(() => notify(`Achievement unlocked ${a.icon}`, `${player.name} earned "${a.label}"`), 1000 + i * 1600);
+      });
+    } else {
+      await saveSharedState();
+      if(!isDone) showToast(`${player.name} checked off "${subtask ? subtask.name : 'a step'}" (${prog.doneIds.length}/${chore.subtasks.length})`);
+    }
+    render();
+  });
+}
+
+async function addChore(chore){ await refreshShared(); chores.push(chore); await saveSharedState(); render(); }
+
+// Card's ✕ — soft hide. Recoverable anytime from Settings.
+async function hideChore(id){
+  await refreshShared();
+  const chore = chores.find(c => c.id === id);
+  if(chore) chore.enabled = false;
+  await saveSharedState();
+  render();
+}
+
+// Settings panel — actually removes a chore's definition. Used for custom
+// chores you no longer want at all; default chores should just be hidden.
+async function deleteChorePermanently(id){
+  await refreshShared();
+  chores = chores.filter(c => c.id !== id);
+  delete subtaskProgress[id];
+  await saveSharedState();
+  renderSettingsModal();
+}
+
+async function toggleChoreEnabled(id){
+  await refreshShared();
+  const chore = chores.find(c => c.id === id);
+  if(chore) chore.enabled = chore.enabled === false ? true : false;
+  await saveSharedState();
+  renderSettingsModal();
+  render();
+}
+async function resetAlmanac(){
+  if(!confirm('Reset the almanac to the default chore list and clear all history and points? This cannot be undone.')) return;
+  chores = JSON.parse(JSON.stringify(DEFAULT_CHORES));
+  completions = [];
+  subtaskProgress = {};
+  await saveSharedState();
+  render();
+}
+
+function openModal(html, wide){
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `<div class="modal${wide ? ' modal-wide' : ''}">${html}</div>`;
+  overlay.addEventListener('click', e => { if(e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
+function openAddModal(){
+  const overlay = openModal(`
+    <h3>Add a chore</h3>
+    <label>Name</label>
+    <input type="text" id="cName" maxlength="40" placeholder="e.g. Wash the car">
+    <label>Room</label>
+    <select id="cRoom">${ROOMS.map(r=>`<option>${r}</option>`).join('')}</select>
+    <label>Difficulty (sets point value)</label>
+    <select id="cTier">${TIERS.map(t=>`<option value="${t.id}" ${t.id==='silver'?'selected':''}>${t.label} — ${t.points} pts</option>`).join('')}</select>
+    <label>How often</label>
+    <select id="cFreq">
+      ${FREQS.map(f=>`<option value="${f.id}" ${f.id==='weekly'?'selected':''}>${f.label}</option>`).join('')}
+      <option value="seasonal">Seasonal (once a year)</option>
+    </select>
+    <div id="cSeasonWrap" hidden>
+      <label>Season</label>
+      <select id="cSeason">${SEASONS.map(s=>`<option>${s}</option>`).join('')}</select>
+    </div>
+    <label>Steps (optional)</label>
+    <p class="hint">One step per line, if you want this broken into a checklist. Leave blank for a simple one-tap chore.</p>
+    <textarea id="cSubtasks" rows="4" placeholder="e.g.&#10;Scrub the sink&#10;Scrub the tub&#10;Wipe the mirror" style="width:100%; padding:8px 10px; font-family:'Inter',sans-serif; font-size:0.9rem; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink); resize:vertical;"></textarea>
+    <div class="modal-actions">
+      <button class="btn-plain" id="cCancel">Cancel</button>
+      <button class="btn-primary" id="cConfirm">Add</button>
+    </div>
+  `);
+  const freqSel = overlay.querySelector('#cFreq');
+  const seasonWrap = overlay.querySelector('#cSeasonWrap');
+  freqSel.addEventListener('change', () => { seasonWrap.hidden = freqSel.value !== 'seasonal'; });
+  overlay.querySelector('#cCancel').onclick = () => overlay.remove();
+  overlay.querySelector('#cConfirm').onclick = async () => {
+    const name = overlay.querySelector('#cName').value.trim();
+    if(!name){ showToast('Give the chore a name first'); return; }
+    const room = overlay.querySelector('#cRoom').value;
+    const tier = overlay.querySelector('#cTier').value;
+    const freq = freqSel.value;
+    const chore = { id: uid(), name, room, freq, tier };
+    if(freq === 'seasonal') chore.season = overlay.querySelector('#cSeason').value;
+    const subtaskLines = overlay.querySelector('#cSubtasks').value.split('\n').map(s => s.trim()).filter(Boolean);
+    if(subtaskLines.length){
+      chore.subtasks = subtaskLines.map((line, i) => ({ id: `${chore.id}-${i+1}`, name: line }));
+    }
+    await addChore(chore);
+    overlay.remove();
+  };
+}
+
+let settingsOverlay = null;
+let settingsSearchTerm = '';
+
+function settingsListHtml(){
+  const term = settingsSearchTerm.trim().toLowerCase();
+  const matches = chores.filter(c => !term || c.name.toLowerCase().includes(term));
+  if(matches.length === 0){
+    return `<div class="settings-empty-hint">No chores match "${settingsSearchTerm}".</div>`;
+  }
+  const byRoom = {};
+  matches.forEach(c => { (byRoom[c.room] = byRoom[c.room] || []).push(c); });
+  const roomNames = Object.keys(byRoom).sort();
+  return roomNames.map(room => {
+    const list = byRoom[room].sort((a,b) => a.name.localeCompare(b.name));
+    return `
+      <div class="settings-room-header">${room}</div>
+      ${list.map(c => {
+        const on = c.enabled !== false;
+        const freqDef = FREQS.find(f => f.id === c.freq);
+        const freqLabel = c.freq === 'seasonal' ? c.season : (freqDef ? freqDef.label : c.freq);
+        const isCustom = !DEFAULT_CHORES.some(d => d.id === c.id);
+        return `
+          <div class="settings-row">
+            <div>
+              <div class="settings-row-name ${on ? '' : 'disabled'}">${c.name}</div>
+              <div class="settings-row-meta">${freqLabel} · ${c.tier || 'bronze'}${isCustom ? ' · custom' : ''}</div>
+            </div>
+            ${isCustom ? `<button class="settings-trash" data-perm-del="${c.id}" title="Delete permanently">🗑</button>` : ''}
+            <button class="toggle-switch ${on ? 'on' : ''}" data-toggle-chore="${c.id}" title="${on ? 'Disable' : 'Enable'}"></button>
+          </div>
+        `;
+      }).join('')}
+    `;
+  }).join('');
+}
+
+function wireSettingsListeners(container){
+  container.querySelectorAll('[data-toggle-chore]').forEach(el => el.addEventListener('click', () => toggleChoreEnabled(el.getAttribute('data-toggle-chore'))));
+  container.querySelectorAll('[data-perm-del]').forEach(el => el.addEventListener('click', () => {
+    if(confirm('Permanently delete this custom chore? This can\u2019t be undone.')) deleteChorePermanently(el.getAttribute('data-perm-del'));
+  }));
+}
+
+function renderSettingsModal(){
+  if(!settingsOverlay || !document.body.contains(settingsOverlay)) return;
+  const list = settingsOverlay.querySelector('#settingsList');
+  if(!list) return;
+  list.innerHTML = settingsListHtml();
+  wireSettingsListeners(list);
+}
+
+function openSettingsModal(){
+  settingsOverlay = openModal(`
+    <h3>Chore settings</h3>
+    <p class="hint">Turn chores off if they don\u2019t apply to your household — nothing is lost, you can turn them back on anytime. Custom chores can be deleted for good with the trash icon.</p>
+    <input type="text" id="settingsSearch" class="settings-search" placeholder="Search chores…" value="${settingsSearchTerm}">
+    <div class="modal-scroll"><div id="settingsList">${settingsListHtml()}</div></div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="settingsDone">Done</button>
+    </div>
+  `, true);
+  wireSettingsListeners(settingsOverlay.querySelector('#settingsList'));
+  settingsOverlay.querySelector('#settingsSearch').addEventListener('input', e => {
+    settingsSearchTerm = e.target.value;
+    renderSettingsModal();
+  });
+  settingsOverlay.querySelector('#settingsDone').onclick = () => { settingsOverlay.remove(); settingsOverlay = null; render(); };
+}
+
+function openFiltersModal(){
+  const overlay = openModal(`
+    <h3>Filter chores</h3>
+    <div class="filter-modal-grid">
+      <label>Room</label>
+      <select id="mfRoom">
+        <option ${filterRoom==='All'?'selected':''}>All Rooms</option>
+        ${ROOMS.map(r=>`<option ${filterRoom===r?'selected':''}>${r}</option>`).join('')}
+      </select>
+      <label>Frequency</label>
+      <select id="mfFreq">
+        <option value="All" ${filterFreq==='All'?'selected':''}>All Frequencies</option>
+        ${FREQS.map(f=>`<option value="${f.id}" ${filterFreq===f.id?'selected':''}>${f.label}</option>`).join('')}
+        <option value="seasonal" ${filterFreq==='seasonal'?'selected':''}>Seasonal</option>
+      </select>
+      <label>Season</label>
+      <select id="mfSeason">
+        <option value="All" ${filterSeason==='All'?'selected':''}>All Seasons</option>
+        ${SEASONS.map(s=>`<option ${filterSeason===s?'selected':''}>${s}</option>`).join('')}
+      </select>
+      <label>Difficulty</label>
+      <select id="mfTier">
+        <option value="All" ${filterTier==='All'?'selected':''}>All Difficulties</option>
+        ${TIERS.map(t=>`<option value="${t.id}" ${filterTier===t.id?'selected':''}>${t.label}</option>`).join('')}
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-plain" id="mfClear">Clear all</button>
+      <button class="btn-primary" id="mfApply">Apply</button>
+    </div>
+  `);
+  overlay.querySelector('#mfClear').onclick = () => {
+    filterRoom = 'All'; filterFreq = 'All'; filterSeason = 'All'; filterTier = 'All';
+    overlay.remove(); render();
+  };
+  overlay.querySelector('#mfApply').onclick = () => {
+    const room = overlay.querySelector('#mfRoom').value;
+    filterRoom = room.startsWith('All') ? 'All' : room;
+    filterFreq = overlay.querySelector('#mfFreq').value;
+    const season = overlay.querySelector('#mfSeason').value;
+    filterSeason = season.startsWith('All') ? 'All' : season;
+    filterTier = overlay.querySelector('#mfTier').value;
+    overlay.remove(); render();
+  };
+}
+
+function applyFilters(list){
+  return list.filter(c => {
+    if(filterRoom !== 'All' && c.room !== filterRoom) return false;
+    if(filterFreq !== 'All' && c.freq !== filterFreq) return false;
+    if(filterSeason !== 'All' && c.season !== filterSeason) return false;
+    if(filterTier !== 'All' && c.tier !== filterTier) return false;
+    return true;
+  });
+}
+function applySort(list){
+  const arr = [...list];
+  if(sortBy === 'name') arr.sort((a,b) => a.name.localeCompare(b.name));
+  if(sortBy === 'room') arr.sort((a,b) => a.room.localeCompare(b.room) || a.name.localeCompare(b.name));
+  if(sortBy === 'freq'){
+    const order = { weekly:0, monthly:1, quarterly:2, yearly:3, seasonal:4 };
+    arr.sort((a,b) => (order[a.freq]-order[b.freq]) || a.name.localeCompare(b.name));
+  }
+  if(sortBy === 'tier'){
+    const order = { gold:0, silver:1, bronze:2 };
+    arr.sort((a,b) => (order[a.tier]-order[b.tier]) || a.name.localeCompare(b.name));
+  }
+  return arr;
+}
+
+function buildLeaderboard(range){
+  const cutoff = range === 'week' ? Date.now() - 7*86400000 : 0;
+  const byPerson = {};
+  completions.forEach(c => {
+    if(c.ts < cutoff || !c.person) return;
+    const chore = chores.find(ch => ch.id === c.choreId);
+    const pts = TIER_POINTS[chore?.tier] || 5;
+    if(!byPerson[c.person]) byPerson[c.person] = { name: c.person, points:0, count:0 };
+    byPerson[c.person].points += pts;
+    byPerson[c.person].count += 1;
+  });
+  const board = Object.values(byPerson);
+  board.forEach(p => {
+    p.streak = computeStreak(p.name);
+    p.achievements = earnedAchievements(p.name);
+  });
+  return board.sort((a,b) => b.points - a.points);
+}
+
+function render(){
+  const app = document.getElementById('app');
+  const enabledChores = chores.filter(c => c.enabled !== false);
+  const withStatus = enabledChores.map(c => ({ chore:c, status:getStatus(c) }));
+
+  let visible;
+  if(view === 'due'){
+    visible = withStatus.filter(x => x.status.active);
+    const order = { overdue:0, seasonal:1, due:2 };
+    visible.sort((a,b) => (order[a.status.state]??9) - (order[b.status.state]??9));
+    visible = applyFilters(visible.map(x=>x.chore)).map(c => ({chore:c, status:getStatus(c)}));
+  } else if(view === 'all') {
+    const filtered = applySort(applyFilters(enabledChores));
+    visible = filtered.map(c => ({ chore:c, status:getStatus(c) }));
+  }
+
+  const playerName = player ? player.name : null;
+  const playerColor = playerName ? avatarColor(playerName) : '#999';
+
+  let bodyHtml = '';
+
+  if(view === 'leaderboard'){
+    const board = buildLeaderboard(lbRange);
+    bodyHtml = `
+      <div class="lb-range">
+        <button data-range="week" class="${lbRange==='week'?'active':''}">This week</button>
+        <button data-range="all" class="${lbRange==='all'?'active':''}">All time</button>
+      </div>
+      <div class="list">
+        ${board.length===0 ? `<div class="empty-state">No chores logged yet — get out there and claim some points.</div>` : ''}
+        ${board.map((p, i) => `
+          <div class="lb-row">
+            <div class="lb-rank ${i===0?'first':''}">${i+1}</div>
+            <div class="avatar" style="background:${avatarColor(p.name)}">${initials(p.name)}</div>
+            <div style="flex:1;">
+              <div class="lb-name">${p.name}${i===0 ? '<span class="crown">👑</span>' : ''}</div>
+              <div class="lb-sub">${p.count} chore${p.count===1?'':'s'} done${p.streak>0 ? ` · 🔥 ${p.streak}d streak` : ''}</div>
+              ${p.achievements.length ? `<div class="lb-badges">${p.achievements.map(a=>`<span title="${a.label}">${a.icon}</span>`).join(' ')}</div>` : ''}
+            </div>
+            <div class="lb-points">${p.points}<span style="font-size:0.7rem; font-weight:600; color:var(--ink-soft);"> pts</span></div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    const activeFilters = [
+      filterRoom !== 'All' ? { key:'room', label: filterRoom } : null,
+      filterFreq !== 'All' ? { key:'freq', label: filterFreq==='seasonal' ? 'Seasonal' : (FREQS.find(f=>f.id===filterFreq)?.label || filterFreq) } : null,
+      filterSeason !== 'All' ? { key:'season', label: filterSeason } : null,
+      filterTier !== 'All' ? { key:'tier', label: (TIERS.find(t=>t.id===filterTier)?.label || filterTier) } : null,
+    ].filter(Boolean);
+
+    bodyHtml = `
+      <div class="filter-bar">
+        <button class="btn-filter" id="openFilters">⚲ Filters ${activeFilters.length ? `<span class="count">${activeFilters.length}</span>` : ''}</button>
+        ${view==='all' ? `
+          <select id="fSort" class="sort-select">
+            <option value="name" ${sortBy==='name'?'selected':''}>Sort: Name</option>
+            <option value="room" ${sortBy==='room'?'selected':''}>Sort: Room</option>
+            <option value="freq" ${sortBy==='freq'?'selected':''}>Sort: Frequency</option>
+            <option value="tier" ${sortBy==='tier'?'selected':''}>Sort: Difficulty</option>
+          </select>
+        ` : ''}
+      </div>
+
+      ${activeFilters.length ? `
+        <div class="chip-row">
+          ${activeFilters.map(f => `<div class="filter-chip">${f.label}<button data-clear="${f.key}">✕</button></div>`).join('')}
+          <div class="filter-chip" style="background:transparent; border:1px solid var(--line);"><button data-clear="all" style="color:var(--overdue); font-weight:700;">Clear all</button></div>
+        </div>
+      ` : ''}
+
+      <div class="add-row"><button class="btn-add" id="addBtn">+ Add chore</button></div>
+
+      <div class="list">
+        ${visible.length===0 ? `<div class="empty-state">${view==='due' ? 'Nothing due right now — enjoy that.' : 'No chores match these filters.'}</div>` : ''}
+        ${visible.map(({chore, status}) => {
+          const freqDef = FREQS.find(f=>f.id===chore.freq);
+          const freqLabel = chore.freq === 'seasonal' ? `${SEASON_ICON[chore.season]} ${chore.season}` : (freqDef ? freqDef.label : chore.freq);
+          const last = lastCompletion(chore.id);
+          const cardClass = status.state==='overdue' ? 'overdue' : (status.seasonClass || (status.state==='fresh' ? 'fresh':''));
+          const pts = TIER_POINTS[chore.tier] || 5;
+          const hasSubtasks = chore.subtasks && chore.subtasks.length > 0;
+          const prog = hasSubtasks ? (subtaskProgress[chore.id] || { doneIds: [], by: {} }) : null;
+          return `
+            <div class="card tier-${chore.tier || 'bronze'} ${cardClass}">
+              <div class="check-col">
+                <button class="check-btn tier-${chore.tier || 'bronze'}" data-done="${chore.id}" title="Mark whole thing done">✓</button>
+                <span class="tier-label">${(chore.tier || 'bronze')}</span>
+                <span class="pts-label">+${pts}</span>
+              </div>
+              <div class="card-info">
+                <p class="card-name">${chore.name}</p>
+                <div class="card-meta">
+                  <span class="tag">${chore.room}</span>
+                  <span class="tag ${chore.freq==='seasonal' ? 'season-tag '+chore.season.toLowerCase() : ''}">${freqLabel}</span>
+                  <span>${last ? `last: ${relTime(last.ts)}${last.person ? ' by '+last.person : ''}` : 'never done'}</span>
+                  <span class="status-text ${status.state==='overdue'?'overdue':(status.state==='due'||status.state==='seasonal'?'due':'')}">${status.label}</span>
+                </div>
+                ${hasSubtasks ? `
+                  <div class="subtask-progress">${prog.doneIds.length}/${chore.subtasks.length} steps done</div>
+                  <div class="subtask-list">
+                    ${chore.subtasks.map(st => {
+                      const done = prog.doneIds.includes(st.id);
+                      const by = prog.by[st.id];
+                      return `
+                        <div class="subtask-row ${done ? 'done' : ''}" data-subtask="${chore.id}|${st.id}">
+                          <span class="subtask-check">${done ? '✓' : ''}</span>
+                          <span class="subtask-text">${st.name}</span>
+                          ${done && by ? `<span class="subtask-by">${by}</span>` : ''}
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                ` : ''}
+              </div>
+              <button class="del-x" data-del="${chore.id}" title="Hide this chore (find it again in Settings)">✕</button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  app.innerHTML = `
+    <div class="banner">
+      <h1>Home Almanac</h1>
+      <p>a shared reference for keeping the house</p>
+    </div>
+
+    <div class="tip-banner">📜 ${dailyTip()}</div>
+
+    ${!firebaseConfigured ? `
+      <div style="background:#fff3cd; border:1px solid #e0c46c; color:#5c4a10; border-radius:10px; padding:12px 14px; margin-bottom:16px; font-size:0.85rem; line-height:1.5;">
+        <strong>⚠️ Shared sync isn't set up yet.</strong> This copy is only running locally on this device — chores won't sync with anyone else until a Firebase database URL is pasted into the <code>FIREBASE_DB_URL</code> line near the top of this file.
+      </div>
+    ` : ''}
+
+    <div class="player-bar">
+      <button class="player-chip" id="playerChip">
+        <span class="avatar" style="background:${playerColor}">${playerName ? initials(playerName) : '?'}</span>
+        ${playerName ? `Playing as ${playerName}` : 'Set your name'}
+      </button>
+      <button class="notif-toggle" id="notifBtn" title="${notifyEnabled ? 'Notifications on — tap to turn off' : 'Turn on notifications'}">${notifyEnabled ? '🔔' : '🔕'}</button>
+      <button class="notif-toggle" id="shareBtn" title="Invite someone to your almanac">📤</button>
+      <button class="notif-toggle" id="settingsBtn" title="Chore settings">⚙️</button>
+    </div>
+
+    <div class="view-toggle">
+      <button data-view="due" class="${view==='due'?'active':''}">Due Now</button>
+      <button data-view="all" class="${view==='all'?'active':''}">Full List</button>
+      <button data-view="leaderboard" class="${view==='leaderboard'?'active':''}">🏆 Leaderboard</button>
+    </div>
+
+    ${bodyHtml}
+
+    <footer><button id="resetBtn">Reset to default chore list</button></footer>
+  `;
+
+  app.querySelectorAll('[data-view]').forEach(el => el.addEventListener('click', () => { view = el.getAttribute('data-view'); render(); }));
+  app.querySelector('#playerChip').addEventListener('click', openSwitchPlayer);
+  app.querySelector('#notifBtn').addEventListener('click', toggleNotify);
+  app.querySelector('#shareBtn').addEventListener('click', shareApp);
+  app.querySelector('#settingsBtn').addEventListener('click', openSettingsModal);
+
+  if(view === 'leaderboard'){
+    app.querySelectorAll('[data-range]').forEach(el => el.addEventListener('click', () => { lbRange = el.getAttribute('data-range'); render(); }));
+  } else {
+    app.querySelector('#openFilters').addEventListener('click', openFiltersModal);
+    app.querySelectorAll('[data-clear]').forEach(el => el.addEventListener('click', () => {
+      const key = el.getAttribute('data-clear');
+      if(key === 'all'){ filterRoom='All'; filterFreq='All'; filterSeason='All'; filterTier='All'; }
+      if(key === 'room') filterRoom = 'All';
+      if(key === 'freq') filterFreq = 'All';
+      if(key === 'season') filterSeason = 'All';
+      if(key === 'tier') filterTier = 'All';
+      render();
+    }));
+    const sortEl = app.querySelector('#fSort');
+    if(sortEl) sortEl.addEventListener('change', e => { sortBy = e.target.value; render(); });
+    app.querySelectorAll('[data-done]').forEach(el => el.addEventListener('click', () => markDone(el.getAttribute('data-done'), el)));
+    app.querySelectorAll('[data-del]').forEach(el => el.addEventListener('click', () => hideChore(el.getAttribute('data-del'))));
+    app.querySelectorAll('[data-subtask]').forEach(el => el.addEventListener('click', () => {
+      const [choreId, subtaskId] = el.getAttribute('data-subtask').split('|');
+      toggleSubtask(choreId, subtaskId);
+    }));
+    app.querySelector('#addBtn').addEventListener('click', () => ensurePlayer(openAddModal));
+  }
+  app.querySelector('#resetBtn').addEventListener('click', resetAlmanac);
+}
+
+function startPolling(){
+  if(pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    if(document.querySelector('.modal-overlay')) return; // don't yank the UI while someone's mid-form
+    const prevKeys = knownCompletionKeys;
+    await refreshShared();
+    const newOnes = completions.filter(c => !prevKeys.has(keyFor(c)));
+    knownCompletionKeys = new Set(completions.map(keyFor));
+    const rivalOnes = newOnes.filter(c => c.person && c.person !== (player && player.name));
+    if(rivalOnes.length === 1){
+      const c = rivalOnes[0];
+      const chore = chores.find(x => x.id === c.choreId);
+      const pts = TIER_POINTS[chore?.tier] || 5;
+      notify('Chore claimed! 🏁', `${c.person} just ${DONE_PHRASES[0]} "${chore ? chore.name : 'a chore'}" for +${pts} pts`);
+    } else if(rivalOnes.length > 1){
+      notify('Chores claimed! 🏁', `${rivalOnes.length} chores were just claimed by others — check the leaderboard`);
+    }
+    render();
+  }, 15000);
+}
+
+(async function init(){
+  await loadState();
+  render();
+  startPolling();
+  ensurePlayer(() => {});
+})();
+</script>
+</body>
+</html>
