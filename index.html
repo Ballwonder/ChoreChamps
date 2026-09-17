@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Home Almanac">
+<meta name="apple-mobile-web-app-title" content="Chore Champs">
 <meta name="theme-color" content="#F4EFE3">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<title>Home Almanac</title>
+<title>Chore Champs</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Inter:wght@400;500;600&display=swap');
 
@@ -111,6 +111,21 @@
   .card.tier-bronze{ background: linear-gradient(150deg, #f2c396 0%, #d6944f 30%, #8c5323 85%); }
   .card.tier-silver{ background: linear-gradient(150deg, #ffffff 0%, #e2e2e2 30%, #9a9a9a 85%); }
   .card.tier-gold{   background: linear-gradient(150deg, #fff8da 0%, #f3d576 30%, #b8860b 85%); }
+  .card.tier-diamond{
+    background: linear-gradient(150deg, #f2fbff 0%, #cfe9f5 30%, #8fb9cc 70%, #5c8296 100%);
+    position: relative;
+  }
+  .card.tier-diamond::after{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.55) 45%, transparent 60%);
+    background-size: 250% 250%;
+    animation: diamond-shimmer 5s ease-in-out infinite;
+  }
+  @keyframes diamond-shimmer{
+    0%{ background-position: 120% 0%; }
+    50%{ background-position: -20% 100%; }
+    100%{ background-position: 120% 0%; }
+  }
 
   .card.overdue{ box-shadow: 0 0 0 3px var(--overdue), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
   .card.due{ box-shadow: 0 0 0 3px var(--due), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
@@ -130,6 +145,7 @@
   .check-btn.tier-bronze{ background: radial-gradient(circle at 33% 28%, #e7ad74, #8c5323); border-color: rgba(255,255,255,0.75); color: rgba(60,30,0,0.55); }
   .check-btn.tier-silver{ background: radial-gradient(circle at 33% 28%, #f6f6f6, #9a9a9a); border-color: rgba(255,255,255,0.85); color: rgba(0,0,0,0.4); }
   .check-btn.tier-gold{ background: radial-gradient(circle at 33% 28%, #fff3b0, #b8860b); border-color: rgba(255,255,255,0.8); color: rgba(70,50,0,0.55); }
+  .check-btn.tier-diamond{ background: radial-gradient(circle at 33% 28%, #ffffff, #7fa8bd); border-color: rgba(255,255,255,0.9); color: rgba(20,50,65,0.6); box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), inset 0 -2px 3px rgba(0,0,0,0.15), 0 0 8px rgba(140,200,230,0.6); }
   .check-btn.done-flash{ background: var(--spring) !important; border-color: var(--spring) !important; color:#fff !important; animation: pop 0.3s ease; }
   .tier-label{ font-size:0.62rem; text-transform:uppercase; letter-spacing:0.04em; text-align:center; margin-top:2px; color: rgba(46,42,34,0.65); font-weight:600; position:relative; z-index:1; }
   .pts-label{ font-size:0.62rem; text-align:center; color: rgba(46,42,34,0.65); font-weight:700; position:relative; z-index:1; }
@@ -288,6 +304,87 @@
   .no-history{ text-align:center; padding:30px 20px; color: var(--ink-soft); font-style:italic; }
   .crown{ margin-left:4px; }
 
+  .level-badge{
+    display:inline-flex; align-items:center; gap:3px; background: var(--ink); color: var(--paper);
+    border-radius:10px; padding:1px 7px; font-size:0.66rem; font-weight:700; font-family:'Inter',sans-serif;
+    letter-spacing:0.02em; vertical-align:middle;
+  }
+  .level-progress-track{
+    width:100%; height:6px; background: rgba(46,42,34,0.1); border-radius:3px; overflow:hidden; margin-top:6px;
+  }
+  .level-progress-fill{ height:100%; background: var(--spring); border-radius:3px; transition: width 0.4s ease; }
+
+  .bounty-ribbon{
+    position:absolute; top:6px; left:8px; z-index:2; background: linear-gradient(135deg,#ffd76a,#b8860b);
+    color:#3a2900; font-size:0.62rem; font-weight:800; padding:2px 8px; border-radius:10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3); letter-spacing:0.02em;
+  }
+  .claim-row{ margin-top:8px; display:flex; align-items:center; gap:6px; }
+  .claim-btn{
+    font-size:0.74rem; font-weight:700; padding:4px 10px; border-radius:12px; cursor:pointer;
+    background: rgba(255,255,255,0.6); border:1px solid rgba(46,42,34,0.15); color: var(--ink);
+    font-family:'Inter',sans-serif;
+  }
+  .claim-btn:hover{ background: rgba(255,255,255,0.9); }
+  .claim-tag{ font-size:0.74rem; color: var(--ink-soft); font-weight:600; }
+  .claim-tag.mine{ color: var(--spring); }
+
+  .floating-xp{
+    position:fixed; font-family:'Fraunces',serif; font-weight:700; font-size:1.1rem; color: var(--spring);
+    pointer-events:none; z-index:210; animation: float-up 1.1s ease-out forwards; text-shadow: 0 1px 3px rgba(255,255,255,0.8);
+  }
+  @keyframes float-up{
+    0%{ transform: translateY(0); opacity:1; }
+    100%{ transform: translateY(-46px); opacity:0; }
+  }
+
+  .levelup-banner{
+    position:fixed; top:16px; left:50%; transform: translateX(-50%) translateY(-30px); opacity:0;
+    background: linear-gradient(135deg, #2E2A22, #4a4535); color:#fff; padding:14px 24px; border-radius:14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35); z-index:220; text-align:center; transition: all 0.35s ease; pointer-events:none;
+  }
+  .levelup-banner.show{ transform: translateX(-50%) translateY(0); opacity:1; }
+  .levelup-banner .lu-title{ font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; }
+  .levelup-banner .lu-sub{ font-size:0.8rem; color: #d8cfb8; margin-top:2px; }
+
+  .quest-card{
+    background:#fff; border-radius:10px; padding:10px 12px; box-shadow: 0 2px 6px rgba(46,42,34,0.1);
+    margin-bottom:8px;
+  }
+  .quest-title{ font-size:0.85rem; font-weight:700; color: var(--ink); display:flex; justify-content:space-between; align-items:center; }
+  .quest-reward{ font-size:0.72rem; color: var(--gold); font-weight:700; }
+  .quest-track{ width:100%; height:6px; background: rgba(46,42,34,0.1); border-radius:3px; overflow:hidden; margin-top:6px; }
+  .quest-fill{ height:100%; background: var(--winter); border-radius:3px; transition: width 0.4s ease; }
+  .quest-fill.complete{ background: var(--spring); }
+
+  .campaign-banner{
+    background: linear-gradient(135deg, #EAE2CF, #F4EFE3); border:1px solid var(--line); border-radius:12px;
+    padding:14px; margin-bottom:16px;
+  }
+  .campaign-title{ font-family:'Fraunces',serif; font-weight:700; font-size:1rem; margin-bottom:4px; }
+  .campaign-track{ width:100%; height:8px; background: rgba(46,42,34,0.12); border-radius:4px; overflow:hidden; margin-top:8px; }
+  .campaign-fill{ height:100%; background: linear-gradient(90deg, var(--fall), var(--gold)); border-radius:4px; transition: width 0.4s ease; }
+  .campaign-sub{ font-size:0.78rem; color: var(--ink-soft); margin-top:6px; }
+
+  .activity-feed{ display:flex; flex-direction:column; gap:2px; }
+  .activity-item{
+    display:flex; align-items:center; gap:10px; padding:9px 4px; border-bottom:1px solid rgba(46,42,34,0.07);
+    font-size:0.83rem;
+  }
+  .activity-icon{ width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:0.85rem; background: var(--paper-dark); }
+  .activity-text{ flex:1; color: var(--ink); }
+  .activity-text b{ font-weight:700; }
+  .activity-time{ font-size:0.7rem; color: var(--ink-soft); white-space:nowrap; }
+  .activity-xp{ font-size:0.78rem; font-weight:700; color: var(--spring); white-space:nowrap; }
+
+  .profile-header{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .profile-avatar{ width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:700; color:#fff; flex-shrink:0; }
+  .profile-stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+  .profile-achv-grid{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+  .profile-achv{ width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; background: var(--paper-dark); }
+  .profile-achv.locked{ opacity:0.25; filter:grayscale(1); }
+  .section-label{ font-family:'Fraunces',serif; font-weight:700; font-size:0.92rem; margin: 14px 0 8px; }
+
   footer{ text-align:center; margin-top:30px; font-size:0.78rem; color: var(--ink-soft); }
   footer button{ background:none; border:none; color: var(--ink-soft); text-decoration:underline; font-size:0.78rem; cursor:pointer; }
 
@@ -328,11 +425,12 @@ const FREQS = [
 const SEASONS = ['Spring','Summer','Fall','Winter'];
 const SEASON_ICON = { Spring:'🌱', Summer:'☀️', Fall:'🍂', Winter:'❄️' };
 const TIERS = [
-  { id:'bronze', label:'Bronze', order:0, points:5 },
-  { id:'silver', label:'Silver', order:1, points:10 },
-  { id:'gold',   label:'Gold',   order:2, points:20 },
+  { id:'bronze',  label:'Bronze',  order:0, xp:5,  icon:'●' },
+  { id:'silver',  label:'Silver',  order:1, xp:10, icon:'◆' },
+  { id:'gold',    label:'Gold',    order:2, xp:20, icon:'★' },
+  { id:'diamond', label:'Diamond', order:3, xp:40, icon:'💎' },
 ];
-const TIER_POINTS = Object.fromEntries(TIERS.map(t => [t.id, t.points]));
+const TIER_XP = Object.fromEntries(TIERS.map(t => [t.id, t.xp]));
 const AVATAR_COLORS = ['#B33F2E','#4A7FA8','#6B9C5E','#D9A02C','#8c5323','#7a4fa0','#2f7a6b','#c1602a'];
 
 const DEFAULT_CHORES = [
@@ -345,8 +443,8 @@ const DEFAULT_CHORES = [
   { id:'a7', name:'Change furnace filter',      room:'Whole Home',       freq:'quarterly', tier:'silver' },
   { id:'a8', name:'Deep clean fridge',          room:'Kitchen',          freq:'quarterly', tier:'silver' },
   { id:'a9', name:'Test smoke detectors',       room:'Whole Home',       freq:'yearly',    tier:'bronze' },
-  { id:'a10',name:'Flush water heater',         room:'Whole Home',       freq:'yearly',    tier:'gold' },
-  { id:'a11',name:'Clean gutters',              room:'Yard & Exterior',  freq:'seasonal', season:'Fall',   tier:'gold' },
+  { id:'a10',name:'Flush water heater',         room:'Whole Home',       freq:'yearly',    tier:'diamond' },
+  { id:'a11',name:'Clean gutters',              room:'Yard & Exterior',  freq:'seasonal', season:'Fall',   tier:'diamond' },
   { id:'a12',name:'Cover the A/C unit',         room:'Yard & Exterior',  freq:'seasonal', season:'Fall',   tier:'silver' },
   { id:'a13',name:'Plant / prep garden beds',   room:'Yard & Exterior',  freq:'seasonal', season:'Spring', tier:'silver' },
   { id:'a14',name:'Flip mattresses',            room:'Bedroom',          freq:'seasonal', season:'Spring', tier:'bronze' },
@@ -382,7 +480,7 @@ const DEFAULT_CHORES = [
   { id:'a32', name:'Mop floors',                        room:'Whole Home', freq:'weekly',    tier:'silver' },
   { id:'a33', name:'Wipe light switches & doorknobs',   room:'Whole Home', freq:'monthly',   tier:'bronze' },
   { id:'a34', name:'Clean light fixtures & ceiling fans', room:'Whole Home', freq:'quarterly', tier:'silver' },
-  { id:'a35', name:'Deep clean carpets',                room:'Whole Home', freq:'yearly',    tier:'gold' },
+  { id:'a35', name:'Deep clean carpets',                room:'Whole Home', freq:'yearly',    tier:'diamond' },
   { id:'a36', name:'Declutter & donate items',          room:'Whole Home', freq:'quarterly', tier:'silver' },
   { id:'a37', name:'Service furnace before winter',     room:'Whole Home', freq:'seasonal', season:'Fall',   tier:'gold' },
   { id:'a38', name:'Service A/C before summer',         room:'Whole Home', freq:'seasonal', season:'Spring', tier:'gold' },
@@ -396,8 +494,8 @@ const DEFAULT_CHORES = [
   { id:'a44', name:'Water garden & lawn',           room:'Yard & Exterior', freq:'weekly',    tier:'bronze' },
   { id:'a45', name:'Trim hedges & shrubs',          room:'Yard & Exterior', freq:'monthly',   tier:'silver' },
   { id:'a46', name:'Fertilize lawn',                room:'Yard & Exterior', freq:'quarterly', tier:'silver' },
-  { id:'a47', name:'Power wash driveway/deck/patio',room:'Yard & Exterior', freq:'yearly',    tier:'gold' },
-  { id:'a48', name:'Seal or stain the deck',        room:'Yard & Exterior', freq:'yearly',    tier:'gold' },
+  { id:'a47', name:'Power wash driveway/deck/patio',room:'Yard & Exterior', freq:'yearly',    tier:'diamond' },
+  { id:'a48', name:'Seal or stain the deck',        room:'Yard & Exterior', freq:'yearly',    tier:'diamond' },
   { id:'a49', name:'Service lawn mower & equipment',room:'Yard & Exterior', freq:'yearly',    tier:'silver' },
   { id:'a50', name:'Inspect roof & siding',         room:'Yard & Exterior', freq:'yearly',    tier:'silver' },
   { id:'a51', name:'Inspect for pests & termites',  room:'Yard & Exterior', freq:'yearly',    tier:'silver' },
@@ -484,7 +582,7 @@ const DEFAULT_CHORES = [
     {id:'a81-5', name:'Rinse & dry dishes'},
     {id:'a81-6', name:'Put clean dishes away'},
   ]},
-  { id:'a82', name:'Kitchen cabinet deep clean', room:'Kitchen', freq:'quarterly', tier:'gold', subtasks:[
+  { id:'a82', name:'Kitchen cabinet deep clean', room:'Kitchen', freq:'quarterly', tier:'diamond', subtasks:[
     {id:'a82-1', name:'Empty the cabinets'},
     {id:'a82-2', name:'Wipe interior shelves'},
     {id:'a82-3', name:'Scrub exterior cabinet doors'},
@@ -496,7 +594,7 @@ const DEFAULT_CHORES = [
     {id:'a83-3', name:'Wipe down shelves'},
     {id:'a83-4', name:'Organize & put items back'},
   ]},
-  { id:'a84', name:'Deep refrigerator clean', room:'Kitchen', freq:'quarterly', tier:'gold', subtasks:[
+  { id:'a84', name:'Deep refrigerator clean', room:'Kitchen', freq:'quarterly', tier:'diamond', subtasks:[
     {id:'a84-1', name:'Remove shelves, drawers & food'},
     {id:'a84-2', name:'Scrub & rinse the shelves/drawers'},
     {id:'a84-3', name:'Wipe interior walls & base'},
@@ -522,7 +620,7 @@ const DEFAULT_CHORES = [
     {id:'a88-1', name:'Vacuum cloth furniture & sofas'},
     {id:'a88-2', name:'Deep clean or steam carpets/rugs'},
   ]},
-  { id:'a89', name:'Scrub floors, walls & trim', room:'Whole Home', freq:'quarterly', tier:'gold', subtasks:[
+  { id:'a89', name:'Scrub floors, walls & trim', room:'Whole Home', freq:'quarterly', tier:'diamond', subtasks:[
     {id:'a89-1', name:'Scrub tough dirt off floors'},
     {id:'a89-2', name:'Wipe smudges & dirt on walls'},
     {id:'a89-3', name:'Scrub baseboards & trim'},
@@ -532,7 +630,7 @@ const DEFAULT_CHORES = [
     {id:'a90-1', name:'Inspect corners & grout'},
     {id:'a90-2', name:'Spray & scrub mold treatment'},
   ]},
-  { id:'a91', name:'Windows & high fixtures', room:'Whole Home', freq:'seasonal', season:'Spring', tier:'gold', subtasks:[
+  { id:'a91', name:'Windows & high fixtures', room:'Whole Home', freq:'seasonal', season:'Spring', tier:'diamond', subtasks:[
     {id:'a91-1', name:'Wash inside window glass'},
     {id:'a91-2', name:'Clean window sills & tracks'},
     {id:'a91-3', name:'Wash outside window glass'},
@@ -552,6 +650,7 @@ const DEFAULT_CHORES = [
 let chores = [];
 let completions = [];
 let subtaskProgress = {}; // { [choreId]: { doneIds: string[], by: { [subtaskId]: person } } }
+let activityLog = []; // bonus events: combo, room-clear, quest, campaign, achievement, level-up, subtask-share
 let player = null;
 let view = 'due'; // 'due' | 'all' | 'leaderboard'
 let lbRange = 'week'; // 'week' | 'all'
@@ -571,13 +670,40 @@ const DONE_PHRASES = [
 ];
 
 const ACHIEVEMENTS = [
-  { id:'first',    icon:'🥉', label:'Getting Started',  test:s => s.count >= 1 },
-  { id:'streak3',  icon:'🔥', label:'3-Day Streak',      test:s => s.streak >= 3 },
-  { id:'streak7',  icon:'🔥🔥', label:'Week Warrior',    test:s => s.streak >= 7 },
-  { id:'gold5',    icon:'🥇', label:'Gold Digger',       test:s => s.tierCounts.gold >= 5 },
-  { id:'century',  icon:'🏆', label:'Century Club',      test:s => s.points >= 100 },
-  { id:'bee',      icon:'🐝', label:'Busy Bee',          test:s => s.count >= 25 },
+  { id:'first',      icon:'🥉', label:'Getting Started',   test:s => s.count >= 1 },
+  { id:'streak3',    icon:'🔥', label:'3-Day Streak',       test:s => s.streak >= 3 },
+  { id:'streak7',    icon:'🔥🔥', label:'Week Warrior',     test:s => s.streak >= 7 },
+  { id:'gold5',      icon:'🥇', label:'Gold Digger',        test:s => s.tierCounts.gold >= 5 },
+  { id:'diamond1',   icon:'💎', label:'Diamond Hands',      test:s => s.tierCounts.diamond >= 1 },
+  { id:'diamond10',  icon:'💎💎', label:'Diamond Elite',    test:s => s.tierCounts.diamond >= 10 },
+  { id:'century',    icon:'🏆', label:'Century Club',       test:s => s.xp >= 100 },
+  { id:'millennium', icon:'👑', label:'Household Legend',   test:s => s.xp >= 1000 },
+  { id:'bee',        icon:'🐝', label:'Busy Bee',           test:s => s.count >= 25 },
+  { id:'combo',      icon:'⚡', label:'Combo Master',       test:s => s.comboMax >= 3 },
+  { id:'questRegular', icon:'📜', label:'Quest Regular',    test:s => s.questCount >= 10 },
+  { id:'campaign',   icon:'🍂', label:'Campaign Champion',  test:s => s.campaignCount >= 1 },
+  { id:'bounty',     icon:'🎯', label:'Bounty Hunter',      test:s => s.bountyCount >= 5 },
+  { id:'teamPlayer', icon:'🤝', label:'Team Player',        test:s => s.helperCount >= 5 },
+  { id:'level5',     icon:'⭐', label:'Rising Star',        test:s => s.level >= 5 },
+  { id:'level10',    icon:'🌟', label:'Household Legend II',test:s => s.level >= 10 },
 ];
+
+// Lifetime level curve: level L requires 25*(L-1)^2 cumulative XP.
+function xpForLevel(level){ return 25 * Math.pow(Math.max(0, level - 1), 2); }
+function levelFromXP(xp){ return Math.floor(Math.sqrt(Math.max(0, xp) / 25)) + 1; }
+
+const DAILY_QUESTS = [
+  { id:'daily3', label:'Complete 3 chores today', target:3, reward:15, get:(s) => s.todayCount },
+];
+const WEEKLY_QUESTS = [
+  { id:'weekly15',   label:'Complete 15 chores this week',        target:15, reward:60, get:(s) => s.weekCount },
+  { id:'weeklyVariety', label:'Do chores in 5 different rooms this week', target:5, reward:40, get:(s) => s.weekRooms },
+  { id:'weeklyGold', label:'Finish 3 Gold+ chores this week',      target:3,  reward:50, get:(s) => s.weekGoldPlus },
+];
+
+const COMBO_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const ROOM_CLEAR_BONUS = 15;
+const CAMPAIGN_BONUS = 100;
 
 const ALMANAC_TIPS = [
   'A ring around the moon means rain may be on the way.',
@@ -665,15 +791,185 @@ function computeStreak(personName){
 
 function personStats(name){
   const list = completions.filter(c => c.person === name);
-  const tierCounts = { bronze:0, silver:0, gold:0 };
-  let points = 0;
+  const tierCounts = { bronze:0, silver:0, gold:0, diamond:0 };
+  let xp = 0;
   list.forEach(c => {
     const chore = chores.find(x => x.id === c.choreId);
     const tier = chore?.tier || 'bronze';
     tierCounts[tier] = (tierCounts[tier] || 0) + 1;
-    points += TIER_POINTS[tier] || 5;
+    xp += (c.xp != null ? c.xp : TIER_XP[tier]) || 5;
   });
-  return { count: list.length, points, tierCounts, streak: computeStreak(name) };
+  const bonusEntries = activityLog.filter(a => a.person === name);
+  bonusEntries.forEach(a => { xp += a.xp || 0; });
+
+  const comboMax = bonusEntries.filter(a => a.type === 'combo').reduce((m,a) => Math.max(m, a.combo || 0), 0);
+  const questCount = bonusEntries.filter(a => a.type === 'quest').length;
+  const campaignCount = bonusEntries.filter(a => a.type === 'campaign').length;
+  const bountyCount = list.filter(c => c.bounty).length;
+  const helperCount = bonusEntries.filter(a => a.type === 'subtask-share').length;
+  const level = levelFromXP(xp);
+
+  return {
+    count: list.length, xp, tierCounts, streak: computeStreak(name),
+    comboMax, questCount, campaignCount, bountyCount, helperCount, level
+  };
+}
+
+function levelProgress(xp){
+  const level = levelFromXP(xp);
+  const base = xpForLevel(level);
+  const next = xpForLevel(level + 1);
+  const pct = Math.max(0, Math.min(100, ((xp - base) / (next - base)) * 100));
+  return { level, base, next, pct, into: xp - base, needed: next - base };
+}
+
+function computeQuestStats(name){
+  const today = startOfDay(new Date()).getTime();
+  const weekStart = today - 6 * 86400000; // trailing 7-day window
+  const todayList = completions.filter(c => c.person === name && c.ts >= today);
+  const weekList = completions.filter(c => c.person === name && c.ts >= weekStart);
+  const weekRoomSet = new Set();
+  let weekGoldPlus = 0;
+  weekList.forEach(c => {
+    const chore = chores.find(x => x.id === c.choreId);
+    if(chore){
+      weekRoomSet.add(chore.room);
+      if(chore.tier === 'gold' || chore.tier === 'diamond') weekGoldPlus++;
+    }
+  });
+  return { todayCount: todayList.length, weekCount: weekList.length, weekRooms: weekRoomSet.size, weekGoldPlus };
+}
+
+function isoWeekKey(d){
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = date.getUTCDay() || 7;
+  date.setUTCDate(date.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  return `${date.getUTCFullYear()}-W${weekNo}`;
+}
+
+// Awards any daily/weekly quests this person just crossed the threshold for.
+// Dedup via activityLog so each quest only pays out once per period.
+function checkAndAwardQuests(name, batchTs){
+  const stats = computeQuestStats(name);
+  const todayKey = startOfDay(new Date()).toISOString().slice(0,10);
+  const weekKey = isoWeekKey(new Date());
+  const awarded = [];
+
+  DAILY_QUESTS.forEach(q => {
+    const dedupeKey = `quest:${q.id}:${todayKey}:${name}`;
+    const already = activityLog.some(a => a.key === dedupeKey);
+    if(!already && q.get(stats) >= q.target){
+      activityLog.push({ ts: batchTs, batchTs, person: name, type:'quest', xp: q.reward, label: `Quest complete: ${q.label}`, key: dedupeKey, icon:'📜' });
+      awarded.push(q);
+    }
+  });
+  WEEKLY_QUESTS.forEach(q => {
+    const dedupeKey = `quest:${q.id}:${weekKey}:${name}`;
+    const already = activityLog.some(a => a.key === dedupeKey);
+    if(!already && q.get(stats) >= q.target){
+      activityLog.push({ ts: batchTs, batchTs, person: name, type:'quest', xp: q.reward, label: `Quest complete: ${q.label}`, key: dedupeKey, icon:'📜' });
+      awarded.push(q);
+    }
+  });
+  return awarded;
+}
+
+// If the chore just finished was the last active one in its room, award a
+// household room-clear bonus to whoever cleared it (once per room per day).
+function checkRoomClearBonus(room, name, batchTs){
+  const stillActive = chores.some(c => c.enabled !== false && c.room === room && getStatus(c).active);
+  if(stillActive) return null;
+  const todayKey = startOfDay(new Date()).toISOString().slice(0,10);
+  const dedupeKey = `roomclear:${room}:${todayKey}`;
+  if(activityLog.some(a => a.key === dedupeKey)) return null;
+  activityLog.push({ ts: batchTs, batchTs, person: name, type:'roomClear', xp: ROOM_CLEAR_BONUS, label: `Cleared every chore in ${room}!`, key: dedupeKey, icon:'🧹' });
+  return room;
+}
+
+function currentSeasonalCycle(){
+  const today = startOfDay(new Date());
+  const season = getSeason(today);
+  const cycleId = seasonCycleId(today);
+  const seasonChores = chores.filter(c => c.enabled !== false && c.freq === 'seasonal' && c.season === season);
+  const doneCount = seasonChores.filter(c => {
+    const last = lastCompletion(c.id);
+    return last && seasonCycleId(new Date(last.ts)) === cycleId;
+  }).length;
+  return { season, cycleId, total: seasonChores.length, done: doneCount };
+}
+
+// If completing this chore finished off every seasonal task for the current
+// season, award a one-time campaign bonus to whoever finished it.
+function checkCampaignBonus(name, batchTs){
+  const { cycleId, total, done } = currentSeasonalCycle();
+  if(total === 0 || done < total) return null;
+  const dedupeKey = `campaign:${cycleId}`;
+  if(activityLog.some(a => a.key === dedupeKey)) return null;
+  activityLog.push({ ts: batchTs, batchTs, person: name, type:'campaign', xp: CAMPAIGN_BONUS, label: `Completed the ${cycleId.split('-')[0]} Home Almanac campaign!`, key: dedupeKey, icon:'🍂' });
+  return cycleId;
+}
+
+// Small combo bonus for chaining completions close together.
+function applyComboBonus(name, batchTs){
+  const cutoff = batchTs - COMBO_WINDOW_MS;
+  const recentCount = completions.filter(c => c.person === name && c.ts >= cutoff).length; // includes the one just pushed
+  if(recentCount < 2) return null;
+  const combo = Math.min(recentCount, 6);
+  const bonusXP = Math.min(5 * (combo - 1), 20);
+  activityLog.push({ ts: batchTs, batchTs, person: name, type:'combo', xp: bonusXP, combo, label: `${combo}x combo!`, icon:'⚡' });
+  return { combo, bonusXP };
+}
+
+async function claimChore(id){
+  ensurePlayer(async () => {
+    await refreshShared();
+    const chore = chores.find(c => c.id === id);
+    if(!chore) return;
+    chore.claimedBy = player.name;
+    chore.claimedAt = Date.now();
+    await saveSharedState();
+    showToast(`You called dibs on "${chore.name}"`);
+    render();
+  });
+}
+async function releaseClaim(id){
+  await refreshShared();
+  const chore = chores.find(c => c.id === id);
+  if(chore){ delete chore.claimedBy; delete chore.claimedAt; }
+  await saveSharedState();
+  render();
+}
+async function toggleBounty(id){
+  await refreshShared();
+  const chore = chores.find(c => c.id === id);
+  if(chore) chore.bounty = !chore.bounty;
+  await saveSharedState();
+  renderSettingsModal();
+  render();
+}
+
+function floatXP(el, amount){
+  if(!el) return;
+  const rect = el.getBoundingClientRect();
+  const div = document.createElement('div');
+  div.className = 'floating-xp';
+  div.textContent = `+${amount} XP`;
+  div.style.left = (rect.left + rect.width/2 - 20) + 'px';
+  div.style.top = (rect.top - 6) + 'px';
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 1150);
+}
+
+function showLevelUpBanner(name, newLevel){
+  const banner = document.createElement('div');
+  banner.className = 'levelup-banner';
+  banner.innerHTML = `<div class="lu-title">🎉 Level Up!</div><div class="lu-sub">${name} reached Level ${newLevel}</div>`;
+  document.body.appendChild(banner);
+  requestAnimationFrame(() => banner.classList.add('show'));
+  setTimeout(() => { banner.classList.remove('show'); setTimeout(() => banner.remove(), 400); }, 3200);
+  notify('🎉 Level Up!', `${name} reached Level ${newLevel}`);
 }
 
 function earnedAchievements(name){
@@ -771,10 +1067,11 @@ async function fetchSharedState(){
   return await res.json(); // null if nothing saved yet
 }
 async function pushSharedState(){
+  if(activityLog.length > 300) activityLog = activityLog.slice(-300); // keep the feed bounded
   const res = await fetch(SHARED_STATE_URL, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chores, completions, subtaskProgress })
+    body: JSON.stringify({ chores, completions, subtaskProgress, activityLog })
   });
   if(!res.ok) throw new Error('Firebase save failed: ' + res.status);
 }
@@ -787,6 +1084,7 @@ async function loadState(){
     chores = DEFAULT_CHORES;
     completions = [];
     subtaskProgress = {};
+    activityLog = [];
     knownCompletionKeys = new Set();
     return;
   }
@@ -796,16 +1094,19 @@ async function loadState(){
       chores = data.chores;
       completions = data.completions || [];
       subtaskProgress = data.subtaskProgress || {};
+      activityLog = data.activityLog || [];
     } else {
       chores = DEFAULT_CHORES;
       completions = [];
       subtaskProgress = {};
+      activityLog = [];
       await pushSharedState(); // seed the database the first time
     }
   } catch(e){
     chores = DEFAULT_CHORES;
     completions = [];
     subtaskProgress = {};
+    activityLog = [];
     showToast('Couldn\u2019t reach the shared board — check your internet connection');
   }
   knownCompletionKeys = new Set(completions.map(keyFor));
@@ -829,6 +1130,7 @@ async function refreshShared(){
       chores = data.chores || chores;
       completions = data.completions || [];
       subtaskProgress = data.subtaskProgress || {};
+      activityLog = data.activityLog || [];
     }
   } catch(e){ /* stay on last-known state if the network hiccups */ }
 }
@@ -857,6 +1159,7 @@ async function undoLastAction(){
   if(!lastAction) return;
   await refreshShared();
   completions = completions.filter(c => !(c.choreId === lastAction.choreId && c.ts === lastAction.ts && c.person === lastAction.person));
+  activityLog = activityLog.filter(a => a.batchTs !== lastAction.ts);
   knownCompletionKeys.delete(`${lastAction.choreId}|${lastAction.ts}|${lastAction.person}`);
   if(lastAction.prevSubtaskSnapshot) subtaskProgress[lastAction.choreId] = lastAction.prevSubtaskSnapshot;
   else delete subtaskProgress[lastAction.choreId];
@@ -958,27 +1261,88 @@ function openSwitchPlayer(){
   };
 }
 
+// Shared completion pipeline used by both the one-tap check button and the
+// subtask checklist. `contributors` is null for a plain completion, or a
+// { personName: subtaskCount } map when XP should be split across everyone
+// who helped finish a multi-step chore.
+async function finalizeCompletion(chore, finisherPerson, contributors, btnEl){
+  const affectedPeople = [...new Set([finisherPerson, ...(contributors ? Object.keys(contributors) : [])])];
+  const before = {};
+  affectedPeople.forEach(p => {
+    const s = personStats(p);
+    before[p] = { level: levelFromXP(s.xp), achIds: new Set(earnedAchievements(p).map(a => a.id)) };
+  });
+
+  const baseXP = (TIER_XP[chore.tier] || 5) * (chore.bounty ? 2 : 1);
+  let finisherXP = baseXP;
+  const shareLines = [];
+  if(contributors){
+    const total = Object.values(contributors).reduce((a,b) => a+b, 0) || 1;
+    const people = Object.keys(contributors);
+    let allocated = 0;
+    people.forEach((p, i) => {
+      const isLast = i === people.length - 1;
+      const share = isLast ? (baseXP - allocated) : Math.round(baseXP * contributors[p] / total);
+      allocated += share;
+      if(p === finisherPerson) finisherXP = share; else shareLines.push({ person: p, xp: share });
+    });
+  }
+
+  const entry = { choreId: chore.id, ts: Date.now(), person: finisherPerson, xp: finisherXP, bounty: !!chore.bounty };
+  completions.push(entry);
+  knownCompletionKeys.add(keyFor(entry));
+  delete chore.claimedBy; delete chore.claimedAt;
+  delete subtaskProgress[chore.id];
+
+  shareLines.forEach(({ person, xp }) => {
+    activityLog.push({ ts: entry.ts, batchTs: entry.ts, person, type:'subtask-share', xp, label: `Helped finish "${chore.name}"`, icon:'🤝' });
+  });
+
+  const combo = applyComboBonus(finisherPerson, entry.ts);
+  const roomCleared = checkRoomClearBonus(chore.room, finisherPerson, entry.ts);
+  const newQuests = checkAndAwardQuests(finisherPerson, entry.ts);
+  const campaignDone = checkCampaignBonus(finisherPerson, entry.ts);
+
+  if(btnEl){ btnEl.classList.add('done-flash'); btnEl.textContent = '✓'; burstConfetti(btnEl); floatXP(btnEl, finisherXP); }
+  await saveSharedState();
+
+  const phrase = DONE_PHRASES[Math.floor(Math.random() * DONE_PHRASES.length)];
+  const bountyTag = chore.bounty ? '🎯 ' : '';
+  showToast(`${bountyTag}${finisherPerson} ${phrase} "${chore.name}" — +${finisherXP} XP!`, 'Undo', undoLastAction);
+
+  let delay = 1000;
+  if(combo){ setTimeout(() => notify('⚡ Combo!', `${finisherPerson} chained a ${combo.combo}x combo — +${combo.bonusXP} XP`), delay); delay += 1400; }
+  if(roomCleared){ setTimeout(() => notify('🧹 Room cleared!', `${finisherPerson} cleared every chore in ${roomCleared} — +${ROOM_CLEAR_BONUS} XP`), delay); delay += 1400; }
+  newQuests.forEach(q => { setTimeout(() => notify('📜 Quest complete!', `${q.label} — +${q.reward} XP`), delay); delay += 1400; });
+  if(campaignDone){ setTimeout(() => notify('🍂 Campaign complete!', `The household finished the seasonal Home Almanac campaign — +${CAMPAIGN_BONUS} XP`), delay); delay += 1400; }
+
+  affectedPeople.forEach(p => {
+    const s = personStats(p);
+    const afterLevel = levelFromXP(s.xp);
+    const afterAch = earnedAchievements(p);
+    if(afterLevel > before[p].level){
+      setTimeout(() => showLevelUpBanner(p, afterLevel), delay);
+      delay += 1600;
+    }
+    afterAch.filter(a => !before[p].achIds.has(a.id)).forEach(a => {
+      setTimeout(() => notify(`Achievement unlocked ${a.icon}`, `${p} earned "${a.label}"`), delay);
+      delay += 1400;
+    });
+  });
+
+  lastAction = { choreId: chore.id, ts: entry.ts, person: finisherPerson, prevSubtaskSnapshot: finalizeCompletion._pendingSnapshot || null };
+  finalizeCompletion._pendingSnapshot = null;
+
+  setTimeout(render, 350);
+}
+
 async function markDone(choreId, btnEl){
   ensurePlayer(async () => {
     await refreshShared(); // pull latest first so we don't clobber someone else's recent update
-    const beforeIds = new Set(earnedAchievements(player.name).map(a => a.id));
-    const prevSubtaskSnapshot = subtaskProgress[choreId] ? JSON.parse(JSON.stringify(subtaskProgress[choreId])) : null;
-    const entry = { choreId, ts: Date.now(), person: player.name };
-    completions.push(entry);
-    knownCompletionKeys.add(keyFor(entry));
-    delete subtaskProgress[choreId]; // fresh cycle — clear any partial checklist progress
     const chore = chores.find(c => c.id === choreId);
-    const pts = TIER_POINTS[chore?.tier] || 5;
-    if(btnEl){ btnEl.classList.add('done-flash'); btnEl.textContent = '✓'; burstConfetti(btnEl); }
-    await saveSharedState();
-    lastAction = { choreId, ts: entry.ts, person: player.name, prevSubtaskSnapshot };
-    const phrase = DONE_PHRASES[Math.floor(Math.random() * DONE_PHRASES.length)];
-    showToast(`${player.name} ${phrase} "${chore ? chore.name : 'a chore'}" — +${pts} pts! 🌿`, 'Undo', undoLastAction);
-    const newlyEarned = earnedAchievements(player.name).filter(a => !beforeIds.has(a.id));
-    newlyEarned.forEach((a, i) => {
-      setTimeout(() => notify(`Achievement unlocked ${a.icon}`, `${player.name} earned "${a.label}"`), 1000 + i * 1600);
-    });
-    setTimeout(render, 350);
+    if(!chore) return;
+    finalizeCompletion._pendingSnapshot = subtaskProgress[choreId] ? JSON.parse(JSON.stringify(subtaskProgress[choreId])) : null;
+    await finalizeCompletion(chore, player.name, null, btnEl);
   });
 }
 
@@ -1002,26 +1366,19 @@ async function toggleSubtask(choreId, subtaskId){
     const allDone = !isDone && prog.doneIds.length === chore.subtasks.length;
 
     if(allDone){
-      // last piece just got checked off — claim the whole chore
-      const beforeIds = new Set(earnedAchievements(player.name).map(a => a.id));
-      const prevSubtaskSnapshot = JSON.parse(JSON.stringify(prog));
-      const entry = { choreId, ts: Date.now(), person: player.name };
-      completions.push(entry);
-      knownCompletionKeys.add(keyFor(entry));
-      delete subtaskProgress[choreId];
-      const pts = TIER_POINTS[chore.tier] || 5;
-      await saveSharedState();
-      lastAction = { choreId, ts: entry.ts, person: player.name, prevSubtaskSnapshot };
-      showToast(`${player.name} finished the last step of "${chore.name}" — +${pts} pts! 🌿`, 'Undo', undoLastAction);
-      const newlyEarned = earnedAchievements(player.name).filter(a => !beforeIds.has(a.id));
-      newlyEarned.forEach((a, i) => {
-        setTimeout(() => notify(`Achievement unlocked ${a.icon}`, `${player.name} earned "${a.label}"`), 1000 + i * 1600);
+      // Tally how many subtasks each person contributed, to split XP fairly.
+      const contributors = {};
+      chore.subtasks.forEach(st => {
+        const who = prog.by[st.id];
+        if(who) contributors[who] = (contributors[who] || 0) + 1;
       });
+      finalizeCompletion._pendingSnapshot = JSON.parse(JSON.stringify(prog));
+      await finalizeCompletion(chore, player.name, contributors, null);
     } else {
       await saveSharedState();
       if(!isDone) showToast(`${player.name} checked off "${subtask ? subtask.name : 'a step'}" (${prog.doneIds.length}/${chore.subtasks.length})`);
+      render();
     }
-    render();
   });
 }
 
@@ -1059,6 +1416,7 @@ async function resetAlmanac(){
   chores = JSON.parse(JSON.stringify(DEFAULT_CHORES));
   completions = [];
   subtaskProgress = {};
+  activityLog = [];
   await saveSharedState();
   render();
 }
@@ -1080,7 +1438,7 @@ function openAddModal(){
     <label>Room</label>
     <select id="cRoom">${ROOMS.map(r=>`<option>${r}</option>`).join('')}</select>
     <label>Difficulty (sets point value)</label>
-    <select id="cTier">${TIERS.map(t=>`<option value="${t.id}" ${t.id==='silver'?'selected':''}>${t.label} — ${t.points} pts</option>`).join('')}</select>
+    <select id="cTier">${TIERS.map(t=>`<option value="${t.id}" ${t.id==='silver'?'selected':''}>${t.icon} ${t.label} — ${t.xp} XP</option>`).join('')}</select>
     <label>How often</label>
     <select id="cFreq">
       ${FREQS.map(f=>`<option value="${f.id}" ${f.id==='weekly'?'selected':''}>${f.label}</option>`).join('')}
@@ -1093,6 +1451,9 @@ function openAddModal(){
     <label>Steps (optional)</label>
     <p class="hint">One step per line, if you want this broken into a checklist. Leave blank for a simple one-tap chore.</p>
     <textarea id="cSubtasks" rows="4" placeholder="e.g.&#10;Scrub the sink&#10;Scrub the tub&#10;Wipe the mirror" style="width:100%; padding:8px 10px; font-family:'Inter',sans-serif; font-size:0.9rem; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink); resize:vertical;"></textarea>
+    <label style="display:flex; align-items:center; gap:8px; margin-top:14px; text-transform:none;">
+      <input type="checkbox" id="cBounty" style="width:auto;"> Make this a 🎯 bounty (2× XP)
+    </label>
     <div class="modal-actions">
       <button class="btn-plain" id="cCancel">Cancel</button>
       <button class="btn-primary" id="cConfirm">Add</button>
@@ -1110,6 +1471,7 @@ function openAddModal(){
     const freq = freqSel.value;
     const chore = { id: uid(), name, room, freq, tier };
     if(freq === 'seasonal') chore.season = overlay.querySelector('#cSeason').value;
+    if(overlay.querySelector('#cBounty').checked) chore.bounty = true;
     const subtaskLines = overlay.querySelector('#cSubtasks').value.split('\n').map(s => s.trim()).filter(Boolean);
     if(subtaskLines.length){
       chore.subtasks = subtaskLines.map((line, i) => ({ id: `${chore.id}-${i+1}`, name: line }));
@@ -1143,9 +1505,10 @@ function settingsListHtml(){
         return `
           <div class="settings-row">
             <div>
-              <div class="settings-row-name ${on ? '' : 'disabled'}">${c.name}</div>
+              <div class="settings-row-name ${on ? '' : 'disabled'}">${c.name}${c.bounty ? ' 🎯' : ''}</div>
               <div class="settings-row-meta">${freqLabel} · ${c.tier || 'bronze'}${isCustom ? ' · custom' : ''}</div>
             </div>
+            <button class="settings-trash" data-toggle-bounty="${c.id}" title="${c.bounty ? 'Remove bounty' : 'Make this a 2× XP bounty'}" style="opacity:${c.bounty ? 1 : 0.4};">🎯</button>
             ${isCustom ? `<button class="settings-trash" data-perm-del="${c.id}" title="Delete permanently">🗑</button>` : ''}
             <button class="toggle-switch ${on ? 'on' : ''}" data-toggle-chore="${c.id}" title="${on ? 'Disable' : 'Enable'}"></button>
           </div>
@@ -1157,6 +1520,7 @@ function settingsListHtml(){
 
 function wireSettingsListeners(container){
   container.querySelectorAll('[data-toggle-chore]').forEach(el => el.addEventListener('click', () => toggleChoreEnabled(el.getAttribute('data-toggle-chore'))));
+  container.querySelectorAll('[data-toggle-bounty]').forEach(el => el.addEventListener('click', () => toggleBounty(el.getAttribute('data-toggle-bounty'))));
   container.querySelectorAll('[data-perm-del]').forEach(el => el.addEventListener('click', () => {
     if(confirm('Permanently delete this custom chore? This can\u2019t be undone.')) deleteChorePermanently(el.getAttribute('data-perm-del'));
   }));
@@ -1261,25 +1625,32 @@ function applySort(list){
 function buildLeaderboard(range){
   const cutoff = range === 'week' ? Date.now() - 7*86400000 : 0;
   const byPerson = {};
+  const ensure = (name) => { if(!byPerson[name]) byPerson[name] = { name, xp:0, count:0 }; return byPerson[name]; };
   completions.forEach(c => {
     if(c.ts < cutoff || !c.person) return;
-    const chore = chores.find(ch => ch.id === c.choreId);
-    const pts = TIER_POINTS[chore?.tier] || 5;
-    if(!byPerson[c.person]) byPerson[c.person] = { name: c.person, points:0, count:0 };
-    byPerson[c.person].points += pts;
-    byPerson[c.person].count += 1;
+    const p = ensure(c.person);
+    p.xp += (c.xp != null ? c.xp : (TIER_XP[chores.find(ch => ch.id === c.choreId)?.tier] || 5));
+    p.count += 1;
+  });
+  activityLog.forEach(a => {
+    if(a.ts < cutoff || !a.person) return;
+    ensure(a.person).xp += a.xp || 0;
   });
   const board = Object.values(byPerson);
   board.forEach(p => {
     p.streak = computeStreak(p.name);
     p.achievements = earnedAchievements(p.name);
+    p.level = levelFromXP(personStats(p.name).xp); // lifetime level, independent of the range toggle
   });
-  return board.sort((a,b) => b.points - a.points);
+  return board.sort((a,b) => b.xp - a.xp);
 }
 
 function buildHistory(daysCount){
   const today = startOfDay(new Date());
-  const people = [...new Set(completions.map(c => c.person).filter(Boolean))];
+  const peopleSet = new Set();
+  completions.forEach(c => c.person && peopleSet.add(c.person));
+  activityLog.forEach(a => a.person && peopleSet.add(a.person));
+  const people = [...peopleSet];
   const days = [];
   for(let i = daysCount - 1; i >= 0; i--){
     const dayStart = today.getTime() - i * 86400000;
@@ -1291,10 +1662,15 @@ function buildHistory(daysCount){
     people.forEach(p => entry.byPerson[p] = 0);
     completions.forEach(c => {
       if(c.ts >= dayStart && c.ts < dayEnd && c.person){
-        const chore = chores.find(x => x.id === c.choreId);
-        const pts = TIER_POINTS[chore?.tier] || 5;
-        entry.byPerson[c.person] += pts;
-        entry.total += pts;
+        const xp = c.xp != null ? c.xp : (TIER_XP[chores.find(x => x.id === c.choreId)?.tier] || 5);
+        entry.byPerson[c.person] += xp;
+        entry.total += xp;
+      }
+    });
+    activityLog.forEach(a => {
+      if(a.ts >= dayStart && a.ts < dayEnd && a.person){
+        entry.byPerson[a.person] = (entry.byPerson[a.person] || 0) + (a.xp || 0);
+        entry.total += (a.xp || 0);
       }
     });
     days.push(entry);
@@ -1340,6 +1716,138 @@ function renderHistoryChart(daysCount){
   `;
 }
 
+function timeAgo(ts){
+  const mins = Math.round((Date.now() - ts) / 60000);
+  if(mins < 1) return 'just now';
+  if(mins < 60) return `${mins}m ago`;
+  const hrs = Math.round(mins / 60);
+  if(hrs < 24) return `${hrs}h ago`;
+  const days = Math.round(hrs / 24);
+  if(days < 7) return `${days}d ago`;
+  return new Date(ts).toLocaleDateString(undefined, { month:'short', day:'numeric' });
+}
+
+const ACTIVITY_ICONS = {
+  chore:'✅', combo:'⚡', roomClear:'🧹', quest:'📜', campaign:'🍂',
+  'subtask-share':'🤝', achievement:'🏅'
+};
+
+function buildActivityFeed(limit){
+  const choreItems = completions.map(c => {
+    const chore = chores.find(x => x.id === c.choreId);
+    return {
+      ts: c.ts, person: c.person, type:'chore', xp: c.xp,
+      text: `finished <b>${chore ? chore.name : 'a chore'}</b>${c.bounty ? ' 🎯' : ''}`
+    };
+  });
+  const bonusItems = activityLog.map(a => ({
+    ts: a.ts, person: a.person, type: a.type, xp: a.xp, text: a.label
+  }));
+  return [...choreItems, ...bonusItems].sort((a,b) => b.ts - a.ts).slice(0, limit);
+}
+
+function renderActivityFeed(limit){
+  const items = buildActivityFeed(limit);
+  if(items.length === 0){
+    return `<div class="no-history">Nothing logged yet — completed chores and bonuses will show up here.</div>`;
+  }
+  return `
+    <div class="activity-feed">
+      ${items.map(it => `
+        <div class="activity-item">
+          <div class="activity-icon">${ACTIVITY_ICONS[it.type] || '•'}</div>
+          <div class="activity-text"><b>${it.person || 'Someone'}</b> ${it.text}</div>
+          <div class="activity-xp">+${it.xp}</div>
+          <div class="activity-time">${timeAgo(it.ts)}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderQuestsPanel(name){
+  if(!name) return '';
+  const stats = computeQuestStats(name);
+  const todayKey = startOfDay(new Date()).toISOString().slice(0,10);
+  const weekKey = isoWeekKey(new Date());
+  const rows = [
+    ...DAILY_QUESTS.map(q => ({ ...q, progress: q.get(stats), done: activityLog.some(a => a.key === `quest:${q.id}:${todayKey}:${name}`) })),
+    ...WEEKLY_QUESTS.map(q => ({ ...q, progress: q.get(stats), done: activityLog.some(a => a.key === `quest:${q.id}:${weekKey}:${name}`) })),
+  ];
+  return `
+    <div class="section-label">Your quests</div>
+    ${rows.map(q => {
+      const pct = Math.min(100, (q.progress / q.target) * 100);
+      return `
+        <div class="quest-card">
+          <div class="quest-title"><span>${q.done ? '✅ ' : ''}${q.label}</span><span class="quest-reward">+${q.reward} XP</span></div>
+          <div class="quest-track"><div class="quest-fill ${q.done ? 'complete' : ''}" style="width:${pct}%"></div></div>
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+function renderCampaignBanner(){
+  const { season, total, done } = currentSeasonalCycle();
+  if(total === 0) return '';
+  const pct = Math.round((done / total) * 100);
+  const complete = done >= total;
+  return `
+    <div class="campaign-banner">
+      <div class="campaign-title">${SEASON_ICON[season]} ${season} Home Almanac Campaign</div>
+      <div class="campaign-sub">${complete ? `Complete! +${CAMPAIGN_BONUS} XP awarded to whoever finished it.` : `${done}/${total} seasonal chores done — finish them all for a +${CAMPAIGN_BONUS} XP household bonus.`}</div>
+      <div class="campaign-track"><div class="campaign-fill" style="width:${pct}%"></div></div>
+    </div>
+  `;
+}
+
+function openProfileModal(name){
+  const s = personStats(name);
+  const lp = levelProgress(s.xp);
+  const earned = earnedAchievements(name);
+  const earnedIds = new Set(earned.map(a => a.id));
+  const items = buildActivityFeed(200).filter(it => it.person === name).slice(0, 10);
+  openModal(`
+    <div class="profile-header">
+      <div class="profile-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>
+      <div>
+        <h3 style="margin:0;">${name}</h3>
+        <span class="level-badge">LV ${lp.level}</span>
+        <span style="font-size:0.78rem; color:var(--ink-soft); margin-left:6px;">${s.xp} XP total</span>
+      </div>
+    </div>
+    <div class="level-progress-track"><div class="level-progress-fill" style="width:${lp.pct}%"></div></div>
+    <p class="hint" style="margin-top:6px;">${lp.into}/${lp.needed} XP to Level ${lp.level + 1}</p>
+
+    <div class="profile-stat-grid">
+      <div class="history-stat"><div class="history-stat-label">Chores done</div><div class="history-stat-value">${s.count}</div></div>
+      <div class="history-stat"><div class="history-stat-label">Streak</div><div class="history-stat-value">🔥 ${s.streak}d</div></div>
+      <div class="history-stat"><div class="history-stat-label">Diamond chores</div><div class="history-stat-value">💎 ${s.tierCounts.diamond}</div></div>
+      <div class="history-stat"><div class="history-stat-label">Times helped</div><div class="history-stat-value">🤝 ${s.helperCount}</div></div>
+    </div>
+
+    <div class="section-label">Achievements (${earned.length}/${ACHIEVEMENTS.length})</div>
+    <div class="profile-achv-grid">
+      ${ACHIEVEMENTS.map(a => `<div class="profile-achv ${earnedIds.has(a.id) ? '' : 'locked'}" title="${a.label}">${a.icon}</div>`).join('')}
+    </div>
+
+    <div class="section-label">Recent activity</div>
+    ${items.length ? items.map(it => `
+      <div class="activity-item">
+        <div class="activity-icon">${ACTIVITY_ICONS[it.type] || '•'}</div>
+        <div class="activity-text">${it.text}</div>
+        <div class="activity-xp">+${it.xp}</div>
+        <div class="activity-time">${timeAgo(it.ts)}</div>
+      </div>
+    `).join('') : `<p class="hint">No activity yet.</p>`}
+
+    <div class="modal-actions">
+      <button class="btn-primary" id="profileClose">Close</button>
+    </div>
+  `, true).querySelector('#profileClose').onclick = function(){ this.closest('.modal-overlay').remove(); };
+}
+
 function render(){
   const app = document.getElementById('app');
   const enabledChores = chores.filter(c => c.enabled !== false);
@@ -1369,37 +1877,42 @@ function render(){
         <button data-range="all" class="${lbRange==='all'?'active':''}">All time</button>
       </div>
       <div class="list">
-        ${board.length===0 ? `<div class="empty-state">No chores logged yet — get out there and claim some points.</div>` : ''}
+        ${board.length===0 ? `<div class="empty-state">No chores logged yet — get out there and claim some XP.</div>` : ''}
         ${board.map((p, i) => `
-          <div class="lb-row">
+          <div class="lb-row" data-profile="${p.name}" style="cursor:pointer;">
             <div class="lb-rank ${i===0?'first':''}">${i+1}</div>
             <div class="avatar" style="background:${avatarColor(p.name)}">${initials(p.name)}</div>
             <div style="flex:1;">
-              <div class="lb-name">${p.name}${i===0 ? '<span class="crown">👑</span>' : ''}</div>
+              <div class="lb-name">${p.name}${i===0 ? '<span class="crown">👑</span>' : ''} <span class="level-badge">LV ${p.level}</span></div>
               <div class="lb-sub">${p.count} chore${p.count===1?'':'s'} done${p.streak>0 ? ` · 🔥 ${p.streak}d streak` : ''}</div>
               ${p.achievements.length ? `<div class="lb-badges">${p.achievements.map(a=>`<span title="${a.label}">${a.icon}</span>`).join(' ')}</div>` : ''}
             </div>
-            <div class="lb-points">${p.points}<span style="font-size:0.7rem; font-weight:600; color:var(--ink-soft);"> pts</span></div>
+            <div class="lb-points">${p.xp}<span style="font-size:0.7rem; font-weight:600; color:var(--ink-soft);"> XP</span></div>
           </div>
         `).join('')}
       </div>
     `;
   } else if(view === 'history'){
     const { days } = buildHistory(historyRange);
-    const totalPts = days.reduce((s,d) => s + d.total, 0);
+    const totalXP = days.reduce((s,d) => s + d.total, 0);
     const totalChores = completions.filter(c => c.ts >= Date.now() - historyRange*86400000).length;
     const bestDay = days.reduce((best, d) => d.total > best.total ? d : best, { total:0, label:'—' });
     bodyHtml = `
+      ${renderCampaignBanner()}
+      ${playerName ? renderQuestsPanel(playerName) : ''}
+      <div class="section-label" style="margin-top:18px;">Household trends</div>
       <div class="lb-range">
         <button data-hrange="7" class="${historyRange===7?'active':''}">Last 7 days</button>
         <button data-hrange="30" class="${historyRange===30?'active':''}">Last 30 days</button>
       </div>
       <div class="history-summary">
-        <div class="history-stat"><div class="history-stat-label">Total points</div><div class="history-stat-value">${totalPts}</div></div>
+        <div class="history-stat"><div class="history-stat-label">Total XP</div><div class="history-stat-value">${totalXP}</div></div>
         <div class="history-stat"><div class="history-stat-label">Chores done</div><div class="history-stat-value">${totalChores}</div></div>
         <div class="history-stat"><div class="history-stat-label">Best day</div><div class="history-stat-value">${bestDay.label}</div></div>
       </div>
       ${renderHistoryChart(historyRange)}
+      <div class="section-label">Activity feed</div>
+      ${renderActivityFeed(40)}
     `;
   } else {
     const activeFilters = [
@@ -1438,15 +1951,21 @@ function render(){
           const freqLabel = chore.freq === 'seasonal' ? `${SEASON_ICON[chore.season]} ${chore.season}` : (freqDef ? freqDef.label : chore.freq);
           const last = lastCompletion(chore.id);
           const cardClass = status.state==='overdue' ? 'overdue' : (status.seasonClass || (status.state==='fresh' ? 'fresh':''));
-          const pts = TIER_POINTS[chore.tier] || 5;
+          const tierDef = TIERS.find(t => t.id === (chore.tier || 'bronze')) || TIERS[0];
+          const baseXP = tierDef.xp;
+          const xp = chore.bounty ? baseXP * 2 : baseXP;
           const hasSubtasks = chore.subtasks && chore.subtasks.length > 0;
           const prog = hasSubtasks ? (subtaskProgress[chore.id] || { doneIds: [], by: {} }) : null;
+          const claimExpired = chore.claimedAt && (Date.now() - chore.claimedAt > 20*60*1000);
+          const claimedByOther = chore.claimedBy && !claimExpired && chore.claimedBy !== playerName;
+          const claimedByMe = chore.claimedBy && !claimExpired && chore.claimedBy === playerName;
           return `
             <div class="card tier-${chore.tier || 'bronze'} ${cardClass}">
+              ${chore.bounty ? `<div class="bounty-ribbon">🎯 BOUNTY ×2</div>` : ''}
               <div class="check-col">
                 <button class="check-btn tier-${chore.tier || 'bronze'}" data-done="${chore.id}" title="Mark whole thing done">✓</button>
-                <span class="tier-label">${(chore.tier || 'bronze')}</span>
-                <span class="pts-label">+${pts}</span>
+                <span class="tier-label">${tierDef.icon} ${(chore.tier || 'bronze')}</span>
+                <span class="pts-label">+${xp} XP</span>
               </div>
               <div class="card-info">
                 <p class="card-name">${chore.name}</p>
@@ -1472,6 +1991,11 @@ function render(){
                     }).join('')}
                   </div>
                 ` : ''}
+                <div class="claim-row">
+                  ${claimedByMe ? `<span class="claim-tag mine">🔒 You called dibs · <button class="claim-btn" data-release="${chore.id}" style="padding:2px 8px;">Release</button></span>` : ''}
+                  ${claimedByOther ? `<span class="claim-tag">🔒 Claimed by ${chore.claimedBy} · ${timeAgo(chore.claimedAt)}</span>` : ''}
+                  ${!claimedByMe && !claimedByOther ? `<button class="claim-btn" data-claim="${chore.id}">🙋 Call dibs</button>` : ''}
+                </div>
               </div>
               <button class="del-x" data-del="${chore.id}" title="Hide this chore (find it again in Settings)">✕</button>
             </div>
@@ -1483,8 +2007,8 @@ function render(){
 
   app.innerHTML = `
     <div class="banner">
-      <h1>Home Almanac</h1>
-      <p>a shared reference for keeping the house</p>
+      <h1>Chore Champs</h1>
+      <p>a Home Almanac tradition, leveled up</p>
     </div>
 
     <div class="tip-banner">📜 ${dailyTip()}</div>
@@ -1498,7 +2022,7 @@ function render(){
     <div class="player-bar">
       <button class="player-chip" id="playerChip">
         <span class="avatar" style="background:${playerColor}">${playerName ? initials(playerName) : '?'}</span>
-        ${playerName ? `Playing as ${playerName}` : 'Set your name'}
+        ${playerName ? `${playerName} <span class="level-badge">LV ${levelFromXP(personStats(playerName).xp)}</span>` : 'Set your name'}
       </button>
       <button class="notif-toggle" id="notifBtn" title="${notifyEnabled ? 'Notifications on — tap to turn off' : 'Turn on notifications'}">${notifyEnabled ? '🔔' : '🔕'}</button>
       <button class="notif-toggle" id="shareBtn" title="Invite someone to your almanac">📤</button>
@@ -1528,6 +2052,7 @@ function render(){
 
   if(view === 'leaderboard'){
     app.querySelectorAll('[data-range]').forEach(el => el.addEventListener('click', () => { lbRange = el.getAttribute('data-range'); render(); }));
+    app.querySelectorAll('[data-profile]').forEach(el => el.addEventListener('click', () => openProfileModal(el.getAttribute('data-profile'))));
   } else if(view === 'history'){
     app.querySelectorAll('[data-hrange]').forEach(el => el.addEventListener('click', () => { historyRange = parseInt(el.getAttribute('data-hrange'), 10); render(); }));
   } else {
@@ -1549,6 +2074,8 @@ function render(){
       const [choreId, subtaskId] = el.getAttribute('data-subtask').split('|');
       toggleSubtask(choreId, subtaskId);
     }));
+    app.querySelectorAll('[data-claim]').forEach(el => el.addEventListener('click', () => claimChore(el.getAttribute('data-claim'))));
+    app.querySelectorAll('[data-release]').forEach(el => el.addEventListener('click', (e) => { e.stopPropagation(); releaseClaim(el.getAttribute('data-release')); }));
     app.querySelector('#addBtn').addEventListener('click', () => ensurePlayer(openAddModal));
   }
   app.querySelector('#resetBtn').addEventListener('click', resetAlmanac);
@@ -1566,8 +2093,8 @@ function startPolling(){
     if(rivalOnes.length === 1){
       const c = rivalOnes[0];
       const chore = chores.find(x => x.id === c.choreId);
-      const pts = TIER_POINTS[chore?.tier] || 5;
-      notify('Chore claimed! 🏁', `${c.person} just ${DONE_PHRASES[0]} "${chore ? chore.name : 'a chore'}" for +${pts} pts`);
+      const xp = c.xp != null ? c.xp : (TIER_XP[chore?.tier] || 5);
+      notify('Chore claimed! 🏁', `${c.person} just ${DONE_PHRASES[0]} "${chore ? chore.name : 'a chore'}" for +${xp} XP`);
     } else if(rivalOnes.length > 1){
       notify('Chores claimed! 🏁', `${rivalOnes.length} chores were just claimed by others — check the leaderboard`);
     }

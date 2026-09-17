@@ -1,4 +1,4 @@
-const CACHE_NAME = 'home-almanac-v1';
+const CACHE_NAME = 'chore-champs-v2';
 const ASSETS = [
   './',
   './index.html',
