@@ -56,8 +56,9 @@
     margin-bottom: 14px; gap:3px;
   }
   .view-toggle button{
-    flex:1; border:none; background:transparent; padding:9px 3px; border-radius:6px;
-    font-family:'Inter',sans-serif; font-weight:600; font-size:0.74rem; color: var(--ink-soft); cursor:pointer;
+    flex:1; border:none; background:transparent; padding:8px 2px; border-radius:6px;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:0.66rem; color: var(--ink-soft); cursor:pointer;
+    line-height:1.3;
   }
   .view-toggle button.active{ background: var(--paper); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
 
@@ -168,6 +169,8 @@
   .status-text{ font-weight:800; }
   .status-text.overdue{ color: #8c2c20; }
   .status-text.due{ color: #16304a; }
+  .card-lastdone{ font-size:0.79rem; color:#3a3527; font-weight:600; margin-top:5px; }
+  .card-status-line{ margin-top:2px; font-size:0.82rem; }
 
   .del-x{ position:absolute; top:6px; right:8px; background: rgba(255,255,255,0.55); border:none; color: rgba(46,42,34,0.55); opacity:0.8; font-size:0.72rem; cursor:pointer; width:20px; height:20px; border-radius:50%; z-index:1; }
   .del-x:hover{ opacity:1; color: var(--overdue); background: rgba(255,255,255,0.85); }
@@ -384,6 +387,15 @@
   .profile-achv{ width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; background: var(--paper-dark); }
   .profile-achv.locked{ opacity:0.25; filter:grayscale(1); }
   .section-label{ font-family:'Fraunces',serif; font-weight:700; font-size:0.92rem; margin: 14px 0 8px; }
+
+  .home-progress-card{
+    display:flex; align-items:center; gap:12px; background:#fff; border-radius:12px;
+    padding:14px; box-shadow: 0 2px 6px rgba(46,42,34,0.1); margin-bottom:12px;
+  }
+  .teaser{ cursor:pointer; transition: transform 0.1s ease; }
+  .teaser:hover{ transform: translateY(-1px); }
+  .danger-zone-label{ color: var(--overdue); }
+  .danger-btn{ background:none; border:none; color: var(--overdue); padding:6px 0; font-size:0.85rem; cursor:pointer; text-decoration:underline; }
 
   footer{ text-align:center; margin-top:30px; font-size:0.78rem; color: var(--ink-soft); }
   footer button{ background:none; border:none; color: var(--ink-soft); text-decoration:underline; font-size:0.78rem; cursor:pointer; }
@@ -652,7 +664,7 @@ let completions = [];
 let subtaskProgress = {}; // { [choreId]: { doneIds: string[], by: { [subtaskId]: person } } }
 let activityLog = []; // bonus events: combo, room-clear, quest, campaign, achievement, level-up, subtask-share
 let player = null;
-let view = 'due'; // 'due' | 'all' | 'leaderboard'
+let view = 'home'; // 'home' | 'chores' | 'quests' | 'leaderboard' | 'history'
 let lbRange = 'week'; // 'week' | 'all'
 let historyRange = 7; // 7 | 30
 let filterRoom = 'All';
@@ -1184,6 +1196,18 @@ function relTime(ts){
   return new Date(ts).toLocaleDateString(undefined,{month:'short', day:'numeric'});
 }
 
+// e.g. "Last done: Sep 14 by James" / "Last done: Yesterday by Robyn" / "Never completed"
+function lastDoneLabel(last){
+  if(!last) return 'Never completed';
+  const days = daysBetween(new Date(last.ts), new Date());
+  let when;
+  if(days <= 0) when = 'Today';
+  else if(days === 1) when = 'Yesterday';
+  else if(days < 7) when = `${days} days ago`;
+  else when = new Date(last.ts).toLocaleDateString(undefined, { month:'short', day:'numeric' });
+  return `Last done: ${when}${last.person ? ' by ' + last.person : ''}`;
+}
+
 // returns {active(bool, should appear on Due Now), state:'fresh'|'due'|'overdue'|'seasonal', label, seasonClass}
 function getStatus(chore){
   const today = startOfDay(new Date());
@@ -1412,12 +1436,13 @@ async function toggleChoreEnabled(id){
   render();
 }
 async function resetAlmanac(){
-  if(!confirm('Reset the almanac to the default chore list and clear all history and points? This cannot be undone.')) return;
+  if(!confirm('Reset the almanac to the default chore list and clear all history and XP? This cannot be undone.')) return;
   chores = JSON.parse(JSON.stringify(DEFAULT_CHORES));
   completions = [];
   subtaskProgress = {};
   activityLog = [];
   await saveSharedState();
+  if(settingsOverlay){ settingsOverlay.remove(); settingsOverlay = null; }
   render();
 }
 
@@ -1540,6 +1565,8 @@ function openSettingsModal(){
     <p class="hint">Turn chores off if they don\u2019t apply to your household — nothing is lost, you can turn them back on anytime. Custom chores can be deleted for good with the trash icon.</p>
     <input type="text" id="settingsSearch" class="settings-search" placeholder="Search chores…" value="${settingsSearchTerm}">
     <div class="modal-scroll"><div id="settingsList">${settingsListHtml()}</div></div>
+    <div class="section-label danger-zone-label">Danger zone</div>
+    <button class="danger-btn" id="settingsReset">Reset to default chore list (clears all history and XP)</button>
     <div class="modal-actions">
       <button class="btn-primary" id="settingsDone">Done</button>
     </div>
@@ -1549,37 +1576,39 @@ function openSettingsModal(){
     settingsSearchTerm = e.target.value;
     renderSettingsModal();
   });
+  settingsOverlay.querySelector('#settingsReset').addEventListener('click', resetAlmanac);
   settingsOverlay.querySelector('#settingsDone').onclick = () => { settingsOverlay.remove(); settingsOverlay = null; render(); };
 }
 
 function openFiltersModal(){
   const overlay = openModal(`
     <h3>Filter chores</h3>
+    <p class="hint">Combine as many categories as you like — they all apply together.</p>
     <div class="filter-modal-grid">
-      <label>Room</label>
+      <label>🏠 Room</label>
       <select id="mfRoom">
         <option ${filterRoom==='All'?'selected':''}>All Rooms</option>
         ${ROOMS.map(r=>`<option ${filterRoom===r?'selected':''}>${r}</option>`).join('')}
       </select>
-      <label>Frequency</label>
+      <label>🔁 Frequency</label>
       <select id="mfFreq">
         <option value="All" ${filterFreq==='All'?'selected':''}>All Frequencies</option>
         ${FREQS.map(f=>`<option value="${f.id}" ${filterFreq===f.id?'selected':''}>${f.label}</option>`).join('')}
         <option value="seasonal" ${filterFreq==='seasonal'?'selected':''}>Seasonal</option>
       </select>
-      <label>Season</label>
+      <label>🍂 Season</label>
       <select id="mfSeason">
         <option value="All" ${filterSeason==='All'?'selected':''}>All Seasons</option>
         ${SEASONS.map(s=>`<option ${filterSeason===s?'selected':''}>${s}</option>`).join('')}
       </select>
-      <label>Difficulty</label>
+      <label>⭐ Difficulty</label>
       <select id="mfTier">
         <option value="All" ${filterTier==='All'?'selected':''}>All Difficulties</option>
-        ${TIERS.map(t=>`<option value="${t.id}" ${filterTier===t.id?'selected':''}>${t.label}</option>`).join('')}
+        ${TIERS.map(t=>`<option value="${t.id}" ${filterTier===t.id?'selected':''}>${t.icon} ${t.label}</option>`).join('')}
       </select>
     </div>
     <div class="modal-actions">
-      <button class="btn-plain" id="mfClear">Clear all</button>
+      <button class="btn-plain" id="mfClear">Clear all filters</button>
       <button class="btn-primary" id="mfApply">Apply</button>
     </div>
   `);
@@ -1802,6 +1831,56 @@ function renderCampaignBanner(){
   `;
 }
 
+// Compact Home-screen version — a quick glance, tap through for the full view.
+function renderCampaignTeaser(){
+  const { season, total, done } = currentSeasonalCycle();
+  if(total === 0) return '';
+  const pct = Math.round((done / total) * 100);
+  return `
+    <div class="campaign-banner teaser" data-goto-quests>
+      <div class="campaign-title">${SEASON_ICON[season]} ${season} Campaign — ${done}/${total}</div>
+      <div class="campaign-track"><div class="campaign-fill" style="width:${pct}%"></div></div>
+    </div>
+  `;
+}
+
+function renderQuestsTeaser(name){
+  if(!name) return '';
+  const stats = computeQuestStats(name);
+  const todayKey = startOfDay(new Date()).toISOString().slice(0,10);
+  const weekKey = isoWeekKey(new Date());
+  const all = [
+    ...DAILY_QUESTS.map(q => ({ ...q, key:`quest:${q.id}:${todayKey}:${name}` })),
+    ...WEEKLY_QUESTS.map(q => ({ ...q, key:`quest:${q.id}:${weekKey}:${name}` })),
+  ].map(q => ({ ...q, progress: q.get(stats), done: activityLog.some(a => a.key === q.key) }));
+  const doneCount = all.filter(q => q.done).length;
+  const next = all.filter(q => !q.done).sort((a,b) => (b.progress/b.target) - (a.progress/a.target))[0];
+  return `
+    <div class="quest-card teaser" data-goto-quests>
+      <div class="quest-title"><span>📜 Quests: ${doneCount}/${all.length} complete</span></div>
+      <div style="font-size:0.78rem; color:var(--ink-soft); margin-top:4px;">
+        ${next ? `Next: ${next.label} (${next.progress}/${next.target})` : 'All caught up — nice work!'}
+      </div>
+    </div>
+  `;
+}
+
+function renderHomeProgressCard(name){
+  if(!name) return '';
+  const s = personStats(name);
+  const lp = levelProgress(s.xp);
+  return `
+    <div class="home-progress-card">
+      <div class="profile-avatar" style="width:46px; height:46px; font-size:1.1rem; background:${avatarColor(name)};">${initials(name)}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700; font-family:'Fraunces',serif;">${name} <span class="level-badge">LV ${lp.level}</span></div>
+        <div class="level-progress-track"><div class="level-progress-fill" style="width:${lp.pct}%"></div></div>
+        <div style="font-size:0.76rem; color:var(--ink-soft); margin-top:4px;">${lp.into}/${lp.needed} XP to Level ${lp.level+1}${s.streak>0 ? ` · 🔥 ${s.streak}d streak` : ''}</div>
+      </div>
+    </div>
+  `;
+}
+
 function openProfileModal(name){
   const s = personStats(name);
   const lp = levelProgress(s.xp);
@@ -1848,18 +1927,72 @@ function openProfileModal(name){
   `, true).querySelector('#profileClose').onclick = function(){ this.closest('.modal-overlay').remove(); };
 }
 
+// Shared card renderer used by both Home (due/overdue) and Chores (full list).
+function choreCardHtml(chore, status, playerName){
+  const freqDef = FREQS.find(f=>f.id===chore.freq);
+  const freqLabel = chore.freq === 'seasonal' ? `${SEASON_ICON[chore.season]} ${chore.season}` : (freqDef ? freqDef.label : chore.freq);
+  const last = lastCompletion(chore.id);
+  const cardClass = status.state==='overdue' ? 'overdue' : (status.seasonClass || (status.state==='fresh' ? 'fresh':''));
+  const tierDef = TIERS.find(t => t.id === (chore.tier || 'bronze')) || TIERS[0];
+  const baseXP = tierDef.xp;
+  const xp = chore.bounty ? baseXP * 2 : baseXP;
+  const hasSubtasks = chore.subtasks && chore.subtasks.length > 0;
+  const prog = hasSubtasks ? (subtaskProgress[chore.id] || { doneIds: [], by: {} }) : null;
+  const claimExpired = chore.claimedAt && (Date.now() - chore.claimedAt > 20*60*1000);
+  const claimedByOther = chore.claimedBy && !claimExpired && chore.claimedBy !== playerName;
+  const claimedByMe = chore.claimedBy && !claimExpired && chore.claimedBy === playerName;
+  return `
+    <div class="card tier-${chore.tier || 'bronze'} ${cardClass}">
+      ${chore.bounty ? `<div class="bounty-ribbon">🎯 BOUNTY ×2</div>` : ''}
+      <div class="check-col">
+        <button class="check-btn tier-${chore.tier || 'bronze'}" data-done="${chore.id}" title="Mark whole thing done">✓</button>
+        <span class="tier-label">${tierDef.icon} ${(chore.tier || 'bronze')}</span>
+        <span class="pts-label">+${xp} XP</span>
+      </div>
+      <div class="card-info">
+        <p class="card-name">${chore.name}</p>
+        <div class="card-meta">
+          <span class="tag">${chore.room}</span>
+          <span class="tag ${chore.freq==='seasonal' ? 'season-tag '+chore.season.toLowerCase() : ''}">${freqLabel}</span>
+        </div>
+        <div class="card-lastdone">${lastDoneLabel(last)}</div>
+        <div class="card-status-line">
+          <span class="status-text ${status.state==='overdue'?'overdue':(status.state==='due'||status.state==='seasonal'?'due':'')}">${status.label}</span>
+        </div>
+        ${hasSubtasks ? `
+          <div class="subtask-progress">${prog.doneIds.length}/${chore.subtasks.length} steps done</div>
+          <div class="subtask-list">
+            ${chore.subtasks.map(st => {
+              const done = prog.doneIds.includes(st.id);
+              const by = prog.by[st.id];
+              return `
+                <div class="subtask-row ${done ? 'done' : ''}" data-subtask="${chore.id}|${st.id}">
+                  <span class="subtask-check">${done ? '✓' : ''}</span>
+                  <span class="subtask-text">${st.name}</span>
+                  ${done && by ? `<span class="subtask-by">${by}</span>` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        ` : ''}
+        <div class="claim-row">
+          ${claimedByMe ? `<span class="claim-tag mine">🔒 You called dibs · <button class="claim-btn" data-release="${chore.id}" style="padding:2px 8px;">Release</button></span>` : ''}
+          ${claimedByOther ? `<span class="claim-tag">🔒 Claimed by ${chore.claimedBy} · ${timeAgo(chore.claimedAt)}</span>` : ''}
+          ${!claimedByMe && !claimedByOther ? `<button class="claim-btn" data-claim="${chore.id}">🙋 Call dibs</button>` : ''}
+        </div>
+      </div>
+      <button class="del-x" data-del="${chore.id}" title="Hide this chore (find it again in Settings)">✕</button>
+    </div>
+  `;
+}
+
 function render(){
   const app = document.getElementById('app');
   const enabledChores = chores.filter(c => c.enabled !== false);
   const withStatus = enabledChores.map(c => ({ chore:c, status:getStatus(c) }));
 
-  let visible;
-  if(view === 'due'){
-    visible = withStatus.filter(x => x.status.active);
-    const order = { overdue:0, seasonal:1, due:2 };
-    visible.sort((a,b) => (order[a.status.state]??9) - (order[b.status.state]??9));
-    visible = applyFilters(visible.map(x=>x.chore)).map(c => ({chore:c, status:getStatus(c)}));
-  } else if(view === 'all') {
+  let visible = [];
+  if(view === 'chores'){
     const filtered = applySort(applyFilters(enabledChores));
     visible = filtered.map(c => ({ chore:c, status:getStatus(c) }));
   }
@@ -1892,15 +2025,18 @@ function render(){
         `).join('')}
       </div>
     `;
+  } else if(view === 'quests'){
+    bodyHtml = `
+      ${renderCampaignBanner()}
+      ${playerName ? renderQuestsPanel(playerName) : `<p style="font-size:0.85rem; color:var(--ink-soft); font-style:italic;">Set your name (top of the screen) to start tracking quests.</p>`}
+    `;
   } else if(view === 'history'){
     const { days } = buildHistory(historyRange);
     const totalXP = days.reduce((s,d) => s + d.total, 0);
     const totalChores = completions.filter(c => c.ts >= Date.now() - historyRange*86400000).length;
     const bestDay = days.reduce((best, d) => d.total > best.total ? d : best, { total:0, label:'—' });
+    const allTimeBoard = buildLeaderboard('all');
     bodyHtml = `
-      ${renderCampaignBanner()}
-      ${playerName ? renderQuestsPanel(playerName) : ''}
-      <div class="section-label" style="margin-top:18px;">Household trends</div>
       <div class="lb-range">
         <button data-hrange="7" class="${historyRange===7?'active':''}">Last 7 days</button>
         <button data-hrange="30" class="${historyRange===30?'active':''}">Last 30 days</button>
@@ -1911,8 +2047,41 @@ function render(){
         <div class="history-stat"><div class="history-stat-label">Best day</div><div class="history-stat-value">${bestDay.label}</div></div>
       </div>
       ${renderHistoryChart(historyRange)}
+
+      <div class="section-label">Household records (all-time)</div>
+      <div class="list">
+        ${allTimeBoard.length===0 ? `<div class="empty-state">No history yet.</div>` : ''}
+        ${allTimeBoard.map(p => {
+          const s = personStats(p.name);
+          return `
+            <div class="lb-row" data-profile="${p.name}" style="cursor:pointer;">
+              <div class="avatar" style="background:${avatarColor(p.name)}">${initials(p.name)}</div>
+              <div style="flex:1;">
+                <div class="lb-name">${p.name} <span class="level-badge">LV ${p.level}</span></div>
+                <div class="lb-sub">${p.xp} XP total · 🔥 ${p.streak}d best streak · 🏅 ${p.achievements.length} achievements</div>
+                <div class="lb-sub">🥉${s.tierCounts.bronze} · 🥈${s.tierCounts.silver} · 🥇${s.tierCounts.gold} · 💎${s.tierCounts.diamond}</div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
       <div class="section-label">Activity feed</div>
       ${renderActivityFeed(40)}
+    `;
+  } else if(view === 'home'){
+    const homeVisible = withStatus.filter(x => x.status.active);
+    const order = { overdue:0, seasonal:1, due:2 };
+    homeVisible.sort((a,b) => (order[a.status.state]??9) - (order[b.status.state]??9));
+    bodyHtml = `
+      ${renderHomeProgressCard(playerName)}
+      ${renderCampaignTeaser()}
+      ${renderQuestsTeaser(playerName)}
+      <div class="section-label" style="margin-top:16px;">Needs attention</div>
+      <div class="list">
+        ${homeVisible.length===0 ? `<div class="empty-state">Nothing due right now — enjoy that.</div>` : ''}
+        ${homeVisible.map(({chore,status}) => choreCardHtml(chore, status, playerName)).join('')}
+      </div>
     `;
   } else {
     const activeFilters = [
@@ -1925,82 +2094,26 @@ function render(){
     bodyHtml = `
       <div class="filter-bar">
         <button class="btn-filter" id="openFilters">⚲ Filters ${activeFilters.length ? `<span class="count">${activeFilters.length}</span>` : ''}</button>
-        ${view==='all' ? `
-          <select id="fSort" class="sort-select">
-            <option value="name" ${sortBy==='name'?'selected':''}>Sort: Name</option>
-            <option value="room" ${sortBy==='room'?'selected':''}>Sort: Room</option>
-            <option value="freq" ${sortBy==='freq'?'selected':''}>Sort: Frequency</option>
-            <option value="tier" ${sortBy==='tier'?'selected':''}>Sort: Difficulty</option>
-          </select>
-        ` : ''}
+        <select id="fSort" class="sort-select">
+          <option value="name" ${sortBy==='name'?'selected':''}>Sort: Name</option>
+          <option value="room" ${sortBy==='room'?'selected':''}>Sort: Room</option>
+          <option value="freq" ${sortBy==='freq'?'selected':''}>Sort: Frequency</option>
+          <option value="tier" ${sortBy==='tier'?'selected':''}>Sort: Difficulty</option>
+        </select>
       </div>
 
       ${activeFilters.length ? `
         <div class="chip-row">
           ${activeFilters.map(f => `<div class="filter-chip">${f.label}<button data-clear="${f.key}">✕</button></div>`).join('')}
-          <div class="filter-chip" style="background:transparent; border:1px solid var(--line);"><button data-clear="all" style="color:var(--overdue); font-weight:700;">Clear all</button></div>
+          <div class="filter-chip" style="background:transparent; border:1px solid var(--line);"><button data-clear="all" style="color:var(--overdue); font-weight:700;">Clear all filters</button></div>
         </div>
       ` : ''}
 
       <div class="add-row"><button class="btn-add" id="addBtn">+ Add chore</button></div>
 
       <div class="list">
-        ${visible.length===0 ? `<div class="empty-state">${view==='due' ? 'Nothing due right now — enjoy that.' : 'No chores match these filters.'}</div>` : ''}
-        ${visible.map(({chore, status}) => {
-          const freqDef = FREQS.find(f=>f.id===chore.freq);
-          const freqLabel = chore.freq === 'seasonal' ? `${SEASON_ICON[chore.season]} ${chore.season}` : (freqDef ? freqDef.label : chore.freq);
-          const last = lastCompletion(chore.id);
-          const cardClass = status.state==='overdue' ? 'overdue' : (status.seasonClass || (status.state==='fresh' ? 'fresh':''));
-          const tierDef = TIERS.find(t => t.id === (chore.tier || 'bronze')) || TIERS[0];
-          const baseXP = tierDef.xp;
-          const xp = chore.bounty ? baseXP * 2 : baseXP;
-          const hasSubtasks = chore.subtasks && chore.subtasks.length > 0;
-          const prog = hasSubtasks ? (subtaskProgress[chore.id] || { doneIds: [], by: {} }) : null;
-          const claimExpired = chore.claimedAt && (Date.now() - chore.claimedAt > 20*60*1000);
-          const claimedByOther = chore.claimedBy && !claimExpired && chore.claimedBy !== playerName;
-          const claimedByMe = chore.claimedBy && !claimExpired && chore.claimedBy === playerName;
-          return `
-            <div class="card tier-${chore.tier || 'bronze'} ${cardClass}">
-              ${chore.bounty ? `<div class="bounty-ribbon">🎯 BOUNTY ×2</div>` : ''}
-              <div class="check-col">
-                <button class="check-btn tier-${chore.tier || 'bronze'}" data-done="${chore.id}" title="Mark whole thing done">✓</button>
-                <span class="tier-label">${tierDef.icon} ${(chore.tier || 'bronze')}</span>
-                <span class="pts-label">+${xp} XP</span>
-              </div>
-              <div class="card-info">
-                <p class="card-name">${chore.name}</p>
-                <div class="card-meta">
-                  <span class="tag">${chore.room}</span>
-                  <span class="tag ${chore.freq==='seasonal' ? 'season-tag '+chore.season.toLowerCase() : ''}">${freqLabel}</span>
-                  <span>${last ? `last: ${relTime(last.ts)}${last.person ? ' by '+last.person : ''}` : 'never done'}</span>
-                  <span class="status-text ${status.state==='overdue'?'overdue':(status.state==='due'||status.state==='seasonal'?'due':'')}">${status.label}</span>
-                </div>
-                ${hasSubtasks ? `
-                  <div class="subtask-progress">${prog.doneIds.length}/${chore.subtasks.length} steps done</div>
-                  <div class="subtask-list">
-                    ${chore.subtasks.map(st => {
-                      const done = prog.doneIds.includes(st.id);
-                      const by = prog.by[st.id];
-                      return `
-                        <div class="subtask-row ${done ? 'done' : ''}" data-subtask="${chore.id}|${st.id}">
-                          <span class="subtask-check">${done ? '✓' : ''}</span>
-                          <span class="subtask-text">${st.name}</span>
-                          ${done && by ? `<span class="subtask-by">${by}</span>` : ''}
-                        </div>
-                      `;
-                    }).join('')}
-                  </div>
-                ` : ''}
-                <div class="claim-row">
-                  ${claimedByMe ? `<span class="claim-tag mine">🔒 You called dibs · <button class="claim-btn" data-release="${chore.id}" style="padding:2px 8px;">Release</button></span>` : ''}
-                  ${claimedByOther ? `<span class="claim-tag">🔒 Claimed by ${chore.claimedBy} · ${timeAgo(chore.claimedAt)}</span>` : ''}
-                  ${!claimedByMe && !claimedByOther ? `<button class="claim-btn" data-claim="${chore.id}">🙋 Call dibs</button>` : ''}
-                </div>
-              </div>
-              <button class="del-x" data-del="${chore.id}" title="Hide this chore (find it again in Settings)">✕</button>
-            </div>
-          `;
-        }).join('')}
+        ${visible.length===0 ? `<div class="empty-state">No chores match these filters.</div>` : ''}
+        ${visible.map(({chore, status}) => choreCardHtml(chore, status, playerName)).join('')}
       </div>
     `;
   }
@@ -2031,18 +2144,18 @@ function render(){
     </div>
 
     <div class="view-toggle">
-      <button data-view="due" class="${view==='due'?'active':''}">Due Now</button>
-      <button data-view="all" class="${view==='all'?'active':''}">Full List</button>
+      <button data-view="home" class="${view==='home'?'active':''}">🏠 Home</button>
+      <button data-view="chores" class="${view==='chores'?'active':''}">📋 Chores</button>
+      <button data-view="quests" class="${view==='quests'?'active':''}">🎯 Quests</button>
       <button data-view="leaderboard" class="${view==='leaderboard'?'active':''}">🏆 Ranks</button>
       <button data-view="history" class="${view==='history'?'active':''}">📊 Stats</button>
     </div>
 
     ${bodyHtml}
-
-    <footer><button id="resetBtn">Reset to default chore list</button></footer>
   `;
 
   app.querySelectorAll('[data-view]').forEach(el => el.addEventListener('click', () => { view = el.getAttribute('data-view'); render(); }));
+  app.querySelectorAll('[data-goto-quests]').forEach(el => el.addEventListener('click', () => { view = 'quests'; render(); }));
   app.querySelector('#playerChip').addEventListener('click', openSwitchPlayer);
   app.querySelector('#notifBtn').addEventListener('click', toggleNotify);
   app.querySelector('#shareBtn').addEventListener('click', shareApp);
@@ -2055,19 +2168,26 @@ function render(){
     app.querySelectorAll('[data-profile]').forEach(el => el.addEventListener('click', () => openProfileModal(el.getAttribute('data-profile'))));
   } else if(view === 'history'){
     app.querySelectorAll('[data-hrange]').forEach(el => el.addEventListener('click', () => { historyRange = parseInt(el.getAttribute('data-hrange'), 10); render(); }));
+    app.querySelectorAll('[data-profile]').forEach(el => el.addEventListener('click', () => openProfileModal(el.getAttribute('data-profile'))));
+  } else if(view === 'quests'){
+    // no extra listeners — campaign/quest content is read-only here
   } else {
-    app.querySelector('#openFilters').addEventListener('click', openFiltersModal);
-    app.querySelectorAll('[data-clear]').forEach(el => el.addEventListener('click', () => {
-      const key = el.getAttribute('data-clear');
-      if(key === 'all'){ filterRoom='All'; filterFreq='All'; filterSeason='All'; filterTier='All'; }
-      if(key === 'room') filterRoom = 'All';
-      if(key === 'freq') filterFreq = 'All';
-      if(key === 'season') filterSeason = 'All';
-      if(key === 'tier') filterTier = 'All';
-      render();
-    }));
-    const sortEl = app.querySelector('#fSort');
-    if(sortEl) sortEl.addEventListener('change', e => { sortBy = e.target.value; render(); });
+    // 'home' and 'chores' both show chore cards and share these listeners
+    if(view === 'chores'){
+      app.querySelector('#openFilters').addEventListener('click', openFiltersModal);
+      app.querySelectorAll('[data-clear]').forEach(el => el.addEventListener('click', () => {
+        const key = el.getAttribute('data-clear');
+        if(key === 'all'){ filterRoom='All'; filterFreq='All'; filterSeason='All'; filterTier='All'; }
+        if(key === 'room') filterRoom = 'All';
+        if(key === 'freq') filterFreq = 'All';
+        if(key === 'season') filterSeason = 'All';
+        if(key === 'tier') filterTier = 'All';
+        render();
+      }));
+      const sortEl = app.querySelector('#fSort');
+      if(sortEl) sortEl.addEventListener('change', e => { sortBy = e.target.value; render(); });
+      app.querySelector('#addBtn').addEventListener('click', () => ensurePlayer(openAddModal));
+    }
     app.querySelectorAll('[data-done]').forEach(el => el.addEventListener('click', () => markDone(el.getAttribute('data-done'), el)));
     app.querySelectorAll('[data-del]').forEach(el => el.addEventListener('click', () => hideChore(el.getAttribute('data-del'))));
     app.querySelectorAll('[data-subtask]').forEach(el => el.addEventListener('click', () => {
@@ -2076,9 +2196,7 @@ function render(){
     }));
     app.querySelectorAll('[data-claim]').forEach(el => el.addEventListener('click', () => claimChore(el.getAttribute('data-claim'))));
     app.querySelectorAll('[data-release]').forEach(el => el.addEventListener('click', (e) => { e.stopPropagation(); releaseClaim(el.getAttribute('data-release')); }));
-    app.querySelector('#addBtn').addEventListener('click', () => ensurePlayer(openAddModal));
   }
-  app.querySelector('#resetBtn').addEventListener('click', resetAlmanac);
 }
 
 function startPolling(){
