@@ -583,7 +583,16 @@
   .tier-choice.tier-bronze { background:#efd2b4; }
   .tier-choice.tier-silver { background:#e6e6e6; }
   .tier-choice.tier-gold { background:#f5df96; }
-  .tier-choice.tier-diamond { background:#cbeaf8; color:#234258; }
+.tier-choice.tier-diamond {
+  background: linear-gradient(
+    135deg,
+    #E8D7FF 0%,
+    #F3C4E8 50%,
+    #C9D9FF 100%
+  );
+  color:#4E3561;
+  border-color:#9B72B5;
+}
   .tier-choice[aria-pressed="true"] { outline:2px solid var(--ink); outline-offset:1px; }
 </style>
 </head>
