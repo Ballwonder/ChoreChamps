@@ -104,36 +104,202 @@
     position: relative;
     overflow: hidden;
   }
-  .card::before{
-    content:''; position:absolute; top:-60%; left:-15%; width:55%; height:220%;
-    background: linear-gradient(120deg, rgba(255,255,255,0.65), rgba(255,255,255,0) 65%);
-    transform: rotate(18deg); pointer-events:none;
-  }
-  .card.tier-bronze{ background: linear-gradient(150deg, #f2c396 0%, #d6944f 30%, #8c5323 85%); }
-  .card.tier-silver{ background: linear-gradient(150deg, #ffffff 0%, #e2e2e2 30%, #9a9a9a 85%); }
-  .card.tier-gold{   background: linear-gradient(150deg, #fff8da 0%, #f3d576 30%, #b8860b 85%); }
-  .card.tier-diamond{
-    background: linear-gradient(150deg, #f2fbff 0%, #cfe9f5 30%, #8fb9cc 70%, #5c8296 100%);
-    position: relative;
-  }
-  .card.tier-diamond::after{
-    content:''; position:absolute; inset:0; pointer-events:none;
-    background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.55) 45%, transparent 60%);
-    background-size: 250% 250%;
-    animation: diamond-shimmer 5s ease-in-out infinite;
-  }
-  @keyframes diamond-shimmer{
-    0%{ background-position: 120% 0%; }
-    50%{ background-position: -20% 100%; }
-    100%{ background-position: 120% 0%; }
+  /* =========================================================
+   CHORE CHAMPS — PREMIUM TIER CARD STYLES
+   Bronze → Silver → Gold → Diamond
+   ========================================================= */
+
+/* Shared polished-light reflection on ALL tier cards */
+.card::before{
+  content:'';
+  position:absolute;
+  top:-60%;
+  left:-15%;
+  width:55%;
+  height:220%;
+  background:linear-gradient(
+    120deg,
+    rgba(255,255,255,0.48) 0%,
+    rgba(255,255,255,0.18) 35%,
+    rgba(255,255,255,0) 68%
+  );
+  transform:rotate(18deg);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* Keep card content above shine effects */
+.card > *{
+  position:relative;
+  z-index:2;
+}
+
+
+/* =========================================================
+   BRONZE — polished copper / bronze
+   ========================================================= */
+
+.card.tier-bronze{
+  background:linear-gradient(
+    145deg,
+    #F6D5B4 0%,
+    #E6AD73 22%,
+    #C77D42 48%,
+    #A45D2D 72%,
+    #75401F 100%
+  );
+  border-color:#A96332;
+}
+
+
+/* =========================================================
+   SILVER — bright platinum / brushed silver
+   ========================================================= */
+
+.card.tier-silver{
+  background:linear-gradient(
+    145deg,
+    #FFFFFF 0%,
+    #F2F5F7 18%,
+    #D9E0E5 40%,
+    #B9C3CA 65%,
+    #89959D 100%
+  );
+  border-color:#A5B0B7;
+}
+
+
+/* =========================================================
+   GOLD — rich champagne / trophy gold
+   ========================================================= */
+
+.card.tier-gold{
+  background:linear-gradient(
+    145deg,
+    #FFF7D6 0%,
+    #F8E49A 20%,
+    #EAC85E 43%,
+    #D1A532 68%,
+    #987018 100%
+  );
+  border-color:#C79A29;
+}
+
+
+/* =========================================================
+   DIAMOND — opal / amethyst gemstone
+   ========================================================= */
+
+.card.tier-diamond{
+  background:linear-gradient(
+    135deg,
+    #F4ECFF 0%,
+    #D9C6F5 18%,
+    #C6B3EE 32%,
+    #F5C9E7 48%,
+    #C5D6FA 65%,
+    #D7B7EB 82%,
+    #B895D4 100%
+  );
+  border-color:#9B72B5;
+  color:#4E3561;
+  position:relative;
+  overflow:hidden;
+}
+
+
+/* =========================================================
+   DIAMOND — animated gemstone shimmer
+   ========================================================= */
+
+.card.tier-diamond::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+
+  background:linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255,255,255,0.12) 32%,
+    rgba(255,255,255,0.72) 45%,
+    rgba(255,225,250,0.38) 50%,
+    rgba(210,235,255,0.32) 55%,
+    transparent 68%
+  );
+
+  background-size:250% 250%;
+  animation:diamond-shimmer 4.5s ease-in-out infinite;
+}
+
+
+/* Diamond shimmer movement */
+@keyframes diamond-shimmer{
+  0%{
+    background-position:200% 0;
   }
 
-  .card.overdue{ box-shadow: 0 0 0 3px var(--overdue), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
-  .card.due{ box-shadow: 0 0 0 3px var(--due), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
-  .card.season-spring{ box-shadow: 0 0 0 3px var(--spring), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
-  .card.season-summer{ box-shadow: 0 0 0 3px var(--summer), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
-  .card.season-fall{ box-shadow: 0 0 0 3px var(--fall), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
-  .card.season-winter{ box-shadow: 0 0 0 3px var(--winter), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
+  45%{
+    background-position:-80% 0;
+  }
+
+  100%{
+    background-position:-80% 0;
+  }
+}
+
+
+/* Accessibility — respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce){
+  .card.tier-diamond::after{
+    animation:none;
+  }
+}
+
+/* STATUS + SEASON HIGHLIGHTS */
+
+.card.overdue{
+  box-shadow:
+    0 0 0 4px var(--overdue),
+    0 3px 8px rgba(46,42,34,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.card.due{
+  box-shadow:
+    0 0 0 4px var(--due),
+    0 3px 8px rgba(46,42,34,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.card.season-spring{
+  box-shadow:
+    0 0 0 4px var(--spring),
+    0 3px 8px rgba(46,42,34,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.card.season-summer{
+  box-shadow:
+    0 0 0 4px var(--summer),
+    0 3px 8px rgba(46,42,34,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.card.season-fall{
+  box-shadow:
+    0 0 0 4px var(--fall),
+    0 3px 8px rgba(46,42,34,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.card.season-winter{
+  box-shadow:
+    0 0 0 4px var(--winter),
+    0 3px 8px rgba(46,42,34,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+}
 
   .check-btn{
     width: 42px; height: 42px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.7);
