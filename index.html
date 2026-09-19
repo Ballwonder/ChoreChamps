@@ -104,158 +104,29 @@
     position: relative;
     overflow: hidden;
   }
-  /* =========================================================
-   CHORE CHAMPS — PREMIUM TIER CARD STYLES
-   Bronze → Silver → Gold → Diamond
-   ========================================================= */
-
-/* Shared polished-light reflection on ALL tier cards */
-.card::before{
-  content:'';
-  position:absolute;
-  top:-60%;
-  left:-15%;
-  width:55%;
-  height:220%;
-  background:linear-gradient(
-    120deg,
-    rgba(255,255,255,0.48) 0%,
-    rgba(255,255,255,0.18) 35%,
-    rgba(255,255,255,0) 68%
-  );
-  transform:rotate(18deg);
-  pointer-events:none;
-  z-index:0;
-}
-
-/* Keep card content above shine effects */
-.card > *{
-  position:relative;
-  z-index:2;
-}
-
-
-/* =========================================================
-   BRONZE — polished copper / bronze
-   ========================================================= */
-
-.card.tier-bronze{
-  background:linear-gradient(
-    145deg,
-    #F6D5B4 0%,
-    #E6AD73 22%,
-    #C77D42 48%,
-    #A45D2D 72%,
-    #75401F 100%
-  );
-  border-color:#A96332;
-}
-
-
-/* =========================================================
-   SILVER — bright platinum / brushed silver
-   ========================================================= */
-
-.card.tier-silver{
-  background:linear-gradient(
-    145deg,
-    #FFFFFF 0%,
-    #F2F5F7 18%,
-    #D9E0E5 40%,
-    #B9C3CA 65%,
-    #89959D 100%
-  );
-  border-color:#A5B0B7;
-}
-
-
-/* =========================================================
-   GOLD — rich champagne / trophy gold
-   ========================================================= */
-
-.card.tier-gold{
-  background:linear-gradient(
-    145deg,
-    #FFF7D6 0%,
-    #F8E49A 20%,
-    #EAC85E 43%,
-    #D1A532 68%,
-    #987018 100%
-  );
-  border-color:#C79A29;
-}
-
-
-/* =========================================================
-   DIAMOND — opal / amethyst gemstone
-   ========================================================= */
-
-.card.tier-diamond{
-  background:linear-gradient(
-    135deg,
-    #F4ECFF 0%,
-    #D9C6F5 18%,
-    #C6B3EE 32%,
-    #F5C9E7 48%,
-    #C5D6FA 65%,
-    #D7B7EB 82%,
-    #B895D4 100%
-  );
-  border-color:#9B72B5;
-  color:#4E3561;
-  position:relative;
-  overflow:hidden;
-}
-
-
-/* =========================================================
-   DIAMOND — animated gemstone shimmer
-   ========================================================= */
-
-.card.tier-diamond::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:1;
-
-  background:linear-gradient(
-    115deg,
-    transparent 20%,
-    rgba(255,255,255,0.12) 32%,
-    rgba(255,255,255,0.72) 45%,
-    rgba(255,225,250,0.38) 50%,
-    rgba(210,235,255,0.32) 55%,
-    transparent 68%
-  );
-
-  background-size:250% 250%;
-  animation:diamond-shimmer 4.5s ease-in-out infinite;
-}
-
-
-/* Diamond shimmer movement */
-@keyframes diamond-shimmer{
-  0%{
-    background-position:200% 0;
+  .card::before{
+    content:''; position:absolute; top:-60%; left:-15%; width:55%; height:220%;
+    background: linear-gradient(120deg, rgba(255,255,255,0.65), rgba(255,255,255,0) 65%);
+    transform: rotate(18deg); pointer-events:none;
   }
-
-  45%{
-    background-position:-80% 0;
+  .card.tier-bronze{ background: linear-gradient(150deg, #f2c396 0%, #d6944f 30%, #8c5323 85%); }
+  .card.tier-silver{ background: linear-gradient(150deg, #ffffff 0%, #e2e2e2 30%, #9a9a9a 85%); }
+  .card.tier-gold{   background: linear-gradient(150deg, #fff8da 0%, #f3d576 30%, #b8860b 85%); }
+  .card.tier-diamond{
+    background: linear-gradient(150deg, #f2fbff 0%, #cfe9f5 30%, #8fb9cc 70%, #5c8296 100%);
+    position: relative;
   }
-
-  100%{
-    background-position:-80% 0;
-  }
-}
-
-
-/* Accessibility — respect reduced-motion preference */
-@media (prefers-reduced-motion: reduce){
   .card.tier-diamond::after{
-    animation:none;
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.55) 45%, transparent 60%);
+    background-size: 250% 250%;
+    animation: diamond-shimmer 5s ease-in-out infinite;
   }
-}
+  @keyframes diamond-shimmer{
+    0%{ background-position: 120% 0%; }
+    50%{ background-position: -20% 100%; }
+    100%{ background-position: 120% 0%; }
+  }
 
   .card.overdue{ box-shadow: 0 0 0 3px var(--overdue), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
   .card.due{ box-shadow: 0 0 0 3px var(--due), 0 2px 6px rgba(46,42,34,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
@@ -531,11 +402,28 @@
 
   .loading{ text-align:center; padding:60px 20px; color: var(--ink-soft); font-style:italic; }
   [hidden]{ display:none !important; }
+
+  .check-btn:disabled { opacity:.5; cursor:default; transform:none; }
+  button.subtask-row { width:100%; text-align:left; font:inherit; color:inherit; background:transparent; border:0; }
+  button.subtask-row:disabled { cursor:default; opacity:.65; }
+  button:focus-visible { outline:3px solid #234258; outline-offset:3px; }
+  .undo-bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; margin-bottom:14px; background:#fff; border-radius:10px; font-size:.8rem; }
+  .toast { max-height:45vh; overflow:auto; white-space:pre-line; line-height:1.5; }
+  @media(prefers-reduced-motion:reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+
+  .tier-guide { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; margin-bottom:14px; }
+  .tier-choice { border:1px solid var(--line); border-radius:10px; padding:10px 3px; font:600 .75rem Inter,sans-serif; color:var(--ink); cursor:pointer; background:#eee; }
+  .tier-choice strong, .tier-choice small { display:block; margin-top:4px; }
+  .tier-choice.tier-bronze { background:#efd2b4; }
+  .tier-choice.tier-silver { background:#e6e6e6; }
+  .tier-choice.tier-gold { background:#f5df96; }
+  .tier-choice.tier-diamond { background:#cbeaf8; color:#234258; }
+  .tier-choice[aria-pressed="true"] { outline:2px solid var(--ink); outline-offset:1px; }
 </style>
 </head>
 <body>
 <div class="wrap" id="app"><div class="loading">Dusting off the almanac…</div></div>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // Capture the pristine page source before any JS touches the DOM — this is
@@ -574,218 +462,2158 @@ const TIERS = [
 const TIER_XP = Object.fromEntries(TIERS.map(t => [t.id, t.xp]));
 const AVATAR_COLORS = ['#B33F2E','#4A7FA8','#6B9C5E','#D9A02C','#8c5323','#7a4fa0','#2f7a6b','#c1602a'];
 
+const LEGACY_DEFAULT_CHORES = [
+  {
+    "id": "a1",
+    "name": "Wipe down counters",
+    "room": "Kitchen",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a2",
+    "name": "Clean bathroom",
+    "room": "Bathroom",
+    "freq": "weekly",
+    "tier": "silver"
+  },
+  {
+    "id": "a3",
+    "name": "Vacuum common areas",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a4",
+    "name": "Change bedsheets",
+    "room": "Bedroom",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a5",
+    "name": "Windex mirrors & windows",
+    "room": "Whole Home",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a6",
+    "name": "Clean outside windows",
+    "room": "Yard & Exterior",
+    "freq": "quarterly",
+    "tier": "gold"
+  },
+  {
+    "id": "a7",
+    "name": "Change furnace filter",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a8",
+    "name": "Deep clean fridge",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a9",
+    "name": "Test smoke detectors",
+    "room": "Whole Home",
+    "freq": "yearly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a10",
+    "name": "Flush water heater",
+    "room": "Whole Home",
+    "freq": "yearly",
+    "tier": "diamond"
+  },
+  {
+    "id": "a11",
+    "name": "Clean gutters",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "diamond"
+  },
+  {
+    "id": "a12",
+    "name": "Cover the A/C unit",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "silver"
+  },
+  {
+    "id": "a13",
+    "name": "Plant / prep garden beds",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "silver"
+  },
+  {
+    "id": "a14",
+    "name": "Flip mattresses",
+    "room": "Bedroom",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "bronze"
+  },
+  {
+    "id": "a15",
+    "name": "Aerate the lawn",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Summer",
+    "tier": "silver"
+  },
+  {
+    "id": "a16",
+    "name": "Drain outdoor hoses/spigots",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Winter",
+    "tier": "bronze"
+  },
+  {
+    "id": "a17",
+    "name": "Deep clean oven",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a18",
+    "name": "Deep clean dishwasher",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a19",
+    "name": "Clean microwave",
+    "room": "Kitchen",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a20",
+    "name": "Descale coffee maker",
+    "room": "Kitchen",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a21",
+    "name": "Clean garbage disposal",
+    "room": "Kitchen",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a22",
+    "name": "Wash & fold laundry",
+    "room": "Laundry",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a23",
+    "name": "Clean dryer lint trap & vent",
+    "room": "Laundry",
+    "freq": "monthly",
+    "tier": "silver"
+  },
+  {
+    "id": "a24",
+    "name": "Deep clean washing machine",
+    "room": "Laundry",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a25",
+    "name": "Scrub grout & tile",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "gold"
+  },
+  {
+    "id": "a26",
+    "name": "Descale showerhead",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a27",
+    "name": "Clean bathroom exhaust fan",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a28",
+    "name": "Wash pillows & bedding",
+    "room": "Bedroom",
+    "freq": "quarterly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a29",
+    "name": "Dust electronics & TV",
+    "room": "Living Room",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a30",
+    "name": "Vacuum upholstery & cushions",
+    "room": "Living Room",
+    "freq": "monthly",
+    "tier": "silver"
+  },
+  {
+    "id": "a31",
+    "name": "Dust surfaces & baseboards",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a32",
+    "name": "Mop floors",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "silver"
+  },
+  {
+    "id": "a33",
+    "name": "Wipe light switches & doorknobs",
+    "room": "Whole Home",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a34",
+    "name": "Clean light fixtures & ceiling fans",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a35",
+    "name": "Deep clean carpets",
+    "room": "Whole Home",
+    "freq": "yearly",
+    "tier": "diamond"
+  },
+  {
+    "id": "a36",
+    "name": "Declutter & donate items",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a37",
+    "name": "Service furnace before winter",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "gold"
+  },
+  {
+    "id": "a38",
+    "name": "Service A/C before summer",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "gold"
+  },
+  {
+    "id": "a39",
+    "name": "Check for drafts & weatherstripping",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Winter",
+    "tier": "silver"
+  },
+  {
+    "id": "a40",
+    "name": "Clean window screens",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "bronze"
+  },
+  {
+    "id": "a41",
+    "name": "Mow the lawn",
+    "room": "Yard & Exterior",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a42",
+    "name": "Edge & trim lawn borders",
+    "room": "Yard & Exterior",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a43",
+    "name": "Weed garden beds",
+    "room": "Yard & Exterior",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a44",
+    "name": "Water garden & lawn",
+    "room": "Yard & Exterior",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a45",
+    "name": "Trim hedges & shrubs",
+    "room": "Yard & Exterior",
+    "freq": "monthly",
+    "tier": "silver"
+  },
+  {
+    "id": "a46",
+    "name": "Fertilize lawn",
+    "room": "Yard & Exterior",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a47",
+    "name": "Power wash driveway/deck/patio",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "diamond"
+  },
+  {
+    "id": "a48",
+    "name": "Seal or stain the deck",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "diamond"
+  },
+  {
+    "id": "a49",
+    "name": "Service lawn mower & equipment",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "silver"
+  },
+  {
+    "id": "a50",
+    "name": "Inspect roof & siding",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "silver"
+  },
+  {
+    "id": "a51",
+    "name": "Inspect for pests & termites",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "silver"
+  },
+  {
+    "id": "a52",
+    "name": "Inspect & repair fencing",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a53",
+    "name": "Clean patio furniture",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "bronze"
+  },
+  {
+    "id": "a54",
+    "name": "Winterize sprinkler system",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "silver"
+  },
+  {
+    "id": "a55",
+    "name": "Dethatch & overseed lawn",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "silver"
+  },
+  {
+    "id": "a56",
+    "name": "Mulch garden beds",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "bronze"
+  },
+  {
+    "id": "a57",
+    "name": "Prep snow removal equipment",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Winter",
+    "tier": "bronze"
+  },
+  {
+    "id": "a58",
+    "name": "Sweep & organize garage",
+    "room": "Garage",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a59",
+    "name": "Check garage door & tracks",
+    "room": "Garage",
+    "freq": "yearly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a60",
+    "name": "Wash & vacuum vehicle",
+    "room": "Vehicles",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a61",
+    "name": "Wipe down interior & dash",
+    "room": "Vehicles",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a62",
+    "name": "Check tire pressure",
+    "room": "Vehicles",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a63",
+    "name": "Check fluid levels",
+    "room": "Vehicles",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a64",
+    "name": "Rotate tires",
+    "room": "Vehicles",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a65",
+    "name": "Oil change",
+    "room": "Vehicles",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a66",
+    "name": "Deep clean interior & carpets",
+    "room": "Vehicles",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a67",
+    "name": "Wax / seal exterior",
+    "room": "Vehicles",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "gold"
+  },
+  {
+    "id": "a68",
+    "name": "Replace wiper blades",
+    "room": "Vehicles",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "bronze"
+  },
+  {
+    "id": "a69",
+    "name": "Check battery & antifreeze",
+    "room": "Vehicles",
+    "freq": "seasonal",
+    "season": "Winter",
+    "tier": "bronze"
+  },
+  {
+    "id": "a70",
+    "name": "Renew registration & inspection",
+    "room": "Vehicles",
+    "freq": "yearly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a71",
+    "name": "Empty & clean trash/recycling bins",
+    "room": "Whole Home",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a72",
+    "name": "Check fire extinguishers & alarms",
+    "room": "Whole Home",
+    "freq": "yearly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a73",
+    "name": "Organize closets & pantry",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a74",
+    "name": "Bathroom deep scrub",
+    "room": "Bathroom",
+    "freq": "weekly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a74-1",
+        "name": "Scrub the sink"
+      },
+      {
+        "id": "a74-2",
+        "name": "Scrub the bathtub"
+      },
+      {
+        "id": "a74-3",
+        "name": "Scrub the shower stall"
+      },
+      {
+        "id": "a74-4",
+        "name": "Scrub the toilet"
+      },
+      {
+        "id": "a74-5",
+        "name": "Spray & wipe down the mirrors"
+      }
+    ]
+  },
+  {
+    "id": "a75",
+    "name": "Kitchen counters & appliances",
+    "room": "Kitchen",
+    "freq": "weekly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a75-1",
+        "name": "Clear items off the countertops"
+      },
+      {
+        "id": "a75-2",
+        "name": "Wash the bare countertops"
+      },
+      {
+        "id": "a75-3",
+        "name": "Wipe down countertop items"
+      },
+      {
+        "id": "a75-4",
+        "name": "Put countertop items back"
+      },
+      {
+        "id": "a75-5",
+        "name": "Scrub the stovetop"
+      },
+      {
+        "id": "a75-6",
+        "name": "Clean inside the microwave"
+      }
+    ]
+  },
+  {
+    "id": "a76",
+    "name": "Fridge check & clean-out",
+    "room": "Kitchen",
+    "freq": "weekly",
+    "tier": "bronze",
+    "subtasks": [
+      {
+        "id": "a76-1",
+        "name": "Inspect for expired food"
+      },
+      {
+        "id": "a76-2",
+        "name": "Throw away food that’s gone bad"
+      },
+      {
+        "id": "a76-3",
+        "name": "Empty reusable containers"
+      },
+      {
+        "id": "a76-4",
+        "name": "Wash out the empty containers"
+      }
+    ]
+  },
+  {
+    "id": "a77",
+    "name": "Kitchen & bath towel laundry",
+    "room": "Laundry",
+    "freq": "weekly",
+    "tier": "bronze",
+    "subtasks": [
+      {
+        "id": "a77-1",
+        "name": "Gather dirty dish & hand towels"
+      },
+      {
+        "id": "a77-2",
+        "name": "Launder the towels"
+      },
+      {
+        "id": "a77-3",
+        "name": "Hang up clean towels"
+      }
+    ]
+  },
+  {
+    "id": "a78",
+    "name": "Floor care routine",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a78-1",
+        "name": "Sweep the floors"
+      },
+      {
+        "id": "a78-2",
+        "name": "Vacuum carpets & rugs"
+      },
+      {
+        "id": "a78-3",
+        "name": "Mop the hard floors"
+      }
+    ]
+  },
+  {
+    "id": "a79",
+    "name": "Bedroom refresh",
+    "room": "Bedroom",
+    "freq": "weekly",
+    "tier": "bronze",
+    "subtasks": [
+      {
+        "id": "a79-1",
+        "name": "Strip the dirty sheets"
+      },
+      {
+        "id": "a79-2",
+        "name": "Put fresh sheets on the bed"
+      },
+      {
+        "id": "a79-3",
+        "name": "Pick up clutter & tidy up"
+      }
+    ]
+  },
+  {
+    "id": "a80",
+    "name": "Grocery shopping run",
+    "room": "Kitchen",
+    "freq": "weekly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a80-1",
+        "name": "Check pantry & fridge for gaps"
+      },
+      {
+        "id": "a80-2",
+        "name": "Write the grocery list"
+      },
+      {
+        "id": "a80-3",
+        "name": "Travel to the store"
+      },
+      {
+        "id": "a80-4",
+        "name": "Shop for the list"
+      },
+      {
+        "id": "a80-5",
+        "name": "Unpack groceries at home"
+      },
+      {
+        "id": "a80-6",
+        "name": "Put items away"
+      }
+    ]
+  },
+  {
+    "id": "a81",
+    "name": "Cook & clean up a meal",
+    "room": "Kitchen",
+    "freq": "daily",
+    "tier": "bronze",
+    "subtasks": [
+      {
+        "id": "a81-1",
+        "name": "Gather ingredients"
+      },
+      {
+        "id": "a81-2",
+        "name": "Cook & prepare the meal"
+      },
+      {
+        "id": "a81-3",
+        "name": "Clear dishes from the table"
+      },
+      {
+        "id": "a81-4",
+        "name": "Scrub dishes, pots & pans"
+      },
+      {
+        "id": "a81-5",
+        "name": "Rinse & dry dishes"
+      },
+      {
+        "id": "a81-6",
+        "name": "Put clean dishes away"
+      }
+    ]
+  },
+  {
+    "id": "a82",
+    "name": "Kitchen cabinet deep clean",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "diamond",
+    "subtasks": [
+      {
+        "id": "a82-1",
+        "name": "Empty the cabinets"
+      },
+      {
+        "id": "a82-2",
+        "name": "Wipe interior shelves"
+      },
+      {
+        "id": "a82-3",
+        "name": "Scrub exterior cabinet doors"
+      },
+      {
+        "id": "a82-4",
+        "name": "Put items back"
+      }
+    ]
+  },
+  {
+    "id": "a83",
+    "name": "Pantry overhaul",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a83-1",
+        "name": "Empty the pantry & cupboards"
+      },
+      {
+        "id": "a83-2",
+        "name": "Check expiration dates"
+      },
+      {
+        "id": "a83-3",
+        "name": "Wipe down shelves"
+      },
+      {
+        "id": "a83-4",
+        "name": "Organize & put items back"
+      }
+    ]
+  },
+  {
+    "id": "a84",
+    "name": "Deep refrigerator clean",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "diamond",
+    "subtasks": [
+      {
+        "id": "a84-1",
+        "name": "Remove shelves, drawers & food"
+      },
+      {
+        "id": "a84-2",
+        "name": "Scrub & rinse the shelves/drawers"
+      },
+      {
+        "id": "a84-3",
+        "name": "Wipe interior walls & base"
+      },
+      {
+        "id": "a84-4",
+        "name": "Wipe exterior handle & surface"
+      },
+      {
+        "id": "a84-5",
+        "name": "Reassemble the fridge"
+      }
+    ]
+  },
+  {
+    "id": "a85",
+    "name": "Closet cleanout",
+    "room": "Bedroom",
+    "freq": "quarterly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a85-1",
+        "name": "Pull all items out of the closet"
+      },
+      {
+        "id": "a85-2",
+        "name": "Sort keep / donate / discard"
+      },
+      {
+        "id": "a85-3",
+        "name": "Vacuum or wipe the closet"
+      },
+      {
+        "id": "a85-4",
+        "name": "Arrange kept items back inside"
+      }
+    ]
+  },
+  {
+    "id": "a86",
+    "name": "Medicine cabinet clean-out",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "bronze",
+    "subtasks": [
+      {
+        "id": "a86-1",
+        "name": "Empty the medicine cabinet"
+      },
+      {
+        "id": "a86-2",
+        "name": "Discard expired meds & old cosmetics"
+      },
+      {
+        "id": "a86-3",
+        "name": "Wipe interior shelves"
+      }
+    ]
+  },
+  {
+    "id": "a87",
+    "name": "Curtains & drapery wash",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a87-1",
+        "name": "Take down curtains & drapery"
+      },
+      {
+        "id": "a87-2",
+        "name": "Wash or dry-clean them"
+      }
+    ]
+  },
+  {
+    "id": "a88",
+    "name": "Deep vacuum & steam upholstery",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a88-1",
+        "name": "Vacuum cloth furniture & sofas"
+      },
+      {
+        "id": "a88-2",
+        "name": "Deep clean or steam carpets/rugs"
+      }
+    ]
+  },
+  {
+    "id": "a89",
+    "name": "Scrub floors, walls & trim",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "diamond",
+    "subtasks": [
+      {
+        "id": "a89-1",
+        "name": "Scrub tough dirt off floors"
+      },
+      {
+        "id": "a89-2",
+        "name": "Wipe smudges & dirt on walls"
+      },
+      {
+        "id": "a89-3",
+        "name": "Scrub baseboards & trim"
+      },
+      {
+        "id": "a89-4",
+        "name": "Scrub tile grout lines"
+      }
+    ]
+  },
+  {
+    "id": "a90",
+    "name": "Mold & mildew check",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a90-1",
+        "name": "Inspect corners & grout"
+      },
+      {
+        "id": "a90-2",
+        "name": "Spray & scrub mold treatment"
+      }
+    ]
+  },
+  {
+    "id": "a91",
+    "name": "Windows & high fixtures",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "diamond",
+    "subtasks": [
+      {
+        "id": "a91-1",
+        "name": "Wash inside window glass"
+      },
+      {
+        "id": "a91-2",
+        "name": "Clean window sills & tracks"
+      },
+      {
+        "id": "a91-3",
+        "name": "Wash outside window glass"
+      },
+      {
+        "id": "a91-4",
+        "name": "Dust light fixtures & bulbs"
+      },
+      {
+        "id": "a91-5",
+        "name": "Wipe ceiling fan blades"
+      }
+    ]
+  },
+  {
+    "id": "a92",
+    "name": "Shoes off & stowed at the door",
+    "room": "Whole Home",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "a93",
+    "name": "Tidy up living room clutter",
+    "room": "Living Room",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "a94",
+    "name": "Wipe up spills right away",
+    "room": "Whole Home",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "a95",
+    "name": "Sweep up stray food scraps",
+    "room": "Kitchen",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "a96",
+    "name": "Clear hair from sink & shower drains",
+    "room": "Bathroom",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a97",
+    "name": "Sort through the mail",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "bronze"
+  }
+];
 const DEFAULT_CHORES = [
-  { id:'a1', name:'Wipe down counters',        room:'Kitchen',          freq:'weekly',    tier:'bronze' },
-  { id:'a2', name:'Clean bathroom',            room:'Bathroom',         freq:'weekly',    tier:'silver' },
-  { id:'a3', name:'Vacuum common areas',        room:'Whole Home',       freq:'weekly',    tier:'bronze' },
-  { id:'a4', name:'Change bedsheets',           room:'Bedroom',          freq:'monthly',   tier:'bronze' },
-  { id:'a5', name:'Windex mirrors & windows',   room:'Whole Home',       freq:'monthly',   tier:'bronze' },
-  { id:'a6', name:'Clean outside windows',      room:'Yard & Exterior',  freq:'quarterly', tier:'gold' },
-  { id:'a7', name:'Change furnace filter',      room:'Whole Home',       freq:'quarterly', tier:'silver' },
-  { id:'a8', name:'Deep clean fridge',          room:'Kitchen',          freq:'quarterly', tier:'silver' },
-  { id:'a9', name:'Test smoke detectors',       room:'Whole Home',       freq:'yearly',    tier:'bronze' },
-  { id:'a10',name:'Flush water heater',         room:'Whole Home',       freq:'yearly',    tier:'diamond' },
-  { id:'a11',name:'Clean gutters',              room:'Yard & Exterior',  freq:'seasonal', season:'Fall',   tier:'diamond' },
-  { id:'a12',name:'Cover the A/C unit',         room:'Yard & Exterior',  freq:'seasonal', season:'Fall',   tier:'silver' },
-  { id:'a13',name:'Plant / prep garden beds',   room:'Yard & Exterior',  freq:'seasonal', season:'Spring', tier:'silver' },
-  { id:'a14',name:'Flip mattresses',            room:'Bedroom',          freq:'seasonal', season:'Spring', tier:'bronze' },
-  { id:'a15',name:'Aerate the lawn',            room:'Yard & Exterior',  freq:'seasonal', season:'Summer', tier:'silver' },
-  { id:'a16',name:'Drain outdoor hoses/spigots',room:'Yard & Exterior',  freq:'seasonal', season:'Winter', tier:'bronze' },
-
-  // Kitchen
-  { id:'a17', name:'Deep clean oven',            room:'Kitchen', freq:'quarterly', tier:'silver' },
-  { id:'a18', name:'Deep clean dishwasher',      room:'Kitchen', freq:'quarterly', tier:'bronze' },
-  { id:'a19', name:'Clean microwave',            room:'Kitchen', freq:'monthly',   tier:'bronze' },
-  { id:'a20', name:'Descale coffee maker',       room:'Kitchen', freq:'monthly',   tier:'bronze' },
-  { id:'a21', name:'Clean garbage disposal',     room:'Kitchen', freq:'monthly',   tier:'bronze' },
-
-  // Laundry
-  { id:'a22', name:'Wash & fold laundry',            room:'Laundry', freq:'weekly',    tier:'bronze' },
-  { id:'a23', name:'Clean dryer lint trap & vent',   room:'Laundry', freq:'monthly',   tier:'silver' },
-  { id:'a24', name:'Deep clean washing machine',     room:'Laundry', freq:'quarterly', tier:'silver' },
-
-  // Bathroom
-  { id:'a25', name:'Scrub grout & tile',          room:'Bathroom', freq:'quarterly', tier:'gold' },
-  { id:'a26', name:'Descale showerhead',          room:'Bathroom', freq:'quarterly', tier:'bronze' },
-  { id:'a27', name:'Clean bathroom exhaust fan',  room:'Bathroom', freq:'quarterly', tier:'silver' },
-
-  // Bedroom
-  { id:'a28', name:'Wash pillows & bedding',      room:'Bedroom', freq:'quarterly', tier:'bronze' },
-
-  // Living Room
-  { id:'a29', name:'Dust electronics & TV',           room:'Living Room', freq:'monthly', tier:'bronze' },
-  { id:'a30', name:'Vacuum upholstery & cushions',    room:'Living Room', freq:'monthly', tier:'silver' },
-
-  // Whole Home
-  { id:'a31', name:'Dust surfaces & baseboards',        room:'Whole Home', freq:'weekly',    tier:'bronze' },
-  { id:'a32', name:'Mop floors',                        room:'Whole Home', freq:'weekly',    tier:'silver' },
-  { id:'a33', name:'Wipe light switches & doorknobs',   room:'Whole Home', freq:'monthly',   tier:'bronze' },
-  { id:'a34', name:'Clean light fixtures & ceiling fans', room:'Whole Home', freq:'quarterly', tier:'silver' },
-  { id:'a35', name:'Deep clean carpets',                room:'Whole Home', freq:'yearly',    tier:'diamond' },
-  { id:'a36', name:'Declutter & donate items',          room:'Whole Home', freq:'quarterly', tier:'silver' },
-  { id:'a37', name:'Service furnace before winter',     room:'Whole Home', freq:'seasonal', season:'Fall',   tier:'gold' },
-  { id:'a38', name:'Service A/C before summer',         room:'Whole Home', freq:'seasonal', season:'Spring', tier:'gold' },
-  { id:'a39', name:'Check for drafts & weatherstripping', room:'Whole Home', freq:'seasonal', season:'Winter', tier:'silver' },
-  { id:'a40', name:'Clean window screens',              room:'Whole Home', freq:'seasonal', season:'Spring', tier:'bronze' },
-
-  // Yard & Exterior (acre property)
-  { id:'a41', name:'Mow the lawn',                  room:'Yard & Exterior', freq:'weekly',    tier:'bronze' },
-  { id:'a42', name:'Edge & trim lawn borders',      room:'Yard & Exterior', freq:'weekly',    tier:'bronze' },
-  { id:'a43', name:'Weed garden beds',              room:'Yard & Exterior', freq:'weekly',    tier:'bronze' },
-  { id:'a44', name:'Water garden & lawn',           room:'Yard & Exterior', freq:'weekly',    tier:'bronze' },
-  { id:'a45', name:'Trim hedges & shrubs',          room:'Yard & Exterior', freq:'monthly',   tier:'silver' },
-  { id:'a46', name:'Fertilize lawn',                room:'Yard & Exterior', freq:'quarterly', tier:'silver' },
-  { id:'a47', name:'Power wash driveway/deck/patio',room:'Yard & Exterior', freq:'yearly',    tier:'diamond' },
-  { id:'a48', name:'Seal or stain the deck',        room:'Yard & Exterior', freq:'yearly',    tier:'diamond' },
-  { id:'a49', name:'Service lawn mower & equipment',room:'Yard & Exterior', freq:'yearly',    tier:'silver' },
-  { id:'a50', name:'Inspect roof & siding',         room:'Yard & Exterior', freq:'yearly',    tier:'silver' },
-  { id:'a51', name:'Inspect for pests & termites',  room:'Yard & Exterior', freq:'yearly',    tier:'silver' },
-  { id:'a52', name:'Inspect & repair fencing',      room:'Yard & Exterior', freq:'yearly',    tier:'bronze' },
-  { id:'a53', name:'Clean patio furniture',         room:'Yard & Exterior', freq:'seasonal', season:'Spring', tier:'bronze' },
-  { id:'a54', name:'Winterize sprinkler system',    room:'Yard & Exterior', freq:'seasonal', season:'Fall',   tier:'silver' },
-  { id:'a55', name:'Dethatch & overseed lawn',      room:'Yard & Exterior', freq:'seasonal', season:'Fall',   tier:'silver' },
-  { id:'a56', name:'Mulch garden beds',             room:'Yard & Exterior', freq:'seasonal', season:'Spring', tier:'bronze' },
-  { id:'a57', name:'Prep snow removal equipment',   room:'Yard & Exterior', freq:'seasonal', season:'Winter', tier:'bronze' },
-
-  // Garage
-  { id:'a58', name:'Sweep & organize garage',   room:'Garage', freq:'monthly', tier:'bronze' },
-  { id:'a59', name:'Check garage door & tracks',room:'Garage', freq:'yearly',  tier:'bronze' },
-
-  // Vehicles
-  { id:'a60', name:'Wash & vacuum vehicle',        room:'Vehicles', freq:'weekly',    tier:'bronze' },
-  { id:'a61', name:'Wipe down interior & dash',    room:'Vehicles', freq:'monthly',   tier:'bronze' },
-  { id:'a62', name:'Check tire pressure',          room:'Vehicles', freq:'monthly',   tier:'bronze' },
-  { id:'a63', name:'Check fluid levels',           room:'Vehicles', freq:'monthly',   tier:'bronze' },
-  { id:'a64', name:'Rotate tires',                 room:'Vehicles', freq:'quarterly', tier:'silver' },
-  { id:'a65', name:'Oil change',                   room:'Vehicles', freq:'quarterly', tier:'silver' },
-  { id:'a66', name:'Deep clean interior & carpets',room:'Vehicles', freq:'quarterly', tier:'silver' },
-  { id:'a67', name:'Wax / seal exterior',          room:'Vehicles', freq:'seasonal', season:'Spring', tier:'gold' },
-  { id:'a68', name:'Replace wiper blades',         room:'Vehicles', freq:'seasonal', season:'Fall',   tier:'bronze' },
-  { id:'a69', name:'Check battery & antifreeze',   room:'Vehicles', freq:'seasonal', season:'Winter', tier:'bronze' },
-  { id:'a70', name:'Renew registration & inspection', room:'Vehicles', freq:'yearly', tier:'bronze' },
-
-  // A few more Whole Home odds & ends
-  { id:'a71', name:'Empty & clean trash/recycling bins', room:'Whole Home', freq:'monthly',   tier:'bronze' },
-  { id:'a72', name:'Check fire extinguishers & alarms',  room:'Whole Home', freq:'yearly',    tier:'bronze' },
-  { id:'a73', name:'Organize closets & pantry',          room:'Whole Home', freq:'quarterly', tier:'silver' },
-
-  // Multi-step chores with subtasks — check off each piece, or tap the
-  // main button to claim the whole thing at once
-  { id:'a74', name:'Bathroom deep scrub', room:'Bathroom', freq:'weekly', tier:'silver', subtasks:[
-    {id:'a74-1', name:'Scrub the sink'},
-    {id:'a74-2', name:'Scrub the bathtub'},
-    {id:'a74-3', name:'Scrub the shower stall'},
-    {id:'a74-4', name:'Scrub the toilet'},
-    {id:'a74-5', name:'Spray & wipe down the mirrors'},
-  ]},
-  { id:'a75', name:'Kitchen counters & appliances', room:'Kitchen', freq:'weekly', tier:'silver', subtasks:[
-    {id:'a75-1', name:'Clear items off the countertops'},
-    {id:'a75-2', name:'Wash the bare countertops'},
-    {id:'a75-3', name:'Wipe down countertop items'},
-    {id:'a75-4', name:'Put countertop items back'},
-    {id:'a75-5', name:'Scrub the stovetop'},
-    {id:'a75-6', name:'Clean inside the microwave'},
-  ]},
-  { id:'a76', name:'Fridge check & clean-out', room:'Kitchen', freq:'weekly', tier:'bronze', subtasks:[
-    {id:'a76-1', name:'Inspect for expired food'},
-    {id:'a76-2', name:'Throw away food that\u2019s gone bad'},
-    {id:'a76-3', name:'Empty reusable containers'},
-    {id:'a76-4', name:'Wash out the empty containers'},
-  ]},
-  { id:'a77', name:'Kitchen & bath towel laundry', room:'Laundry', freq:'weekly', tier:'bronze', subtasks:[
-    {id:'a77-1', name:'Gather dirty dish & hand towels'},
-    {id:'a77-2', name:'Launder the towels'},
-    {id:'a77-3', name:'Hang up clean towels'},
-  ]},
-  { id:'a78', name:'Floor care routine', room:'Whole Home', freq:'weekly', tier:'silver', subtasks:[
-    {id:'a78-1', name:'Sweep the floors'},
-    {id:'a78-2', name:'Vacuum carpets & rugs'},
-    {id:'a78-3', name:'Mop the hard floors'},
-  ]},
-  { id:'a79', name:'Bedroom refresh', room:'Bedroom', freq:'weekly', tier:'bronze', subtasks:[
-    {id:'a79-1', name:'Strip the dirty sheets'},
-    {id:'a79-2', name:'Put fresh sheets on the bed'},
-    {id:'a79-3', name:'Pick up clutter & tidy up'},
-  ]},
-  { id:'a80', name:'Grocery shopping run', room:'Kitchen', freq:'weekly', tier:'silver', subtasks:[
-    {id:'a80-1', name:'Check pantry & fridge for gaps'},
-    {id:'a80-2', name:'Write the grocery list'},
-    {id:'a80-3', name:'Travel to the store'},
-    {id:'a80-4', name:'Shop for the list'},
-    {id:'a80-5', name:'Unpack groceries at home'},
-    {id:'a80-6', name:'Put items away'},
-  ]},
-  { id:'a81', name:'Cook & clean up a meal', room:'Kitchen', freq:'daily', tier:'bronze', subtasks:[
-    {id:'a81-1', name:'Gather ingredients'},
-    {id:'a81-2', name:'Cook & prepare the meal'},
-    {id:'a81-3', name:'Clear dishes from the table'},
-    {id:'a81-4', name:'Scrub dishes, pots & pans'},
-    {id:'a81-5', name:'Rinse & dry dishes'},
-    {id:'a81-6', name:'Put clean dishes away'},
-  ]},
-  { id:'a82', name:'Kitchen cabinet deep clean', room:'Kitchen', freq:'quarterly', tier:'diamond', subtasks:[
-    {id:'a82-1', name:'Empty the cabinets'},
-    {id:'a82-2', name:'Wipe interior shelves'},
-    {id:'a82-3', name:'Scrub exterior cabinet doors'},
-    {id:'a82-4', name:'Put items back'},
-  ]},
-  { id:'a83', name:'Pantry overhaul', room:'Kitchen', freq:'quarterly', tier:'silver', subtasks:[
-    {id:'a83-1', name:'Empty the pantry & cupboards'},
-    {id:'a83-2', name:'Check expiration dates'},
-    {id:'a83-3', name:'Wipe down shelves'},
-    {id:'a83-4', name:'Organize & put items back'},
-  ]},
-  { id:'a84', name:'Deep refrigerator clean', room:'Kitchen', freq:'quarterly', tier:'diamond', subtasks:[
-    {id:'a84-1', name:'Remove shelves, drawers & food'},
-    {id:'a84-2', name:'Scrub & rinse the shelves/drawers'},
-    {id:'a84-3', name:'Wipe interior walls & base'},
-    {id:'a84-4', name:'Wipe exterior handle & surface'},
-    {id:'a84-5', name:'Reassemble the fridge'},
-  ]},
-  { id:'a85', name:'Closet cleanout', room:'Bedroom', freq:'quarterly', tier:'silver', subtasks:[
-    {id:'a85-1', name:'Pull all items out of the closet'},
-    {id:'a85-2', name:'Sort keep / donate / discard'},
-    {id:'a85-3', name:'Vacuum or wipe the closet'},
-    {id:'a85-4', name:'Arrange kept items back inside'},
-  ]},
-  { id:'a86', name:'Medicine cabinet clean-out', room:'Bathroom', freq:'quarterly', tier:'bronze', subtasks:[
-    {id:'a86-1', name:'Empty the medicine cabinet'},
-    {id:'a86-2', name:'Discard expired meds & old cosmetics'},
-    {id:'a86-3', name:'Wipe interior shelves'},
-  ]},
-  { id:'a87', name:'Curtains & drapery wash', room:'Whole Home', freq:'seasonal', season:'Spring', tier:'silver', subtasks:[
-    {id:'a87-1', name:'Take down curtains & drapery'},
-    {id:'a87-2', name:'Wash or dry-clean them'},
-  ]},
-  { id:'a88', name:'Deep vacuum & steam upholstery', room:'Whole Home', freq:'quarterly', tier:'gold', subtasks:[
-    {id:'a88-1', name:'Vacuum cloth furniture & sofas'},
-    {id:'a88-2', name:'Deep clean or steam carpets/rugs'},
-  ]},
-  { id:'a89', name:'Scrub floors, walls & trim', room:'Whole Home', freq:'quarterly', tier:'diamond', subtasks:[
-    {id:'a89-1', name:'Scrub tough dirt off floors'},
-    {id:'a89-2', name:'Wipe smudges & dirt on walls'},
-    {id:'a89-3', name:'Scrub baseboards & trim'},
-    {id:'a89-4', name:'Scrub tile grout lines'},
-  ]},
-  { id:'a90', name:'Mold & mildew check', room:'Bathroom', freq:'quarterly', tier:'silver', subtasks:[
-    {id:'a90-1', name:'Inspect corners & grout'},
-    {id:'a90-2', name:'Spray & scrub mold treatment'},
-  ]},
-  { id:'a91', name:'Windows & high fixtures', room:'Whole Home', freq:'seasonal', season:'Spring', tier:'diamond', subtasks:[
-    {id:'a91-1', name:'Wash inside window glass'},
-    {id:'a91-2', name:'Clean window sills & tracks'},
-    {id:'a91-3', name:'Wash outside window glass'},
-    {id:'a91-4', name:'Dust light fixtures & bulbs'},
-    {id:'a91-5', name:'Wipe ceiling fan blades'},
-  ]},
-
-  // Small daily-routine chores (no subtasks needed)
-  { id:'a92', name:'Shoes off & stowed at the door', room:'Whole Home', freq:'daily', tier:'bronze' },
-  { id:'a93', name:'Tidy up living room clutter',    room:'Living Room', freq:'daily', tier:'bronze' },
-  { id:'a94', name:'Wipe up spills right away',      room:'Whole Home', freq:'daily', tier:'bronze' },
-  { id:'a95', name:'Sweep up stray food scraps',     room:'Kitchen', freq:'daily', tier:'bronze' },
-  { id:'a96', name:'Clear hair from sink & shower drains', room:'Bathroom', freq:'weekly', tier:'bronze' },
-  { id:'a97', name:'Sort through the mail',          room:'Whole Home', freq:'weekly', tier:'bronze' },
+  {
+    "id": "a1",
+    "name": "Wipe down counters",
+    "room": "Kitchen",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "a2",
+    "name": "Clean bathroom",
+    "room": "Bathroom",
+    "freq": "weekly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a2-p1-1",
+        "name": "Clean toilet, sink & mirror"
+      },
+      {
+        "id": "a2-p1-2",
+        "name": "Scrub tub or shower"
+      },
+      {
+        "id": "a2-p1-3",
+        "name": "Wipe surfaces & clean the floor"
+      }
+    ]
+  },
+  {
+    "id": "a3",
+    "name": "Vacuum common areas",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "silver"
+  },
+  {
+    "id": "a4",
+    "name": "Change bedsheets",
+    "room": "Bedroom",
+    "freq": "weekly",
+    "tier": "silver"
+  },
+  {
+    "id": "a5",
+    "name": "Clean indoor windows & sills",
+    "room": "Whole Home",
+    "freq": "monthly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a5-p1-1",
+        "name": "Wash indoor window glass"
+      },
+      {
+        "id": "a5-p1-2",
+        "name": "Wipe sills & tracks"
+      }
+    ]
+  },
+  {
+    "id": "a6",
+    "name": "Clean outside windows & frames",
+    "room": "Yard & Exterior",
+    "freq": "quarterly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a6-p1-1",
+        "name": "Wash accessible exterior glass"
+      },
+      {
+        "id": "a6-p1-2",
+        "name": "Wipe exterior frames"
+      }
+    ]
+  },
+  {
+    "id": "a7",
+    "name": "Change furnace filter",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a8",
+    "name": "Deep clean fridge",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "diamond",
+    "subtasks": [
+      {
+        "id": "a8-p1-1",
+        "name": "Empty fridge & check food"
+      },
+      {
+        "id": "a8-p1-2",
+        "name": "Wash shelves, drawers & interior"
+      },
+      {
+        "id": "a8-p1-3",
+        "name": "Dry, reassemble & put food back"
+      }
+    ]
+  },
+  {
+    "id": "a9",
+    "name": "Test smoke & carbon monoxide alarms",
+    "room": "Whole Home",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a10",
+    "name": "Flush water heater",
+    "room": "Whole Home",
+    "freq": "yearly",
+    "tier": "gold"
+  },
+  {
+    "id": "a11",
+    "name": "Clean gutters",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "diamond"
+  },
+  {
+    "id": "a12",
+    "name": "Prepare outdoor A/C for winter per manual",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "bronze"
+  },
+  {
+    "id": "a13",
+    "name": "Plant / prep garden beds",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a13-p1-1",
+        "name": "Clear beds & prepare soil"
+      },
+      {
+        "id": "a13-p1-2",
+        "name": "Plant & water"
+      }
+    ]
+  },
+  {
+    "id": "a14",
+    "name": "Rotate mattress if recommended",
+    "room": "Bedroom",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "silver"
+  },
+  {
+    "id": "a15",
+    "name": "Aerate the lawn",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "diamond"
+  },
+  {
+    "id": "a16",
+    "name": "Drain outdoor hoses/spigots",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "bronze"
+  },
+  {
+    "id": "a17",
+    "name": "Deep clean oven",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a17-p1-1",
+        "name": "Remove & clean racks"
+      },
+      {
+        "id": "a17-p1-2",
+        "name": "Clean oven interior per manual"
+      },
+      {
+        "id": "a17-p1-3",
+        "name": "Wipe door & replace racks"
+      }
+    ]
+  },
+  {
+    "id": "a18",
+    "name": "Deep clean dishwasher",
+    "room": "Kitchen",
+    "freq": "monthly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a18-p1-1",
+        "name": "Clean filter & door seals"
+      },
+      {
+        "id": "a18-p1-2",
+        "name": "Run the recommended cleaning cycle"
+      }
+    ]
+  },
+  {
+    "id": "a19",
+    "name": "Clean microwave",
+    "room": "Kitchen",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a20",
+    "name": "Descale coffee maker",
+    "room": "Kitchen",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a21",
+    "name": "Clean garbage disposal",
+    "room": "Kitchen",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a22",
+    "name": "Wash & fold a load of clothes",
+    "room": "Laundry",
+    "freq": "weekly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a22-p1-1",
+        "name": "Wash & dry clothes"
+      },
+      {
+        "id": "a22-p1-2",
+        "name": "Fold & put away"
+      }
+    ]
+  },
+  {
+    "id": "a23",
+    "name": "Clean dryer exhaust duct & vent",
+    "room": "Laundry",
+    "freq": "yearly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a23-p1-1",
+        "name": "Inspect & clean duct safely"
+      },
+      {
+        "id": "a23-p1-2",
+        "name": "Clear exterior outlet & reconnect"
+      }
+    ]
+  },
+  {
+    "id": "a24",
+    "name": "Deep clean washing machine",
+    "room": "Laundry",
+    "freq": "monthly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a24-p1-1",
+        "name": "Clean seal, drawer & filter per manual"
+      },
+      {
+        "id": "a24-p1-2",
+        "name": "Run cleaning cycle & dry seals"
+      }
+    ]
+  },
+  {
+    "id": "a25",
+    "name": "Scrub grout & tile",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "gold"
+  },
+  {
+    "id": "a26",
+    "name": "Descale showerhead",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a27",
+    "name": "Clean bathroom exhaust fan",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "silver"
+  },
+  {
+    "id": "a28",
+    "name": "Wash pillows & bedding",
+    "room": "Bedroom",
+    "freq": "quarterly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a28-p1-1",
+        "name": "Wash pillows & bedding per labels"
+      },
+      {
+        "id": "a28-p1-2",
+        "name": "Dry fully & remake bed"
+      }
+    ]
+  },
+  {
+    "id": "a29",
+    "name": "Dust electronics & TV",
+    "room": "Living Room",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a30",
+    "name": "Deep vacuum upholstery & cushions",
+    "room": "Living Room",
+    "freq": "monthly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a30-p1-1",
+        "name": "Vacuum seats, backs & cushions"
+      },
+      {
+        "id": "a30-p1-2",
+        "name": "Vacuum crevices & beneath cushions"
+      }
+    ]
+  },
+  {
+    "id": "a31",
+    "name": "Dust shelves & furniture",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "silver"
+  },
+  {
+    "id": "a32",
+    "name": "Mop floors",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "silver"
+  },
+  {
+    "id": "a33",
+    "name": "Wipe light switches & doorknobs",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a34",
+    "name": "Wipe ceiling fan blades & light fixtures",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a34-p1-1",
+        "name": "Wipe accessible fan blades"
+      },
+      {
+        "id": "a34-p1-2",
+        "name": "Dust & wipe accessible light fixtures"
+      }
+    ]
+  },
+  {
+    "id": "a35",
+    "name": "Deep clean carpets",
+    "room": "Whole Home",
+    "freq": "yearly",
+    "tier": "diamond",
+    "subtasks": [
+      {
+        "id": "a35-p1-1",
+        "name": "Move small furniture & vacuum"
+      },
+      {
+        "id": "a35-p1-2",
+        "name": "Deep clean carpets per care instructions"
+      },
+      {
+        "id": "a35-p1-3",
+        "name": "Let dry fully & replace furniture"
+      }
+    ]
+  },
+  {
+    "id": "a36",
+    "name": "Declutter storage & donate items",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a36-p1-1",
+        "name": "Sort stored items"
+      },
+      {
+        "id": "a36-p1-2",
+        "name": "Put away keepers & prepare donations"
+      },
+      {
+        "id": "a36-p1-3",
+        "name": "Drop off donations or arrange pickup"
+      }
+    ]
+  },
+  {
+    "id": "a37",
+    "name": "Service furnace before winter",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "gold"
+  },
+  {
+    "id": "a38",
+    "name": "Service A/C before summer",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "gold"
+  },
+  {
+    "id": "a39",
+    "name": "Check for drafts & weatherstripping",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Winter",
+    "tier": "silver"
+  },
+  {
+    "id": "a40",
+    "name": "Clean window screens",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "silver"
+  },
+  {
+    "id": "a41",
+    "name": "Mow the lawn",
+    "room": "Yard & Exterior",
+    "freq": "weekly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a41-p1-1",
+        "name": "Prepare mower & clear lawn"
+      },
+      {
+        "id": "a41-p1-2",
+        "name": "Mow & tidy equipment"
+      }
+    ]
+  },
+  {
+    "id": "a42",
+    "name": "Edge & trim lawn borders",
+    "room": "Yard & Exterior",
+    "freq": "weekly",
+    "tier": "silver"
+  },
+  {
+    "id": "a43",
+    "name": "Weed garden beds",
+    "room": "Yard & Exterior",
+    "freq": "weekly",
+    "tier": "silver"
+  },
+  {
+    "id": "a44",
+    "name": "Check garden watering needs",
+    "room": "Yard & Exterior",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "a45",
+    "name": "Trim hedges & shrubs",
+    "room": "Yard & Exterior",
+    "freq": "monthly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a45-p1-1",
+        "name": "Trim hedges & shrubs"
+      },
+      {
+        "id": "a45-p1-2",
+        "name": "Collect & compost clippings"
+      }
+    ]
+  },
+  {
+    "id": "a46",
+    "name": "Fertilize lawn",
+    "room": "Yard & Exterior",
+    "freq": "quarterly",
+    "tier": "gold"
+  },
+  {
+    "id": "a47",
+    "name": "Power wash driveway/deck/patio",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "diamond",
+    "subtasks": [
+      {
+        "id": "a47-p1-1",
+        "name": "Clear area & prepare equipment"
+      },
+      {
+        "id": "a47-p1-2",
+        "name": "Wash appropriate surfaces"
+      },
+      {
+        "id": "a47-p1-3",
+        "name": "Put items & equipment away"
+      }
+    ]
+  },
+  {
+    "id": "a48",
+    "name": "Seal or stain the deck",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "diamond",
+    "subtasks": [
+      {
+        "id": "a48-p1-1",
+        "name": "Clean & prepare deck"
+      },
+      {
+        "id": "a48-p1-2",
+        "name": "Apply finish per label"
+      },
+      {
+        "id": "a48-p1-3",
+        "name": "Let cure & put furniture back"
+      }
+    ]
+  },
+  {
+    "id": "a49",
+    "name": "Service lawn mower & equipment",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "gold"
+  },
+  {
+    "id": "a50",
+    "name": "Inspect roof & siding",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a51",
+    "name": "Inspect for pests & termites",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a52",
+    "name": "Inspect & repair fencing",
+    "room": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "gold"
+  },
+  {
+    "id": "a53",
+    "name": "Clean patio furniture",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "silver"
+  },
+  {
+    "id": "a54",
+    "name": "Winterize sprinkler system",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "gold"
+  },
+  {
+    "id": "a55",
+    "name": "Dethatch & overseed lawn",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "diamond"
+  },
+  {
+    "id": "a56",
+    "name": "Mulch garden beds",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "gold"
+  },
+  {
+    "id": "a57",
+    "name": "Prep snow removal equipment",
+    "room": "Yard & Exterior",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "silver"
+  },
+  {
+    "id": "a58",
+    "name": "Sweep & organize garage",
+    "room": "Garage",
+    "freq": "monthly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a58-p1-1",
+        "name": "Sort items & clear floor"
+      },
+      {
+        "id": "a58-p1-2",
+        "name": "Sweep & put items away"
+      }
+    ]
+  },
+  {
+    "id": "a59",
+    "name": "Check garage door & tracks",
+    "room": "Garage",
+    "freq": "yearly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a60",
+    "name": "Wash vehicle exterior",
+    "room": "Vehicles",
+    "freq": "monthly",
+    "tier": "silver"
+  },
+  {
+    "id": "a61",
+    "name": "Vacuum vehicle & wipe interior",
+    "room": "Vehicles",
+    "freq": "monthly",
+    "tier": "silver"
+  },
+  {
+    "id": "a62",
+    "name": "Check tire pressure",
+    "room": "Vehicles",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a63",
+    "name": "Check fluid levels",
+    "room": "Vehicles",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a64",
+    "name": "Check whether tire rotation is due",
+    "room": "Vehicles",
+    "freq": "quarterly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a65",
+    "name": "Check whether oil service is due",
+    "room": "Vehicles",
+    "freq": "quarterly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a66",
+    "name": "Deep clean interior & carpets",
+    "room": "Vehicles",
+    "freq": "quarterly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a66-p1-1",
+        "name": "Remove clutter & vacuum thoroughly"
+      },
+      {
+        "id": "a66-p1-2",
+        "name": "Clean seats, mats & carpets"
+      },
+      {
+        "id": "a66-p1-3",
+        "name": "Dry fully & put items back"
+      }
+    ]
+  },
+  {
+    "id": "a67",
+    "name": "Wax / seal exterior",
+    "room": "Vehicles",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "gold"
+  },
+  {
+    "id": "a68",
+    "name": "Replace wiper blades",
+    "room": "Vehicles",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "bronze"
+  },
+  {
+    "id": "a69",
+    "name": "Check battery & antifreeze",
+    "room": "Vehicles",
+    "freq": "seasonal",
+    "season": "Winter",
+    "tier": "bronze"
+  },
+  {
+    "id": "a70",
+    "name": "Renew registration & inspection",
+    "room": "Vehicles",
+    "freq": "yearly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a71",
+    "name": "Wash trash & recycling bins",
+    "room": "Whole Home",
+    "freq": "monthly",
+    "tier": "silver"
+  },
+  {
+    "id": "a72",
+    "name": "Inspect fire extinguishers per label",
+    "room": "Whole Home",
+    "freq": "monthly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a73",
+    "name": "Organize closets & pantry",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "silver",
+    "enabled": false
+  },
+  {
+    "id": "a74",
+    "name": "Bathroom deep scrub",
+    "room": "Bathroom",
+    "freq": "weekly",
+    "tier": "gold",
+    "enabled": false
+  },
+  {
+    "id": "a75",
+    "name": "Clean stovetop & appliance exteriors",
+    "room": "Kitchen",
+    "freq": "weekly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a75-p1-1",
+        "name": "Clean cooled stovetop"
+      },
+      {
+        "id": "a75-p1-2",
+        "name": "Wipe appliance fronts & handles"
+      }
+    ]
+  },
+  {
+    "id": "a76",
+    "name": "Fridge check & clean-out",
+    "room": "Kitchen",
+    "freq": "weekly",
+    "tier": "bronze",
+    "subtasks": [
+      {
+        "id": "a76-p1-1",
+        "name": "Check food & discard spoiled items"
+      },
+      {
+        "id": "a76-p1-2",
+        "name": "Wash emptied containers & wipe spills"
+      }
+    ]
+  },
+  {
+    "id": "a77",
+    "name": "Kitchen & bath towel laundry",
+    "room": "Laundry",
+    "freq": "weekly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a77-p1-1",
+        "name": "Gather, wash & dry towels"
+      },
+      {
+        "id": "a77-p1-2",
+        "name": "Put away & hang clean towels"
+      }
+    ]
+  },
+  {
+    "id": "a78",
+    "name": "Floor care routine",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "silver",
+    "enabled": false
+  },
+  {
+    "id": "a79",
+    "name": "Tidy bedroom & clear surfaces",
+    "room": "Bedroom",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a80",
+    "name": "Grocery shopping run",
+    "room": "Kitchen",
+    "freq": "weekly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a80-p1-1",
+        "name": "Check supplies & make a list"
+      },
+      {
+        "id": "a80-p1-2",
+        "name": "Shop for groceries"
+      },
+      {
+        "id": "a80-p1-3",
+        "name": "Unpack & put away"
+      }
+    ]
+  },
+  {
+    "id": "a81",
+    "name": "Prepare a meal",
+    "room": "Kitchen",
+    "freq": "daily",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a81-p1-1",
+        "name": "Prepare ingredients & cook"
+      },
+      {
+        "id": "a81-p1-2",
+        "name": "Serve & store leftovers"
+      }
+    ]
+  },
+  {
+    "id": "a82",
+    "name": "Kitchen cabinet deep clean",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "diamond",
+    "subtasks": [
+      {
+        "id": "a82-p1-1",
+        "name": "Empty cabinets & sort contents"
+      },
+      {
+        "id": "a82-p1-2",
+        "name": "Clean shelves & doors"
+      },
+      {
+        "id": "a82-p1-3",
+        "name": "Dry & put items back"
+      }
+    ]
+  },
+  {
+    "id": "a83",
+    "name": "Pantry overhaul",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a83-p1-1",
+        "name": "Sort pantry & check food"
+      },
+      {
+        "id": "a83-p1-2",
+        "name": "Clean shelves"
+      },
+      {
+        "id": "a83-p1-3",
+        "name": "Organize & put food back"
+      }
+    ]
+  },
+  {
+    "id": "a84",
+    "name": "Deep refrigerator clean",
+    "room": "Kitchen",
+    "freq": "quarterly",
+    "tier": "diamond",
+    "enabled": false
+  },
+  {
+    "id": "a85",
+    "name": "Closet cleanout",
+    "room": "Bedroom",
+    "freq": "quarterly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a85-p1-1",
+        "name": "Sort clothes into keep, donate & discard"
+      },
+      {
+        "id": "a85-p1-2",
+        "name": "Clean empty closet"
+      },
+      {
+        "id": "a85-p1-3",
+        "name": "Arrange keepers & bag donations"
+      }
+    ]
+  },
+  {
+    "id": "a86",
+    "name": "Medicine cabinet clean-out",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "silver",
+    "subtasks": [
+      {
+        "id": "a86-p1-1",
+        "name": "Sort medicines & toiletries for appropriate disposal"
+      },
+      {
+        "id": "a86-p1-2",
+        "name": "Wipe shelves & organize keepers"
+      }
+    ]
+  },
+  {
+    "id": "a87",
+    "name": "Curtains & drapery wash",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a87-p1-1",
+        "name": "Take down & clean according to labels"
+      },
+      {
+        "id": "a87-p1-2",
+        "name": "Dry fully & rehang"
+      }
+    ]
+  },
+  {
+    "id": "a88",
+    "name": "Steam or wet-clean upholstery",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a88-p1-1",
+        "name": "Check care label & spot-test suitable cleaner"
+      },
+      {
+        "id": "a88-p1-2",
+        "name": "Steam or wet-clean suitable upholstery"
+      },
+      {
+        "id": "a88-p1-3",
+        "name": "Allow to dry fully"
+      }
+    ]
+  },
+  {
+    "id": "a89",
+    "name": "Scrub hard floors & trim",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "gold",
+    "subtasks": [
+      {
+        "id": "a89-p1-1",
+        "name": "Scrub hard floors with a suitable cleaner"
+      },
+      {
+        "id": "a89-p1-2",
+        "name": "Clean baseboards & trim"
+      }
+    ]
+  },
+  {
+    "id": "a90",
+    "name": "Check bathroom for leaks & mildew",
+    "room": "Bathroom",
+    "freq": "quarterly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a91",
+    "name": "Windows & high fixtures",
+    "room": "Whole Home",
+    "freq": "seasonal",
+    "season": "Spring",
+    "tier": "gold",
+    "enabled": false
+  },
+  {
+    "id": "a92",
+    "name": "Shoes off & stowed at the door",
+    "room": "Whole Home",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "a93",
+    "name": "Tidy up living room clutter",
+    "room": "Living Room",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "a94",
+    "name": "Wipe up spills right away",
+    "room": "Whole Home",
+    "freq": "daily",
+    "tier": "bronze",
+    "enabled": false
+  },
+  {
+    "id": "a95",
+    "name": "Sweep up stray food scraps",
+    "room": "Kitchen",
+    "freq": "daily",
+    "tier": "bronze",
+    "enabled": false
+  },
+  {
+    "id": "a96",
+    "name": "Clear hair from sink & shower drains",
+    "room": "Bathroom",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "a97",
+    "name": "Sort through the mail",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "p1-dishes",
+    "name": "Wash dishes or run dishwasher",
+    "room": "Kitchen",
+    "freq": "daily",
+    "tier": "silver"
+  },
+  {
+    "id": "p1-unload",
+    "name": "Put away clean dishes",
+    "room": "Kitchen",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "p1-rubbish",
+    "name": "Take out trash & recycling",
+    "room": "Whole Home",
+    "freq": "weekly",
+    "tier": "bronze"
+  },
+  {
+    "id": "p1-bed",
+    "name": "Make the bed",
+    "room": "Bedroom",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "p1-lint",
+    "name": "Clear dryer lint screen before use",
+    "room": "Laundry",
+    "freq": "daily",
+    "tier": "bronze"
+  },
+  {
+    "id": "p1-walls",
+    "name": "Wash walls & remove marks",
+    "room": "Whole Home",
+    "freq": "quarterly",
+    "tier": "silver"
+  }
 ];
 
 let chores = [];
@@ -919,13 +2747,13 @@ function computeStreak(personName){
   if(days.size === 0) return 0;
   let cursor = startOfDay(new Date());
   if(!days.has(cursor.getTime())){
-    cursor = new Date(cursor.getTime() - 86400000); // allow "yesterday" as anchor so streak isn't lost right at day-start
+    cursor.setDate(cursor.getDate() - 1); // allow "yesterday" as anchor so streak isn't lost right at day-start
     if(!days.has(cursor.getTime())) return 0;
   }
   let streak = 0;
   while(days.has(cursor.getTime())){
     streak++;
-    cursor = new Date(cursor.getTime() - 86400000);
+    cursor.setDate(cursor.getDate() - 1);
   }
   return streak;
 }
@@ -936,7 +2764,7 @@ function personStats(name){
   let xp = 0;
   list.forEach(c => {
     const chore = chores.find(x => x.id === c.choreId);
-    const tier = chore?.tier || 'bronze';
+    const tier = c.tier || chore?.tier || 'bronze';
     tierCounts[tier] = (tierCounts[tier] || 0) + 1;
     xp += (c.xp != null ? c.xp : TIER_XP[tier]) || 5;
   });
@@ -966,7 +2794,8 @@ function levelProgress(xp){
 
 function computeQuestStats(name){
   const today = startOfDay(new Date()).getTime();
-  const weekStart = today - 6 * 86400000; // trailing 7-day window
+  const monday = new Date(today); monday.setDate(monday.getDate() - (monday.getDay()+6)%7);
+  const weekStart = monday.getTime(); // same calendar week as quest payout
   const todayList = completions.filter(c => c.person === name && c.ts >= today);
   const weekList = completions.filter(c => c.person === name && c.ts >= weekStart);
   const weekRoomSet = new Set();
@@ -974,8 +2803,8 @@ function computeQuestStats(name){
   weekList.forEach(c => {
     const chore = chores.find(x => x.id === c.choreId);
     if(chore){
-      weekRoomSet.add(chore.room);
-      if(chore.tier === 'gold' || chore.tier === 'diamond') weekGoldPlus++;
+      weekRoomSet.add(c.room || chore.room);
+      if(['gold','diamond'].includes(c.tier || chore.tier)) weekGoldPlus++;
     }
   });
   return { todayCount: todayList.length, weekCount: weekList.length, weekRooms: weekRoomSet.size, weekGoldPlus };
@@ -1064,7 +2893,7 @@ function applyComboBonus(name, batchTs){
 }
 
 async function claimChore(id){
-  ensurePlayer(async () => {
+  return ensurePlayer(async () => {
     await refreshShared();
     const chore = chores.find(c => c.id === id);
     if(!chore) return;
@@ -1121,7 +2950,7 @@ function earnedAchievements(name){
 function keyFor(c){ return `${c.choreId}|${c.ts}|${c.person}`; }
 
 function notify(title, body){
-  showToast(body || title);
+  if(!lastAction) showToast(body || title);
   if(notifyEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted'){
     try{ new Notification(title, { body: body || '' }); } catch(e){}
   }
@@ -1202,78 +3031,102 @@ function burstConfetti(el){
 
 let firebaseConfigured = FIREBASE_DB_URL && !FIREBASE_DB_URL.includes('PASTE_YOUR');
 
+// Same Firebase /state.json document. Conditional writes protect concurrent edits.
+const LOCAL_STATE_KEY = 'chore-champs-local-state-v1';
+let stateETag = null;
+let stateExtras = {};
+const clone = value => JSON.parse(JSON.stringify(value));
+function stateSnapshot(){ return clone({...stateExtras, chores, completions, subtaskProgress, activityLog}); }
+function applyState(data){
+  const state = data || {chores:clone(DEFAULT_CHORES)};
+  const {chores:c, completions:done, subtaskProgress:steps, activityLog:events, ...extras} = state;
+  stateExtras = extras;
+  chores = c || clone(DEFAULT_CHORES);
+  completions = done || [];
+  subtaskProgress = steps || {};
+  for(const progress of Object.values(subtaskProgress)){
+    progress.doneIds ||= []; progress.by ||= {};
+  }
+  activityLog = events || [];
+  migrateLibrary();
+}
+function migrateLibrary(){
+  // Freeze historical awards before changing a default's difficulty.
+  for(const entry of completions){
+    const original = chores.find(c => c.id === entry.choreId);
+    entry.tier ||= original?.tier || 'bronze';
+    entry.room ||= original?.room || 'Whole Home';
+    entry.xp ??= TIER_XP[entry.tier] || 5;
+  }
+  for(const item of chores){
+    if(item.libraryRevision === 1) continue;
+    const prior = LEGACY_DEFAULT_CHORES.find(c => c.id === item.id);
+    const next = DEFAULT_CHORES.find(c => c.id === item.id);
+    if(!prior || !next) continue;
+    // Preserve an in-progress checklist intact until its current run finishes.
+    if(subtaskProgress[item.id]?.doneIds?.length) continue;
+    const recognizedDefault = [prior.name,next.name].includes(item.name) && item.room === prior.room;
+    for(const key of ['name','room','freq','tier','season','subtasks']){
+      // Earlier saved libraries may predate the four-tier system. Explicitly
+      // rebalance recognized defaults even when their saved tier is older.
+      if(!(recognizedDefault && key === 'tier') && JSON.stringify(item[key]) !== JSON.stringify(prior[key])) continue;
+      if(next[key] === undefined) delete item[key]; else item[key] = clone(next[key]);
+    }
+    if(recognizedDefault && next.enabled === false) item.enabled = false;
+    item.libraryRevision = 1;
+  }
+  if(stateExtras.libraryAdditionsVersion !== 1){
+    for(const item of DEFAULT_CHORES.filter(c => c.id.startsWith('p1-'))){
+      if(!chores.some(c => c.id === item.id)) chores.push(clone(item));
+    }
+    stateExtras.libraryAdditionsVersion = 1;
+  }
+}
 async function fetchSharedState(){
-  const res = await fetch(SHARED_STATE_URL, { cache: 'no-store' });
-  if(!res.ok) throw new Error('Firebase request failed: ' + res.status);
-  return await res.json(); // null if nothing saved yet
+  const res = await fetch(SHARED_STATE_URL, {cache:'no-store', headers:{'X-Firebase-ETag':'true'}});
+  if(!res.ok) throw new Error('Could not read the shared board. Check your connection and try again.');
+  const tag = res.headers.get('ETag');
+  if(!tag) throw new Error('Could not verify the latest board version. Please reload.');
+  const data = await res.json();
+  stateETag = tag;
+  return data;
 }
 async function pushSharedState(){
-  if(activityLog.length > 300) activityLog = activityLog.slice(-300); // keep the feed bounded
-  const res = await fetch(SHARED_STATE_URL, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chores, completions, subtaskProgress, activityLog })
-  });
-  if(!res.ok) throw new Error('Firebase save failed: ' + res.status);
-}
-
-async function loadState(){
-  player = JSON.parse(localStorage.getItem(PLAYER_KEY) || 'null');
-  notifyEnabled = JSON.parse(localStorage.getItem(NOTIFY_KEY) || 'false');
-
   if(!firebaseConfigured){
-    chores = DEFAULT_CHORES;
-    completions = [];
-    subtaskProgress = {};
-    activityLog = [];
-    knownCompletionKeys = new Set();
+    localStorage.setItem(LOCAL_STATE_KEY, JSON.stringify(stateSnapshot()));
     return;
   }
-  try{
-    const data = await fetchSharedState();
-    if(data && data.chores){
-      chores = data.chores;
-      completions = data.completions || [];
-      subtaskProgress = data.subtaskProgress || {};
-      activityLog = data.activityLog || [];
-    } else {
-      chores = DEFAULT_CHORES;
-      completions = [];
-      subtaskProgress = {};
-      activityLog = [];
-      await pushSharedState(); // seed the database the first time
-    }
-  } catch(e){
-    chores = DEFAULT_CHORES;
-    completions = [];
-    subtaskProgress = {};
-    activityLog = [];
-    showToast('Couldn\u2019t reach the shared board — check your internet connection');
+  if(!stateETag) throw new Error('Please reconnect before saving.');
+  const res = await fetch(SHARED_STATE_URL, {
+    method:'PUT', headers:{'Content-Type':'application/json','if-match':stateETag},
+    body:JSON.stringify(stateSnapshot())
+  });
+  if(res.status === 412) throw new Error('The board changed on another device. Refreshed — please try again.');
+  if(!res.ok) throw new Error('Save failed. Check your connection and try again.');
+}
+async function loadState(){
+  try { player = JSON.parse(localStorage.getItem(PLAYER_KEY) || 'null'); } catch(e){ player = null; }
+  try { notifyEnabled = JSON.parse(localStorage.getItem(NOTIFY_KEY) || 'false'); } catch(e){ notifyEnabled = false; }
+  if(!firebaseConfigured){
+    try { applyState(JSON.parse(localStorage.getItem(LOCAL_STATE_KEY) || 'null')); }
+    catch(e){ applyState(null); showToast('Local board could not be loaded.'); }
+  } else {
+    try { applyState(await fetchSharedState()); }
+    catch(e){ applyState(null); showToast('Could not load the shared board. Reconnect before completing chores.'); }
   }
   knownCompletionKeys = new Set(completions.map(keyFor));
+  if(lastAction && !completions.some(c => c.id === lastAction.id)){ lastAction = null; persistUndo(); }
 }
+async function saveSharedState(){ await pushSharedState(); }
 
-async function saveSharedState(){
-  try{ await pushSharedState(); }
-  catch(e){ showToast('Could not save — check your connection and Firebase URL'); }
-}
+
 function savePlayer(){
   try{ localStorage.setItem(PLAYER_KEY, JSON.stringify(player)); }
   catch(e){ showToast('Could not save your name — try again'); }
 }
 
-// re-pull shared data only (chores + completions), leave local player alone
 async function refreshShared(){
-  if(!firebaseConfigured) return;
-  try{
-    const data = await fetchSharedState();
-    if(data){
-      chores = data.chores || chores;
-      completions = data.completions || [];
-      subtaskProgress = data.subtaskProgress || {};
-      activityLog = data.activityLog || [];
-    }
-  } catch(e){ /* stay on last-known state if the network hiccups */ }
+  if(firebaseConfigured) applyState(await fetchSharedState());
 }
 
 let lastAction = null; // { choreId, ts, person, prevSubtaskSnapshot } — for the Undo button
@@ -1288,30 +3141,56 @@ function showToast(msg, actionLabel, actionFn){
     const btn = document.createElement('button');
     btn.className = 'toast-action';
     btn.textContent = actionLabel;
-    btn.onclick = () => { actionFn(); t.classList.remove('show'); };
+    btn.onclick = () => { t.classList.remove('show'); actionFn(); };
     t.appendChild(btn);
   }
   t.classList.add('show');
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => t.classList.remove('show'), actionLabel ? 6000 : 2400);
+  showToast._t = setTimeout(() => t.classList.remove('show'), actionLabel ? 12000 : 4000);
 }
 
+const UNDO_KEY = 'chore-champs-last-completion-v1';
+function persistUndo(){
+  try { sessionStorage.setItem(UNDO_KEY, JSON.stringify(lastAction)); } catch(e){}
+}
 async function undoLastAction(){
-  if(!lastAction) return;
+  const action = lastAction;
+  if(!action) return;
   await refreshShared();
-  completions = completions.filter(c => !(c.choreId === lastAction.choreId && c.ts === lastAction.ts && c.person === lastAction.person));
-  activityLog = activityLog.filter(a => a.batchTs !== lastAction.ts);
-  knownCompletionKeys.delete(`${lastAction.choreId}|${lastAction.ts}|${lastAction.person}`);
-  if(lastAction.prevSubtaskSnapshot) subtaskProgress[lastAction.choreId] = lastAction.prevSubtaskSnapshot;
-  else delete subtaskProgress[lastAction.choreId];
+  const entry = completions.find(c => c.id === action.id);
+  if(!entry){ lastAction = null; persistUndo(); showToast('That completion was already undone.'); return; }
+  const later = completions.findIndex(c => c.id === entry.id) < completions.length - 1;
+  // Later rewards may depend on this completion. Avoid silently invalidating them.
+  if(later || subtaskProgress[action.choreId]?.doneIds?.length){
+    showToast('New progress depends on this completion. Undo the more recent completion first.');
+    return;
+  }
+  completions = completions.filter(c => c.id !== action.id);
+  activityLog = activityLog.filter(a => a.completionId !== action.id);
+  if(action.prevSubtaskSnapshot) subtaskProgress[action.choreId] = clone(action.prevSubtaskSnapshot);
+  else delete subtaskProgress[action.choreId];
+  const chore = chores.find(c => c.id === action.choreId);
+  if(chore && action.prevSubtaskSnapshot && action.previousSubtasks){
+    chore.subtasks = clone(action.previousSubtasks);
+    delete chore.libraryRevision; // migration will defer while these steps are active
+  }
+  if(chore && action.previousClaim){
+    if(action.previousClaim.claimedBy) Object.assign(chore, action.previousClaim);
+    else { delete chore.claimedBy; delete chore.claimedAt; }
+  }
   await saveSharedState();
-  showToast('Undone — chore is back on the list');
+  knownCompletionKeys = new Set(completions.map(keyFor));
   lastAction = null;
+  persistUndo();
+  showToast('Undone — completion and its rewards removed.');
   render();
 }
 
+
 function lastCompletion(choreId){
-  const list = completions.filter(c => c.choreId === choreId);
+  const aliases = {a2:['a2','a74'],a74:['a2','a74'],a8:['a8','a84'],a84:['a8','a84']};
+  const ids = aliases[choreId] || [choreId];
+  const list = completions.filter(c => ids.includes(c.choreId));
   if(!list.length) return null;
   return list.reduce((a,b) => a.ts > b.ts ? a : b);
 }
@@ -1326,15 +3205,11 @@ function relTime(ts){
 }
 
 // e.g. "Last done: Sep 14 by James" / "Last done: Yesterday by Robyn" / "Never completed"
+function escapeHtml(value){ return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 function lastDoneLabel(last){
-  if(!last) return 'Never completed';
-  const days = daysBetween(new Date(last.ts), new Date());
-  let when;
-  if(days <= 0) when = 'Today';
-  else if(days === 1) when = 'Yesterday';
-  else if(days < 7) when = `${days} days ago`;
-  else when = new Date(last.ts).toLocaleDateString(undefined, { month:'short', day:'numeric' });
-  return `Last done: ${when}${last.person ? ' by ' + last.person : ''}`;
+  if(!last) return 'Last completed: Never';
+  const date = new Date(last.ts).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+  return 'Last completed: ' + date + ' · ' + (last.person || 'Unknown person');
 }
 
 // returns {active(bool, should appear on Due Now), state:'fresh'|'due'|'overdue'|'seasonal', label, seasonClass}
@@ -1361,7 +3236,7 @@ function getStatus(chore){
 
   const freqDef = FREQS.find(f => f.id === chore.freq);
   const freqDays = freqDef ? freqDef.days : 30;
-  if(!last) return { active:true, state:'overdue', label:'never done' };
+  if(!last) return { active:true, state:'due', label:'Due now' };
   const age = daysBetween(new Date(last.ts), today);
   if(age < freqDays) return { active:false, state:'fresh', label:`due in ${freqDays-age}d` };
   if(age <= freqDays * 1.5) return { active:true, state:'due', label:'due now' };
@@ -1369,7 +3244,7 @@ function getStatus(chore){
 }
 
 function ensurePlayer(next){
-  if(player && player.name){ next(); return; }
+  if(player && player.name){ return next(); }
   const overlay = openModal(`
     <h3>Who's playing?</h3>
     <p class="hint">Pick a name so points and chores get credited to you on this device.</p>
@@ -1423,9 +3298,11 @@ async function finalizeCompletion(chore, finisherPerson, contributors, btnEl){
   const before = {};
   affectedPeople.forEach(p => {
     const s = personStats(p);
-    before[p] = { level: levelFromXP(s.xp), achIds: new Set(earnedAchievements(p).map(a => a.id)) };
+    before[p] = { streak:s.streak, level: levelFromXP(s.xp), achIds: new Set(earnedAchievements(p).map(a => a.id)) };
   });
 
+  const questBefore = computeQuestStats(finisherPerson);
+  const campaignBefore = currentSeasonalCycle();
   const baseXP = (TIER_XP[chore.tier] || 5) * (chore.bounty ? 2 : 1);
   let finisherXP = baseXP;
   const shareLines = [];
@@ -1441,12 +3318,14 @@ async function finalizeCompletion(chore, finisherPerson, contributors, btnEl){
     });
   }
 
-  const entry = { choreId: chore.id, ts: Date.now(), person: finisherPerson, xp: finisherXP, bounty: !!chore.bounty };
+  const entry = { id: crypto.randomUUID(), choreId: chore.id, ts: Date.now(), person: finisherPerson, tier:chore.tier, room:chore.room, xp: finisherXP, bounty: !!chore.bounty };
+  const previousClaim = {claimedBy:chore.claimedBy || null, claimedAt:chore.claimedAt || null};
   completions.push(entry);
   knownCompletionKeys.add(keyFor(entry));
   delete chore.claimedBy; delete chore.claimedAt;
   delete subtaskProgress[chore.id];
 
+  const activityStart = activityLog.length;
   shareLines.forEach(({ person, xp }) => {
     activityLog.push({ ts: entry.ts, batchTs: entry.ts, person, type:'subtask-share', xp, label: `Helped finish "${chore.name}"`, icon:'🤝' });
   });
@@ -1456,54 +3335,75 @@ async function finalizeCompletion(chore, finisherPerson, contributors, btnEl){
   const newQuests = checkAndAwardQuests(finisherPerson, entry.ts);
   const campaignDone = checkCampaignBonus(finisherPerson, entry.ts);
 
-  if(btnEl){ btnEl.classList.add('done-flash'); btnEl.textContent = '✓'; burstConfetti(btnEl); floatXP(btnEl, finisherXP); }
+  activityLog.slice(activityStart).forEach(event => { event.completionId = entry.id; });
   await saveSharedState();
-
-  const phrase = DONE_PHRASES[Math.floor(Math.random() * DONE_PHRASES.length)];
-  const bountyTag = chore.bounty ? '🎯 ' : '';
-  showToast(`${bountyTag}${finisherPerson} ${phrase} "${chore.name}" — +${finisherXP} XP!`, 'Undo', undoLastAction);
-
-  let delay = 1000;
-  if(combo){ setTimeout(() => notify('⚡ Combo!', `${finisherPerson} chained a ${combo.combo}x combo — +${combo.bonusXP} XP`), delay); delay += 1400; }
-  if(roomCleared){ setTimeout(() => notify('🧹 Room cleared!', `${finisherPerson} cleared every chore in ${roomCleared} — +${ROOM_CLEAR_BONUS} XP`), delay); delay += 1400; }
-  newQuests.forEach(q => { setTimeout(() => notify('📜 Quest complete!', `${q.label} — +${q.reward} XP`), delay); delay += 1400; });
-  if(campaignDone){ setTimeout(() => notify('🍂 Campaign complete!', `The household finished the seasonal Home Almanac campaign — +${CAMPAIGN_BONUS} XP`), delay); delay += 1400; }
-
-  affectedPeople.forEach(p => {
-    const s = personStats(p);
-    const afterLevel = levelFromXP(s.xp);
-    const afterAch = earnedAchievements(p);
-    if(afterLevel > before[p].level){
-      setTimeout(() => showLevelUpBanner(p, afterLevel), delay);
-      delay += 1600;
-    }
-    afterAch.filter(a => !before[p].achIds.has(a.id)).forEach(a => {
-      setTimeout(() => notify(`Achievement unlocked ${a.icon}`, `${p} earned "${a.label}"`), delay);
-      delay += 1400;
-    });
-  });
-
-  lastAction = { choreId: chore.id, ts: entry.ts, person: finisherPerson, prevSubtaskSnapshot: finalizeCompletion._pendingSnapshot || null };
+  lastAction = {id:entry.id, choreId:chore.id, ts:entry.ts, person:finisherPerson,
+    prevSubtaskSnapshot:finalizeCompletion._pendingSnapshot || null,
+    previousSubtasks:clone(chore.subtasks || null), previousClaim};
   finalizeCompletion._pendingSnapshot = null;
+  persistUndo();
 
-  setTimeout(render, 350);
+  const bonusXP = activityLog.slice(activityStart).filter(a => a.person === finisherPerson).reduce((sum,a) => sum+(a.xp||0),0);
+  const lines = [`${chore.name} · +${finisherXP + bonusXP} XP${bonusXP ? ` (${finisherXP} chore + ${bonusXP} bonus)` : ''}`];
+  const highlights = [];
+  if(combo) highlights.push(`${combo.combo}× combo`);
+  if(roomCleared) highlights.push(`${roomCleared} cleared`);
+  newQuests.forEach(q => highlights.push(`Quest complete: ${q.label}`));
+  if(campaignDone) highlights.push('Seasonal campaign complete!');
+  const campaignAfter = currentSeasonalCycle();
+  if(!campaignDone && campaignAfter.done > campaignBefore.done) highlights.push(`Seasonal campaign ${campaignAfter.done}/${campaignAfter.total}`);
+  const quests = computeQuestStats(finisherPerson);
+  if(!newQuests.some(q => q.id === 'daily3') && quests.todayCount < 3) highlights.push(`Daily quest ${quests.todayCount}/3`);
+  for(const q of WEEKLY_QUESTS){
+    const current = Math.min(q.target, q.get(quests));
+    const previous = Math.min(q.target, q.get(questBefore));
+    if(current > previous && current < q.target) {
+      const short = {weekly15:'Weekly chores',weeklyVariety:'Weekly rooms',weeklyGold:'Weekly Gold+'}[q.id];
+      highlights.push(`${short} ${current}/${q.target}`);
+    }
+  }
+  for(const person of affectedPeople){
+    const stats = personStats(person);
+    const prefix = person === finisherPerson ? '' : person + ': ';
+    if(stats.level > before[person].level) highlights.push(`${prefix}Level ${stats.level}!`);
+    if(stats.streak > before[person].streak) highlights.push(`${prefix}${stats.streak}-day streak`);
+    earnedAchievements(person).filter(a => !before[person].achIds.has(a.id)).forEach(a => highlights.push(`${prefix}${a.icon} ${a.label}`));
+  }
+  shareLines.forEach(share => highlights.push(`${share.person} +${share.xp} XP`));
+  if(highlights.length) lines.push(highlights.join(' · '));
+  showToast(lines.join('\n'), 'Undo', undoLastAction);
+  if(btnEl){ burstConfetti(btnEl); floatXP(btnEl, finisherXP+bonusXP); }
+  render();
 }
 
+
 async function markDone(choreId, btnEl){
-  ensurePlayer(async () => {
-    await refreshShared(); // pull latest first so we don't clobber someone else's recent update
+  return ensurePlayer(async () => {
+    await refreshShared(); // fresh state plus conditional PUT prevents lost updates
     const chore = chores.find(c => c.id === choreId);
-    if(!chore) return;
+    if(!chore || chore.enabled === false) return;
+    if(!getStatus(chore).active){ showToast('Already completed — available again when due.'); return; }
     finalizeCompletion._pendingSnapshot = subtaskProgress[choreId] ? JSON.parse(JSON.stringify(subtaskProgress[choreId])) : null;
-    await finalizeCompletion(chore, player.name, null, btnEl);
+    let contributors = null;
+    if(chore.subtasks?.length && subtaskProgress[choreId]?.doneIds?.length){
+      contributors = {};
+      for(const step of chore.subtasks){
+        const progress = subtaskProgress[choreId];
+        const who = progress.doneIds.includes(step.id) ? (progress.by[step.id] || player.name) : player.name;
+        contributors[who] = (contributors[who] || 0) + 1;
+      }
+    }
+    await finalizeCompletion(chore, player.name, contributors, btnEl);
   });
 }
 
 async function toggleSubtask(choreId, subtaskId){
-  ensurePlayer(async () => {
+  return ensurePlayer(async () => {
     await refreshShared();
     const chore = chores.find(c => c.id === choreId);
-    if(!chore || !chore.subtasks) return;
+    if(!chore || chore.enabled === false || !chore.subtasks?.some(s => s.id === subtaskId)) return;
+    if(!getStatus(chore).active){ showToast('Already completed — available again when due.'); return; }
+    const previousProgress = clone(subtaskProgress[choreId] || null);
     const prog = subtaskProgress[choreId] || { doneIds: [], by: {} };
     const isDone = prog.doneIds.includes(subtaskId);
     if(isDone){
@@ -1525,7 +3425,7 @@ async function toggleSubtask(choreId, subtaskId){
         const who = prog.by[st.id];
         if(who) contributors[who] = (contributors[who] || 0) + 1;
       });
-      finalizeCompletion._pendingSnapshot = JSON.parse(JSON.stringify(prog));
+      finalizeCompletion._pendingSnapshot = previousProgress;
       await finalizeCompletion(chore, player.name, contributors, null);
     } else {
       await saveSharedState();
@@ -1571,6 +3471,8 @@ async function resetAlmanac(){
   subtaskProgress = {};
   activityLog = [];
   await saveSharedState();
+  lastAction = null;
+  knownCompletionKeys = new Set();
   if(settingsOverlay){ settingsOverlay.remove(); settingsOverlay = null; }
   render();
 }
@@ -1630,8 +3532,7 @@ function openAddModal(){
     if(subtaskLines.length){
       chore.subtasks = subtaskLines.map((line, i) => ({ id: `${chore.id}-${i+1}`, name: line }));
     }
-    await addChore(chore);
-    overlay.remove();
+    if(await addChore(chore)) overlay.remove();
   };
 }
 
@@ -2074,17 +3975,17 @@ function choreCardHtml(chore, status, playerName){
     <div class="card tier-${chore.tier || 'bronze'} ${cardClass}">
       ${chore.bounty ? `<div class="bounty-ribbon">🎯 BOUNTY ×2</div>` : ''}
       <div class="check-col">
-        <button class="check-btn tier-${chore.tier || 'bronze'}" data-done="${chore.id}" title="Mark whole thing done">✓</button>
+        <button class="check-btn tier-${chore.tier || 'bronze'}" data-done="${chore.id}" title="${status.active ? 'Complete chore' : 'Available again when due'}" aria-label="Complete ${escapeHtml(chore.name)}" ${!status.active || mutationBusy ? 'disabled' : ''}>✓</button>
         <span class="tier-label">${tierDef.icon} ${(chore.tier || 'bronze')}</span>
         <span class="pts-label">+${xp} XP</span>
       </div>
       <div class="card-info">
-        <p class="card-name">${chore.name}</p>
+        <p class="card-name">${escapeHtml(chore.name)}</p>
         <div class="card-meta">
           <span class="tag">${chore.room}</span>
           <span class="tag ${chore.freq==='seasonal' ? 'season-tag '+chore.season.toLowerCase() : ''}">${freqLabel}</span>
         </div>
-        <div class="card-lastdone">${lastDoneLabel(last)}</div>
+        <div class="card-lastdone">${escapeHtml(lastDoneLabel(last))}</div>
         <div class="card-status-line">
           <span class="status-text ${status.state==='overdue'?'overdue':(status.state==='due'||status.state==='seasonal'?'due':'')}">${status.label}</span>
         </div>
@@ -2095,11 +3996,11 @@ function choreCardHtml(chore, status, playerName){
               const done = prog.doneIds.includes(st.id);
               const by = prog.by[st.id];
               return `
-                <div class="subtask-row ${done ? 'done' : ''}" data-subtask="${chore.id}|${st.id}">
+                <button type="button" class="subtask-row ${done ? 'done' : ''}" data-subtask="${chore.id}|${st.id}" aria-pressed="${done}" ${!status.active || mutationBusy ? 'disabled' : ''}>
                   <span class="subtask-check">${done ? '✓' : ''}</span>
-                  <span class="subtask-text">${st.name}</span>
-                  ${done && by ? `<span class="subtask-by">${by}</span>` : ''}
-                </div>
+                  <span class="subtask-text">${escapeHtml(st.name)}</span>
+                  ${done && by ? `<span class="subtask-by">${escapeHtml(by)}</span>` : ''}
+                </button>
               `;
             }).join('')}
           </div>
@@ -2221,6 +4122,7 @@ function render(){
     ].filter(Boolean);
 
     bodyHtml = `
+      <div class="tier-guide">${TIERS.map(t => `<button class="tier-choice tier-${t.id}" data-tier="${t.id}" aria-pressed="${filterTier===t.id}">${t.icon} ${t.label}<strong>${t.xp} XP</strong><small>${enabledChores.filter(c => c.tier === t.id).length} chores</small></button>`).join('')}</div>
       <div class="filter-bar">
         <button class="btn-filter" id="openFilters">⚲ Filters ${activeFilters.length ? `<span class="count">${activeFilters.length}</span>` : ''}</button>
         <select id="fSort" class="sort-select">
@@ -2253,7 +4155,8 @@ function render(){
       <p>a Home Almanac tradition, leveled up</p>
     </div>
 
-    <div class="tip-banner">📜 ${dailyTip()}</div>
+    <div class="tip-banner">See a chore. Do it. Tap ✓. Earn XP.</div>
+    ${lastAction ? `<div class="undo-bar"><span>Last completion saved</span><button id="undoLastBtn" class="btn-plain" ${mutationBusy ? 'disabled' : ''}>↶ Undo last completion</button></div>` : ''}
 
     ${!firebaseConfigured ? `
       <div style="background:#fff3cd; border:1px solid #e0c46c; color:#5c4a10; border-radius:10px; padding:12px 14px; margin-bottom:16px; font-size:0.85rem; line-height:1.5;">
@@ -2285,6 +4188,7 @@ function render(){
 
   app.querySelectorAll('[data-view]').forEach(el => el.addEventListener('click', () => { view = el.getAttribute('data-view'); render(); }));
   app.querySelectorAll('[data-goto-quests]').forEach(el => el.addEventListener('click', () => { view = 'quests'; render(); }));
+  app.querySelector('#undoLastBtn')?.addEventListener('click', undoLastAction);
   app.querySelector('#playerChip').addEventListener('click', openSwitchPlayer);
   app.querySelector('#notifBtn').addEventListener('click', toggleNotify);
   app.querySelector('#shareBtn').addEventListener('click', shareApp);
@@ -2303,6 +4207,7 @@ function render(){
   } else {
     // 'home' and 'chores' both show chore cards and share these listeners
     if(view === 'chores'){
+      app.querySelectorAll('[data-tier]').forEach(el => el.addEventListener('click', () => { const tier = el.getAttribute('data-tier'); filterTier = filterTier === tier ? 'All' : tier; filterRoom='All'; filterFreq='All'; filterSeason='All'; render(); }));
       app.querySelector('#openFilters').addEventListener('click', openFiltersModal);
       app.querySelectorAll('[data-clear]').forEach(el => el.addEventListener('click', () => {
         const key = el.getAttribute('data-clear');
@@ -2331,7 +4236,9 @@ function render(){
 function startPolling(){
   if(pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(async () => {
-    if(document.querySelector('.modal-overlay')) return; // don't yank the UI while someone's mid-form
+    if(mutationBusy || pollBusy || document.querySelector('.modal-overlay')) return;
+    pollBusy = true;
+    try { // don't yank the UI while someone's mid-form
     const prevKeys = knownCompletionKeys;
     await refreshShared();
     const newOnes = completions.filter(c => !prevKeys.has(keyFor(c)));
@@ -2346,6 +4253,8 @@ function startPolling(){
       notify('Chores claimed! 🏁', `${rivalOnes.length} chores were just claimed by others — check the leaderboard`);
     }
     render();
+    } catch(e){ /* next poll retries; mutations fail closed while offline */ }
+    finally { pollBusy = false; }
   }, 15000);
 }
 
@@ -2377,6 +4286,51 @@ async function installApp(){
   canInstall = false;
   render();
 }
+
+let mutationBusy = false;
+let pollBusy = false;
+// One mutation at a time per device; Firebase ETag handles other devices.
+// All existing writers participate, so settings cannot overwrite a completion.
+function guardedMutation(operation, needsPlayer = false){
+  return function(...args){
+    const run = async () => {
+      if(mutationBusy || pollBusy){ showToast('Saving or refreshing — please try again in a moment.'); return false; }
+      mutationBusy = true;
+      const previous = stateSnapshot();
+      const previousAction = lastAction;
+      try {
+        await refreshShared();
+        const result = await operation(...args);
+        return result === false ? false : true;
+      } catch(error){
+        applyState(previous);
+        lastAction = previousAction;
+        finalizeCompletion._pendingSnapshot = null;
+        try { await refreshShared(); } catch(e){}
+        knownCompletionKeys = new Set(completions.map(keyFor));
+        showToast(error.message || 'Could not save. Please try again.');
+        return false;
+      } finally {
+        mutationBusy = false;
+        render();
+      }
+    };
+    return needsPlayer ? ensurePlayer(run) : run();
+  };
+}
+markDone = guardedMutation(markDone, true);
+toggleSubtask = guardedMutation(toggleSubtask, true);
+claimChore = guardedMutation(claimChore, true);
+releaseClaim = guardedMutation(releaseClaim);
+toggleBounty = guardedMutation(toggleBounty);
+addChore = guardedMutation(addChore);
+hideChore = guardedMutation(hideChore);
+deleteChorePermanently = guardedMutation(deleteChorePermanently);
+toggleChoreEnabled = guardedMutation(toggleChoreEnabled);
+resetAlmanac = guardedMutation(resetAlmanac);
+undoLastAction = guardedMutation(undoLastAction);
+try { lastAction = JSON.parse(sessionStorage.getItem(UNDO_KEY) || 'null'); } catch(e){}
+
 
 (async function init(){
   await loadState();
