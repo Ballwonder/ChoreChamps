@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Chore Champs">
-<meta name="theme-color" content="#F4EFE3">
+<meta name="theme-color" content="#f6f5f1">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
@@ -955,7 +955,7 @@ button:focus-visible,input:focus-visible,select:focus-visible { outline:3px soli
 <style id="local-app-icons">
 .view-toggle button img.nav-icon { display:block; width:30px; height:30px; object-fit:contain; flex-shrink:0; }
 .card.has-dibs { padding-right:62px; }
-.dibs-bookmark { position:absolute; top:0; right:29px; width:30px; height:38px; background:#48a566; -webkit-mask:url("icon-bookmark.svg") center/100% 100% no-repeat; mask:url("icon-bookmark.svg") center/100% 100% no-repeat; pointer-events:none; }
+.dibs-bookmark { position:absolute; top:0; right:29px; width:30px; height:38px; background:#48a566; -webkit-mask:url("icons/icon-bookmark.svg") center/100% 100% no-repeat; mask:url("icons/icon-bookmark.svg") center/100% 100% no-repeat; pointer-events:none; }
 .claim-btn[data-claim] { display:inline-flex; align-items:center; gap:5px; }
 </style>
 
@@ -1001,7 +1001,43 @@ button:focus-visible,input:focus-visible,select:focus-visible { outline:3px soli
 .gold-outfit{filter:sepia(1) saturate(3)}
 .reward-symbol{font-size:3rem;margin-bottom:12px}
 #app .rewards-grid ~ .hint{line-height:1.5}
-</style></head>
+</style><style id="header-refresh">
+html {background:#f6f5f1;}
+body {min-height:100vh;background:#f6f5f1;background-image:none;color:#283b3c;}
+.wrap {padding-top:20px;}
+.banner {position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;text-align:center;min-height:160px;padding:32px 0 24px;margin:0 0 12px;border:0;border-radius:0;background:none;box-shadow:none;}
+.brand-emblem {position:absolute;z-index:-1;left:50%;top:8px;transform:translateX(-50%) rotate(-8deg);width:132px;height:145px;opacity:.23;pointer-events:none;}
+.brand-emblem svg {display:block;width:100%;height:100%;}
+.brand-copy {position:relative;}
+.banner h1 {font-family:'Fraunces',serif;font-size:clamp(2.25rem,7vw,3.2rem);font-weight:700;letter-spacing:-1.6px;line-height:1.12;margin:0 0 9px;color:#293a37;text-shadow:0 2px 0 #fff;}
+.banner h1 span {color:inherit;}
+.banner p {color:#646c63;font-size:.8rem;line-height:1.5;margin:0;letter-spacing:.025em;}
+.player-bar {padding:3px 0;margin-bottom:12px;}
+.player-chip,.notif-toggle {background:#fffdf6;border-color:#344846;box-shadow:0 3px 0 #bbc3b9;}
+.player-chip:hover,.notif-toggle:hover {background:#f5ecd3;}
+.view-toggle {margin-top:14px;background:#304847;border-color:#243a39;box-shadow:0 5px 0 #203331;}
+.section-label {background:#304847;border-color:#203735;color:#fff6d8;box-shadow:0 3px 0 #bac1a9;}
+#app > p,#app > .hint {color:#586561;}
+#app > h3 {color:#283b3c;}
+@media(max-width:480px) {.wrap{padding-top:10px;}.banner{min-height:145px;padding:30px 0 20px;}.brand-emblem{width:116px;height:132px;top:6px;}.banner h1{font-size:2.3rem;letter-spacing:-1.3px;}.banner p{font-size:.73rem;}}
+</style>
+<style id="larger-brand-navigation">
+.view-toggle button img.nav-icon {width:42px;height:42px;}
+.view-toggle button {min-height:78px;}
+.banner {min-height:205px;padding:42px 0 30px;}
+.brand-emblem {width:178px;height:192px;top:3px;}
+.banner h1 {font-size:clamp(2.8rem,8vw,4rem);letter-spacing:-1.8px;}
+.banner p {font-size:1.05rem;line-height:1.5;}
+@media(max-width:480px) {
+ .view-toggle button img.nav-icon {width:36px;height:36px;}
+ .view-toggle button {min-height:72px;}
+ .banner {min-height:180px;padding:36px 0 26px;}
+ .brand-emblem {width:150px;height:168px;top:4px;}
+ .banner h1 {font-size:clamp(2.35rem,10vw,3rem);letter-spacing:-1.4px;}
+ .banner p {font-size:.95rem;}
+}
+</style>
+</head>
 <body>
 <div class="wrap" id="app"><div class="loading">Dusting off the almanac…</div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -3615,35 +3651,36 @@ async function toggleNotify(){
 }
 
 async function shareApp(){
-  if(!firebaseConfigured){
-    showToast('Set up your Firebase URL first, so your invite comes pre-configured');
+  if(!['https:','http:'].includes(window.location.protocol) || ['localhost','127.0.0.1','[::1]'].includes(window.location.hostname)){
+    showToast('Open your published GitHub Pages site first, then tap Share to send its link.');
     return;
   }
-  const file = new File([ORIGINAL_HTML], 'chore-champs.html', { type: 'text/html' });
-  try{
-    if(navigator.canShare && navigator.canShare({ files: [file] })){
-      await navigator.share({
-        files: [file],
-        title: 'Chore Champs',
-        text: 'Join our household chore board — open this file to start racing me for XP!'
-      });
+  const url = new URL(window.location.href);
+  url.hash = '';
+  url.search = '';
+  const link = url.href;
+  if(navigator.share){
+    try{
+      await navigator.share({title:'Chore Champs', text:'Join our household chore board!', url:link});
       return;
+    }catch(e){
+      if(e.name === 'AbortError') return;
     }
-  } catch(e){
-    if(e.name === 'AbortError') return; // person cancelled the share sheet — not an error
   }
-  // Fallback: browsers on file:// origins (or without file-sharing support)
-  // can't open a native share sheet, so just download a ready-to-send copy.
   try{
-    const blob = new Blob([ORIGINAL_HTML], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'chore-champs.html';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-    showToast('Saved a copy — send that file to your friend to invite them');
-  } catch(e){
-    showToast('Couldn\u2019t prepare a copy to share — try downloading the file manually instead');
+    await navigator.clipboard.writeText(link);
+    showToast('Website link copied — send it to your partner.');
+  }catch(e){
+    const overlay = openModal(`
+      <h3>Share Chore Champs</h3>
+      <p class="hint">Copy this website link and send it to your partner.</p>
+      <label for="shareWebsiteLink">Website link</label>
+      <input type="text" id="shareWebsiteLink" readonly value="${escapeHtml(link)}">
+      <div class="modal-actions"><button class="btn-primary" id="closeShareLink">Done</button></div>
+    `);
+    overlay.querySelector('#closeShareLink').onclick = () => overlay.remove();
+    const input = overlay.querySelector('#shareWebsiteLink');
+    input.focus(); input.select();
   }
 }
 
@@ -4920,13 +4957,13 @@ const REWARDS = [
  {id:'cap',kind:'hat',label:'Team Cap',symbol:'🧢',field:'count',target:5,requirement:'Complete 5 chores'},
  {id:'crown',kind:'hat',label:'Champion Crown',symbol:'👑',field:'count',target:100,requirement:'Complete 100 chores'},
  {id:'wizard',kind:'hat',label:'Top Hat',symbol:'🎩',field:'bestStreak',target:30,requirement:'Reach a 30-day streak'},
- {id:'workshirt',kind:'outfit',label:'Work Shirt',icon:'icon-chores.svg',field:'count',target:10,requirement:'Complete 10 chores'},
- {id:'goldshirt',kind:'outfit',label:'Golden Uniform',icon:'icon-chores.svg',field:'count',target:250,requirement:'Complete 250 chores'},
- {id:'bear',kind:'avatar',label:'Helpful Bear',icon:'icon-bear.svg',field:'count',target:1,requirement:'Complete 1 chore'},
- {id:'controller',kind:'avatar',label:'Game On',icon:'icon-controller.svg',field:'count',target:10,requirement:'Complete 10 chores'},
- {id:'cake',kind:'avatar',label:'Sweet Success',icon:'icon-cake.svg',field:'activeDays',target:30,requirement:'Complete chores on 30 different days'},
- {id:'devil',kind:'avatar',label:'Chore Fiend',icon:'icon-devil.svg',field:'count',target:100,requirement:'Complete 100 chores'},
- {id:'diamond',kind:'avatar',label:'Diamond Champion',icon:'icon-diamond.svg',field:'diamondCount',target:10,requirement:'Complete 10 Diamond chores'},
+ {id:'workshirt',kind:'outfit',label:'Work Shirt',icon:'icons/icon-chores.svg',field:'count',target:10,requirement:'Complete 10 chores'},
+ {id:'goldshirt',kind:'outfit',label:'Golden Uniform',icon:'icons/icon-chores.svg',field:'count',target:250,requirement:'Complete 250 chores'},
+ {id:'bear',kind:'avatar',label:'Helpful Bear',icon:'icons/icon-bear.svg',field:'count',target:1,requirement:'Complete 1 chore'},
+ {id:'controller',kind:'avatar',label:'Game On',icon:'icons/icon-controller.svg',field:'count',target:10,requirement:'Complete 10 chores'},
+ {id:'cake',kind:'avatar',label:'Sweet Success',icon:'icons/icon-cake.svg',field:'activeDays',target:30,requirement:'Complete chores on 30 different days'},
+ {id:'devil',kind:'avatar',label:'Chore Fiend',icon:'icons/icon-devil.svg',field:'count',target:100,requirement:'Complete 100 chores'},
+ {id:'diamond',kind:'avatar',label:'Diamond Champion',icon:'icons/icon-diamond.svg',field:'diamondCount',target:10,requirement:'Complete 10 Diamond chores'},
  {id:'starter',kind:'title',label:'Getting Things Done',field:'count',target:10,requirement:'Complete 10 chores'},
  {id:'regular',kind:'title',label:'Steady Hand',field:'bestStreak',target:7,requirement:'Reach a 7-day streak'},
  {id:'centurion',kind:'title',label:'Century Champion',field:'count',target:100,requirement:'Complete 100 chores'},
@@ -5122,12 +5159,12 @@ function render(){
   }
 
   app.innerHTML = `
-    <div class="banner">
-      <h1>Chore Champs</h1>
-      <p>a Home Almanac tradition, leveled up</p>
-    </div>
+    <header class="banner">
+      <div class="brand-emblem" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M24 3 41 10v13c0 10-9 17-17 22C16 40 7 33 7 23V10z" fill="#f6ce72" stroke="#182f3e" stroke-width="2.5"/><path d="m15 24 6 6 13-15" stroke="#254f57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="brand-copy"><h1>Chore <span>Champs</span></h1><p>Little wins · A happier home</p></div>
+    </header>
 
-    <div class="tip-banner">See a chore. Do it. Tap ✓. Earn XP.</div>
+    
     ${lastAction ? `<div class="undo-bar"><span>Last completion saved</span><button id="undoLastBtn" class="btn-plain" ${mutationBusy ? 'disabled' : ''}>↶ Undo last completion</button></div>` : ''}
 
     ${!firebaseConfigured ? `
@@ -5185,23 +5222,23 @@ function render(){
 
 <div class="view-toggle">
   <button data-view="home" class="${view==='home'?'active':''}">
-    <img class="nav-icon" src="icon-home.svg" width="30" height="30" alt="" aria-hidden="true">
+    <img class="nav-icon" src="icons/icon-home.svg" width="30" height="30" alt="" aria-hidden="true">
     <span>Home</span>
   </button>
   <button data-view="chores" class="${view==='chores'?'active':''}">
-    <img class="nav-icon" src="icon-chores.svg" width="30" height="30" alt="" aria-hidden="true">
+    <img class="nav-icon" src="icons/broom-svgrepo-com.svg" width="30" height="30" alt="" aria-hidden="true">
     <span>Chores</span>
   </button>
   <button data-view="quests" class="${view==='quests'?'active':''}">
-    <img class="nav-icon" src="icon-controller.svg" width="30" height="30" alt="" aria-hidden="true">
+    <img class="nav-icon" src="icons/icon-quests.svg" width="30" height="30" alt="" aria-hidden="true">
     <span>Quests</span>
   </button>
 <button data-view="rewards" class="${view==='rewards'?'active':''}">
-    <img class="nav-icon" src="icon-cake.svg" width="30" height="30" alt="" aria-hidden="true">
+    <img class="nav-icon" src="icons/event-gift-svgrepo-com.svg" width="30" height="30" alt="" aria-hidden="true">
     <span>Rewards</span>
   </button>
   <button data-view="history" class="${view==='history'||view==='leaderboard'?'active':''}">
-    <img class="nav-icon" src="icon-stats.svg" width="30" height="30" alt="" aria-hidden="true">
+    <img class="nav-icon" src="icons/icon-stats.svg" width="30" height="30" alt="" aria-hidden="true">
     <span>Stats</span>
   </button>
 </div>
