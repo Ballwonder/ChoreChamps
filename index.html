@@ -37,31 +37,180 @@
   .banner p{ margin:0; color: var(--ink-soft); font-size:0.95rem; }
 
   .player-bar{
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    margin-bottom:16px; font-size:0.85rem; color: var(--ink-soft);
-  }
-  .player-chip{
-    display:flex; align-items:center; gap:6px; background: var(--paper-dark);
-    border-radius:20px; padding:6px 12px 6px 6px; cursor:pointer; border:none;
-    font-family:'Inter',sans-serif; font-weight:600; color: var(--ink); font-size:0.85rem;
-  }
+  display:flex;
+  align-items:center;
+  width:100%;
+  gap:8px;
+  margin-bottom:16px;
+  font-size:0.85rem;
+  color:var(--ink-soft);
+}
+
+.player-chip{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:var(--paper-dark);
+  border-radius:20px;
+  padding:6px 12px 6px 6px;
+  cursor:pointer;
+  border:none;
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  color:var(--ink);
+  font-size:0.85rem;
+
+  /* pushes utility buttons to the right */
+  margin-right:auto;
+}
   .avatar{
     width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
     font-size:0.75rem; font-weight:700; color:#fff; flex-shrink:0;
   }
   .player-chip:hover{ background: #e0d7c1; }
 
-  .view-toggle{
-    display:flex; background: var(--paper-dark); border-radius: 8px; padding:3px;
-    margin-bottom: 14px; gap:3px;
-  }
-  .view-toggle button{
-    flex:1; border:none; background:transparent; padding:8px 1px; border-radius:6px;
-    font-family:'Inter',sans-serif; font-weight:600; font-size:0.62rem; color: var(--ink-soft); cursor:pointer;
-    line-height:1.25; letter-spacing:-0.01em;
-  }
-  .view-toggle button.active{ background: var(--paper); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+.view-toggle{
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  background:var(--paper-dark);
+  border-radius:12px;
+  padding:5px;
+  margin-bottom:16px;
+  gap:4px;
+}
 
+.view-toggle button{
+  min-width:0;
+  min-height:58px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+
+  border:none;
+  background:transparent;
+  padding:6px 3px;
+  border-radius:9px;
+
+  font-family:'Inter',sans-serif;
+  font-weight:650;
+  font-size:0.68rem;
+  color:var(--ink-soft);
+
+  cursor:pointer;
+  line-height:1.1;
+
+  transition:
+    background .15s ease,
+    color .15s ease,
+    transform .15s ease;
+}
+
+.view-toggle button svg{
+  width:25px;
+  height:25px;
+
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+
+  flex-shrink:0;
+}
+.view-toggle button.active{
+  background:var(--paper);
+  color:var(--ink);
+
+  box-shadow:
+    0 2px 5px rgba(0,0,0,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.65);
+}
+/* NAV ICON COLOURS */
+
+.view-toggle .home-icon{
+  color:#5F8A68;
+}
+
+.view-toggle .chores-icon{
+  color:#527FA3;
+}
+
+.view-toggle .quests-icon{
+  color:#8B6EAD;
+}
+
+.view-toggle .leaderboard-icon{
+  color:#C3912F;
+}
+
+.view-toggle .stats-icon{
+  color:#B96855;
+}
+/* NAV ICON COLOURS */
+
+.view-toggle .home-icon{
+  color:#5F8A68;
+}
+
+.view-toggle .chores-icon{
+  color:#527FA3;
+}
+
+.view-toggle .quests-icon{
+  color:#8B6EAD;
+}
+
+.view-toggle .leaderboard-icon{
+  color:#C3912F;
+}
+
+.view-toggle .stats-icon{
+  color:#B96855;
+}
+
+
+/* ACTIVE NAV BACKGROUNDS */
+
+.view-toggle button[data-view="home"].active{
+  background:#FFF8EE;
+}
+
+.view-toggle button[data-view="chores"].active{
+  background:#EDF6FB;
+}
+
+.view-toggle button[data-view="quests"].active{
+  background:#F3EEFA;
+}
+
+.view-toggle button[data-view="leaderboard"].active{
+  background:#FFF6DC;
+}
+
+.view-toggle button[data-view="history"].active{
+  background:#FAEEEA;
+}
+
+
+.view-toggle button span{
+  white-space:nowrap;
+}
+
+.view-toggle button span{
+  white-space:nowrap;
+}
+
+.view-toggle button:hover{
+  color:var(--ink);
+  background:rgba(255,255,255,0.35);
+}
+
+.view-toggle button:active{
+  transform:scale(.96);
+}
   .filter-bar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom: 14px; }
   .btn-filter{
     display:flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line);
@@ -316,15 +465,34 @@
   .check-btn.done-flash{ background: var(--spring) !important; border-color: var(--spring) !important; color:#fff !important; animation: pop 0.3s ease; }
   .tier-label{ font-size:0.62rem; text-transform:uppercase; letter-spacing:0.04em; text-align:center; margin-top:2px; color: rgba(46,42,34,0.65); font-weight:600; position:relative; z-index:1; }
   .pts-label{ font-size:0.62rem; text-align:center; color: rgba(46,42,34,0.65); font-weight:700; position:relative; z-index:1; }
-  .check-col{ display:flex; flex-direction:column; align-items:center; position:relative; z-index:1; }
+.check-col{
+  flex:0 0 18%;
+  min-width:80px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  position:relative;
+  z-index:1;
+}
   @keyframes pop{ 0%{transform:scale(1);} 50%{transform:scale(1.25);} 100%{transform:scale(1);} }
 
-  .card-info{
-    flex:1; min-width:0; position:relative; z-index:1;
-    background: rgba(255,255,255,0.55);
-    border-radius: 8px;
-    padding: 7px 10px;
-  }
+.card-info{
+  flex:1;
+  min-width:0;
+  position:relative;
+  z-index:1;
+
+  background:rgba(255,255,255,0.55);
+  border-radius:8px;
+
+  /* more horizontal, less box-within-a-box */
+  padding:7px 12px;
+
+  align-self:stretch;
+}
   .card-name{ font-family:'Fraunces',serif; font-weight:700; font-size:1.03rem; margin:0 0 4px; color: #201c14; }
   .card-meta{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:0.79rem; color: #3a3527; font-weight:500; }
   .tag{ background: rgba(255,255,255,0.85); padding: 2px 8px; border-radius: 10px; color: #201c14; font-weight:600; }
@@ -351,11 +519,97 @@
   }
 
   .notif-toggle{
-    background: var(--paper-dark); border:none; border-radius:50%; width:40px; height:40px;
-    cursor:pointer; font-size:1.4rem; flex-shrink:0; line-height:1; display:flex; align-items:center; justify-content:center; padding:0;
-  }
-  .notif-toggle:hover{ background:#e0d7c1; }
+  background:var(--paper-dark);
+  border:none;
+  border-radius:50%;
 
+  width:40px;
+  height:40px;
+  flex-shrink:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:0;
+  cursor:pointer;
+
+  color:var(--ink);
+
+  transition:
+    background .15s ease,
+    transform .15s ease;
+}
+
+.notif-toggle svg{
+  width:26px;
+  height:26px;
+
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+
+  pointer-events:none;
+}
+
+.notif-toggle:hover{
+  transform:scale(1.06);
+  filter:brightness(.96);
+}
+
+.notif-toggle:active{
+  transform:scale(.94);
+}
+/* Individual utility buttons — must stay after .notif-toggle */
+
+.notif-toggle#notifBtn{
+  color:#D29418;
+  background:#FFF0C9;
+}
+
+.notif-toggle#shareBtn{
+  color:#4382B5;
+  background:#DCECF7;
+}
+
+.notif-toggle#settingsBtn{
+  color:#776B96;
+  background:#E9E2F2;
+}
+
+.notif-toggle#installBtn{
+  color:#5F8A68;
+  background:#DFEADF;
+}
+
+/* Preserve each button's colour on hover */
+.notif-toggle:hover{
+  transform:scale(1.06);
+  filter:brightness(.96);
+}
+
+.notif-toggle:active{
+  transform:scale(.94);
+}
+/* TOP UTILITY ICON COLOURS */
+
+#notifBtn{
+  color:#C3912F;  /* warm gold */
+}
+
+#shareBtn{
+  color:#527FA3;  /* blue */
+}
+
+#settingsBtn{
+  color:#6F6878;  /* muted slate-purple */
+}
+
+#installBtn{
+  color:#5F8A68;  /* green */
+}
   .tip-banner{
     text-align:center; font-size:0.82rem; font-style:italic; color: var(--ink-soft);
     margin: -6px 0 16px; padding: 0 14px;
@@ -577,7 +831,7 @@
   .toast { max-height:45vh; overflow:auto; white-space:pre-line; line-height:1.5; }
   @media(prefers-reduced-motion:reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
 
-  .tier-guide { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; margin-bottom:14px; }
+  .tier-guide { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; margin-bottom:14px; }
   .tier-choice { border:1px solid var(--line); border-radius:10px; padding:10px 3px; font:600 .75rem Inter,sans-serif; color:var(--ink); cursor:pointer; background:#eee; }
   .tier-choice strong, .tier-choice small { display:block; margin-top:4px; }
   .tier-choice.tier-bronze { background:#efd2b4; }
@@ -594,8 +848,160 @@
   border-color:#9B72B5;
 }
   .tier-choice[aria-pressed="true"] { outline:2px solid var(--ink); outline-offset:1px; }
+
+  .card.tier-wood { background:linear-gradient(145deg,#ecd5b4,#bc9468 55%,#8c6848); }
+  .check-btn.tier-wood { background:radial-gradient(circle at 33% 28%,#f4e4ce,#9a7650); border-color:#f8eddd; color:#493420; }
+  .tier-choice.tier-wood { background:#e6d0b0; color:#493420; }
+  .home-progress-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; margin:14px 0; }
+  .home-progress-grid .home-progress-card { margin:0; min-width:0; }
+  .home-progress-grid .home-progress-card > div { min-width:0; overflow-wrap:anywhere; }
+  .home-dibs { margin-bottom:16px; }
+  .view-all-chores { display:block; margin:18px auto 0; }
+  @media(min-width:600px) { .home-progress-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:380px) { .tier-choice { font-size:.66rem; } }
 </style>
-</head>
+<style id="game-visual-theme">
+/* Game-inspired visual theme. */
+:root { --paper:#f5eddb; --paper-dark:#e4d7b9; --ink:#283b3c; --ink-soft:#586561; --line:#c6c6af; --spring:#469270; }
+body { background-color:#ebe3ce; background-image:radial-gradient(#cfc7b4 1px,transparent 1px); background-size:22px 22px; }
+.wrap { max-width:800px; padding:28px 22px 70px; }
+.banner { padding:10px 0 18px; }
+.banner h1 { font-size:clamp(2rem,6vw,2.7rem); font-weight:900; letter-spacing:-1.5px; color:#263b3c; text-shadow:0 2px 0 #fff8e7; }
+.banner p { font-size:.85rem; }
+.tip-banner { background:#fff8e8; border:2px dashed #a9ac96; border-radius:12px; padding:10px; color:#53635b; }
+.player-chip { background:#fff9e9; border:2px solid #344846; box-shadow:0 3px 0 #344846; border-radius:12px; padding:7px 12px 7px 7px; }
+.notif-toggle { border:2px solid #344846; background:#fff9e9; border-radius:12px; box-shadow:0 3px 0 #344846; min-width:40px; min-height:40px; }
+.view-toggle { background:#304847; border:3px solid #243a39; padding:7px; gap:6px; box-shadow:0 5px 0 #203331; border-radius:18px; margin:20px 0 24px; }
+.view-toggle button { color:#f8f2df; border:2px solid transparent; min-height:62px; border-radius:10px; font-weight:800; }
+.view-toggle button.active, .view-toggle button[data-view].active { background:linear-gradient(#ffe9a0,#f3c85a); color:#283b3c; border-color:#1e3634; box-shadow:inset 0 2px 0 #fff4c9,0 3px 0 #182e2c; }
+.view-toggle button:not(.active) svg { color:#f7eacb; stroke:#f7eacb; }
+.view-toggle button:not(.active):hover { background:#49605b; color:white; }
+.view-toggle button svg { stroke:currentColor; }
+.home-progress-card, .quest-card, .campaign-banner, .history-stat, .lb-row, .modal { border:3px solid #344846; border-radius:16px; background:#fffbef; box-shadow:0 5px 0 #bac1a9,inset 0 2px 0 #fff; }
+.home-progress-card { padding:17px 14px; }
+.home-progress-grid { gap:16px; margin:20px 0; }
+.profile-avatar, .avatar { border:2px solid #294440; box-shadow:inset 0 2px 0 #ffffff55; }
+.level-badge { background:#304847; color:#fff1b6; border:1px solid #162f2c; border-radius:6px; padding:3px 6px; font-size:.67rem; }
+.level-progress-track, .campaign-track, .quest-track { height:16px; background:#d8dfd0; border:2px solid #344846; border-radius:8px; box-shadow:inset 0 3px 0 #a5b3a2; overflow:hidden; }
+.level-progress-fill { background:linear-gradient(#9fdda0 0%,#76c487 45%,#469970 46%,#469970 100%); border-radius:4px; box-shadow:inset 0 2px 0 #d8f5c4; }
+.campaign-fill { background:linear-gradient(#ffe398,#e7aa40); border-radius:4px; }
+.campaign-banner { padding:16px; background:#f9e9b8; margin-bottom:17px; }
+.quest-card { padding:15px; margin-bottom:16px; }
+.section-label { display:table; background:#304847; color:#fff6d8; border:2px solid #203735; border-radius:8px 8px 8px 2px; padding:8px 14px; font:800 .83rem 'Inter',sans-serif; letter-spacing:.035em; margin:24px 0 14px; box-shadow:0 3px 0 #a5b19d; }
+.list { gap:17px; }
+.card { --tier-face:#e1ccb0; --tier-edge:#866649; border:3px solid #344846; border-left:9px solid var(--tier-edge); border-radius:18px; padding:17px 30px 17px 14px; gap:14px; background:var(--tier-face); box-shadow:0 6px 0 #344846,inset 0 2px 0 #fff; overflow:hidden; }
+.card.tier-wood { --tier-face:#e2d1b7; --tier-edge:#8c6a49; }
+.card.tier-bronze { --tier-face:#efc29c; --tier-edge:#b66e38; }
+.card.tier-silver { --tier-face:#d7e1e4; --tier-edge:#7c9199; }
+.card.tier-gold { --tier-face:#f9df88; --tier-edge:#c89b26; }
+.card.tier-diamond { --tier-face:#e2d5f2; --tier-edge:#9475b7; }
+.card.tier-wood,.card.tier-bronze,.card.tier-silver,.card.tier-gold,.card.tier-diamond { background:var(--tier-face); color:#283b3c; border-color:#344846; border-left-color:var(--tier-edge); }
+/* Soft reflected light on tier cards; a quiet grain for Wood. */
+.card.tier-wood,.card.tier-bronze,.card.tier-silver,.card.tier-gold,.card.tier-diamond {
+ background-color:var(--tier-face);
+ background-image:linear-gradient(125deg,rgba(255,255,255,.38) 0%,rgba(255,255,255,.12) 23%,transparent 43%,rgba(255,255,255,.19) 62%,transparent 82%);
+}
+.card.tier-wood {
+ background-image:linear-gradient(125deg,rgba(255,255,255,.29),transparent 45%,rgba(255,255,255,.12) 66%,transparent 85%),repeating-linear-gradient(2deg,transparent 0px,transparent 13px,rgba(112,76,40,.09) 14px,transparent 16px,transparent 30px,rgba(112,76,40,.07) 31px,transparent 34px),repeating-linear-gradient(178deg,transparent 0px,transparent 39px,rgba(112,76,40,.06) 40px,transparent 43px,transparent 67px);
+}
+.card::before,.card::after { display:none; }
+.card.overdue,.card.due,.card[class*='season-'] { box-shadow:0 6px 0 #344846,inset 0 2px 0 #fff; }
+.card-info { background:transparent; padding:0; border:0; border-radius:0; box-shadow:none; }
+.card-name { font-family:'Inter',sans-serif; font-size:1.02rem; font-weight:800; line-height:1.35; color:#263b3c; margin:0 0 9px; }
+.card-meta { gap:5px; font-size:.71rem; }
+.tag { background:#fffdf5; border:1px solid #b7bda9; padding:3px 7px; color:#3e514a; border-radius:6px; }
+.card-lastdone { color:#68726a; font-size:.73rem; font-weight:500; margin-top:9px; line-height:1.4; }
+.card-status-line { margin-top:5px; font-size:.78rem; }
+.card .check-btn { width:58px; height:54px; border-radius:15px; border:3px solid #244c40; background:linear-gradient(#a7dfb3,#6cb98b); color:#193f32; font-size:1.55rem; font-weight:900; box-shadow:inset 0 3px 0 #e3f8cd,0 5px 0 #244c40; transition:transform .12s,box-shadow .12s,filter .12s; }
+.card .check-btn:not(:disabled):hover { transform:translateY(-2px); filter:brightness(1.06); }
+.card .check-btn:not(:disabled):active { transform:translateY(4px); box-shadow:inset 0 2px 0 #e3f8cd,0 1px 0 #244c40; }
+.card .check-btn:disabled { background:#d8ddcf; border-color:#788878; color:#657463; box-shadow:0 3px 0 #788878; opacity:.65; }
+.tier-label { color:#536157; font-size:.6rem; margin-top:9px; font-weight:800; }
+.pts-label { background:#304847; color:#fff2b4; border-radius:6px; padding:3px 6px; margin-top:4px; font-size:.67rem; }
+.del-x { top:7px; right:7px; background:transparent; color:#68766c; }
+.btn-add,.btn-primary { border:2px solid #344846; background:linear-gradient(#ffe6a1,#f2c354); color:#273d35; border-radius:11px; box-shadow:inset 0 2px 0 #fff5ca,0 4px 0 #344846; font-weight:800; padding:11px 18px; min-height:44px; }
+.claim-btn,.btn-filter,.sort-select,.btn-plain,.lb-range button { border:2px solid #758777; background:#fff9e9; color:#344846; border-radius:8px; box-shadow:0 2px 0 #b1bba5; font-weight:700; }
+.claim-btn { padding:5px 9px; font-size:.7rem; }
+.claim-row { margin-top:10px; }
+.tier-choice { border:2px solid #526256; border-radius:12px; box-shadow:0 3px 0 #526256; padding:11px 3px; }
+.tier-choice[aria-pressed='true'] { outline:3px solid #263b3c; outline-offset:3px; }
+button:not(:disabled):active { transform:translateY(2px); }
+button:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid #147b99; outline-offset:4px; }
+.subtask-list { margin-top:10px; padding-top:9px; border-top:1px dashed #a7b19e; gap:6px; }
+.subtask-check { border:2px solid #667f6b; border-radius:5px; background:#fff9ea; }
+.subtask-row.done .subtask-check { background:#6bad82; }
+.toast { background:#304847; border:3px solid #1b3331; color:#fff9e7; box-shadow:0 5px 0 #162c29; border-radius:14px; padding:13px 16px; }
+.toast-action { background:#f4cf70; color:#263b3c; border:2px solid #142f29; font-weight:800; }
+.undo-bar { border:2px solid #859980; background:#f9fae7; }
+.modal h3 { font-size:1.3rem; }
+.modal-overlay { background:#1a3432a8; backdrop-filter:blur(3px); }
+.settings-search,.modal input[type=text],.modal select { border:2px solid #899b86; background:#fffdf6; border-radius:10px; min-height:42px; }
+@media(max-width:480px) {
+ .wrap { padding:18px 12px 50px; }
+ .banner h1 { font-size:2.15rem; }
+ .view-toggle { gap:3px; padding:5px; }
+ .view-toggle button { font-size:.6rem; min-height:59px; padding:5px 1px; }
+ .card { padding:14px 25px 14px 9px; gap:11px; border-left-width:7px; }
+ .card .check-btn { width:48px; height:48px; border-radius:13px; }
+ .card-name { font-size:.92rem; }
+ .player-chip { font-size:.75rem; padding-right:8px; }
+ .player-bar { gap:6px; flex-wrap:wrap; }
+ .notif-toggle { min-width:36px; min-height:36px; }
+ .home-progress-card { padding:14px 12px; }
+ .tier-choice { font-size:.63rem; }
+}
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none !important; transition:none !important; } }
+</style>
+<style id="local-app-icons">
+.view-toggle button img.nav-icon { display:block; width:30px; height:30px; object-fit:contain; flex-shrink:0; }
+.card.has-dibs { padding-right:62px; }
+.dibs-bookmark { position:absolute; top:0; right:29px; width:30px; height:38px; background:#48a566; -webkit-mask:url("icon-bookmark.svg") center/100% 100% no-repeat; mask:url("icon-bookmark.svg") center/100% 100% no-repeat; pointer-events:none; }
+.claim-btn[data-claim] { display:inline-flex; align-items:center; gap:5px; }
+</style>
+
+<style id="game-screen-polish">
+/* Carry the game theme through secondary screens and controls. */
+.chart-card { background:linear-gradient(135deg,#fffcf3,#f3ecd8); border:3px solid #344846; border-radius:16px; box-shadow:0 5px 0 #bac1a9,inset 0 2px 0 #fff; }
+.quest-title { gap:12px; line-height:1.45; }
+.quest-title > span:first-child { min-width:0; }
+.quest-reward { flex-shrink:0; white-space:nowrap; padding:4px 8px; background:linear-gradient(#ffedaf,#f3ce6b); border:2px solid #97762d; border-radius:8px; color:#574215; box-shadow:0 2px 0 #c7ab65; }
+.quest-fill { background:linear-gradient(#aedbea,#66aec7); box-shadow:inset 0 2px 0 #e0f5fa; }
+.quest-fill.complete { background:linear-gradient(#a9dfae,#4d9f70); box-shadow:inset 0 2px 0 #def5cf; }
+.lb-range button { min-height:42px; }
+.lb-range button.active { background:linear-gradient(#ffe9a0,#f3c85a); color:#283b3c; border-color:#344846; box-shadow:inset 0 2px 0 #fff4c9,0 3px 0 #344846; }
+.lb-points { color:#294c40; font-size:1.3rem; }
+.lb-rank.first { background:#f9df88; border:2px solid #aa8530; border-radius:50%; min-width:32px; height:32px; display:flex; align-items:center; justify-content:center; color:#624713; }
+.history-stat-value { font-size:1.65rem; color:#294c40; font-variant-numeric:tabular-nums; }
+.history-stat-label { line-height:1.4; }
+.btn-filter,.sort-select { min-height:42px; }
+.btn-filter .count { background:#304847; color:#fff2b4; border-radius:6px; }
+.claim-row { flex-wrap:wrap; }
+.claim-btn { min-height:32px; }
+.subtask-row { min-height:36px; }
+.claim-btn:not(:disabled):hover,.btn-plain:not(:disabled):hover,.btn-filter:not(:disabled):hover { background:#fff1c9; border-color:#344846; }
+.btn-primary:not(:disabled):hover,.btn-add:not(:disabled):hover { filter:brightness(1.05); }
+.btn-primary:disabled,.btn-add:disabled { opacity:.55; box-shadow:none; cursor:default; }
+.empty-state,.no-history { background:#fff9e9; border:2px dashed #a0af98; border-radius:16px; line-height:1.6; }
+@media(max-width:480px) { .quest-title { flex-wrap:wrap; gap:8px; } .lb-row { gap:9px; padding:12px 10px; } }
+</style>
+<style>
+.achievement-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:24px; }
+.achievement-card { padding:14px;border:2px solid #a2ad98;border-radius:12px;background:#f5f1e6;color:#526158; }
+.achievement-card.earned { border-color:#97762d;background:linear-gradient(130deg,#fff3c6,#f3dda0);color:#3e4937;box-shadow:0 3px 0 #c7ab65; }
+.achievement-title { font-weight:800;line-height:1.4; }
+.achievement-card p { font-size:.78rem;line-height:1.45; }
+.achievement-card strong { font-size:.78rem; }
+.achievement-card progress { display:block;width:100%;margin-top:8px;accent-color:#469270; }
+.lb-badges { max-height:3em;overflow:auto; }
+</style><style>.reward-avatar{width:80%;height:80%;object-fit:contain}.reward-art{width:64px;height:64px;object-fit:contain;margin-bottom:12px}.reward-title{font-size:.75rem;font-weight:700;color:#526647;margin-top:4px}.rewards-grid{margin-top:14px}.reward-equip{display:block;width:100%;margin-top:14px}.reward-equip:disabled{opacity:.65}.view-toggle button{min-width:0}</style><style>
+.avatar-character{position:relative;display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;isolation:isolate}
+.avatar-character .reward-avatar{width:78%;height:78%;object-fit:contain}
+.avatar-outfit{position:absolute;width:68%;height:48%;object-fit:fill;bottom:0;left:16%;z-index:1}
+.avatar-hat{position:absolute;top:-20%;left:12%;width:76%;text-align:center;font-size:1.05em;line-height:1;z-index:2}
+.gold-outfit{filter:sepia(1) saturate(3)}
+.reward-symbol{font-size:3rem;margin-bottom:12px}
+#app .rewards-grid ~ .hint{line-height:1.5}
+</style></head>
 <body>
 <div class="wrap" id="app"><div class="loading">Dusting off the almanac…</div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -629,11 +1035,14 @@ const FREQS = [
 const SEASONS = ['Spring','Summer','Fall','Winter'];
 const SEASON_ICON = { Spring:'🌱', Summer:'☀️', Fall:'🍂', Winter:'❄️' };
 const TIERS = [
-  { id:'bronze',  label:'Bronze',  order:0, xp:5,  icon:'●' },
-  { id:'silver',  label:'Silver',  order:1, xp:10, icon:'◆' },
-  { id:'gold',    label:'Gold',    order:2, xp:20, icon:'★' },
-  { id:'diamond', label:'Diamond', order:3, xp:40, icon:'💎' },
+  { id:'wood', label:'Wood', order:0, xp:5, icon:'🪵' },
+  { id:'bronze', label:'Bronze', order:1, xp:10, icon:'🥉' },
+  { id:'silver', label:'Silver', order:2, xp:20, icon:'🥈' },
+  { id:'gold', label:'Gold', order:3, xp:40, icon:'🥇' },
+  { id:'diamond', label:'Diamond', order:4, xp:80, icon:'💎' },
 ];
+const LEGACY_TIER_XP = {bronze:5,silver:10,gold:20,diamond:40};
+
 const TIER_XP = Object.fromEntries(TIERS.map(t => [t.id, t.xp]));
 const AVATAR_COLORS = ['#B33F2E','#4A7FA8','#6B9C5E','#D9A02C','#8c5323','#7a4fa0','#2f7a6b','#c1602a'];
 
@@ -2791,6 +3200,12 @@ const DEFAULT_CHORES = [
   }
 ];
 
+// Revision 2 only moves the smallest default jobs into Wood.
+const LIBRARY_REVISION = 2;
+const PHASE1_DEFAULT_CHORES = JSON.parse(JSON.stringify(DEFAULT_CHORES));
+const WOOD_CHORE_IDS = ['a92','p1-bed','p1-lint'];
+DEFAULT_CHORES.forEach(chore => { if(WOOD_CHORE_IDS.includes(chore.id)) chore.tier = 'wood'; });
+
 let chores = [];
 let completions = [];
 let subtaskProgress = {}; // { [choreId]: { doneIds: string[], by: { [subtaskId]: person } } }
@@ -2815,22 +3230,43 @@ const DONE_PHRASES = [
 ];
 
 const ACHIEVEMENTS = [
-  { id:'first',      icon:'🥉', label:'Getting Started',   test:s => s.count >= 1 },
-  { id:'streak3',    icon:'🔥', label:'3-Day Streak',       test:s => s.streak >= 3 },
-  { id:'streak7',    icon:'🔥🔥', label:'Week Warrior',     test:s => s.streak >= 7 },
-  { id:'gold5',      icon:'🥇', label:'Gold Digger',        test:s => s.tierCounts.gold >= 5 },
-  { id:'diamond1',   icon:'💎', label:'Diamond Hands',      test:s => s.tierCounts.diamond >= 1 },
-  { id:'diamond10',  icon:'💎💎', label:'Diamond Elite',    test:s => s.tierCounts.diamond >= 10 },
-  { id:'century',    icon:'🏆', label:'Century Club',       test:s => s.xp >= 100 },
-  { id:'millennium', icon:'👑', label:'Household Legend',   test:s => s.xp >= 1000 },
-  { id:'bee',        icon:'🐝', label:'Busy Bee',           test:s => s.count >= 25 },
-  { id:'combo',      icon:'⚡', label:'Combo Master',       test:s => s.comboMax >= 3 },
-  { id:'questRegular', icon:'📜', label:'Quest Regular',    test:s => s.questCount >= 10 },
-  { id:'campaign',   icon:'🍂', label:'Campaign Champion',  test:s => s.campaignCount >= 1 },
-  { id:'bounty',     icon:'🎯', label:'Bounty Hunter',      test:s => s.bountyCount >= 5 },
-  { id:'teamPlayer', icon:'🤝', label:'Team Player',        test:s => s.helperCount >= 5 },
-  { id:'level5',     icon:'⭐', label:'Rising Star',        test:s => s.level >= 5 },
-  { id:'level10',    icon:'🌟', label:'Household Legend II',test:s => s.level >= 10 },
+  {id:'milestone-count-10',icon:"🏆",label:"10 Chores completed",description:"Complete this many chores overall.",target:10,progress:s=>s.count,test:s=>s.count>=10},
+  {id:'milestone-count-50',icon:"🏆",label:"50 Chores completed",description:"Complete this many chores overall.",target:50,progress:s=>s.count,test:s=>s.count>=50},
+  {id:'milestone-count-100',icon:"🏆",label:"100 Chores completed",description:"Complete this many chores overall.",target:100,progress:s=>s.count,test:s=>s.count>=100},
+  {id:'milestone-count-250',icon:"🏆",label:"250 Chores completed",description:"Complete this many chores overall.",target:250,progress:s=>s.count,test:s=>s.count>=250},
+  {id:'milestone-count-500',icon:"🏆",label:"500 Chores completed",description:"Complete this many chores overall.",target:500,progress:s=>s.count,test:s=>s.count>=500},
+  {id:'milestone-count-1000',icon:"🏆",label:"1000 Chores completed",description:"Complete this many chores overall.",target:1000,progress:s=>s.count,test:s=>s.count>=1000},
+  {id:'milestone-bestStreak-14',icon:"🔥",label:"14 Day streak",description:"Complete a chore on consecutive days. Your best streak counts.",target:14,progress:s=>s.bestStreak,test:s=>s.bestStreak>=14},
+  {id:'milestone-bestStreak-30',icon:"🔥",label:"30 Day streak",description:"Complete a chore on consecutive days. Your best streak counts.",target:30,progress:s=>s.bestStreak,test:s=>s.bestStreak>=30},
+  {id:'milestone-bestStreak-50',icon:"🔥",label:"50 Day streak",description:"Complete a chore on consecutive days. Your best streak counts.",target:50,progress:s=>s.bestStreak,test:s=>s.bestStreak>=50},
+  {id:'milestone-bestStreak-100',icon:"🔥",label:"100 Day streak",description:"Complete a chore on consecutive days. Your best streak counts.",target:100,progress:s=>s.bestStreak,test:s=>s.bestStreak>=100},
+  {id:'milestone-bestStreak-365',icon:"🔥",label:"365 Day streak",description:"Complete a chore on consecutive days. Your best streak counts.",target:365,progress:s=>s.bestStreak,test:s=>s.bestStreak>=365},
+  {id:'milestone-activeDays-30',icon:"📅",label:"30 Active days",description:"Days with at least one chore. Breaks are allowed.",target:30,progress:s=>s.activeDays,test:s=>s.activeDays>=30},
+  {id:'milestone-activeDays-100',icon:"📅",label:"100 Active days",description:"Days with at least one chore. Breaks are allowed.",target:100,progress:s=>s.activeDays,test:s=>s.activeDays>=100},
+  {id:'milestone-activeDays-365',icon:"📅",label:"365 Active days",description:"Days with at least one chore. Breaks are allowed.",target:365,progress:s=>s.activeDays,test:s=>s.activeDays>=365},
+  {id:'milestone-busyDay-5',icon:"⚡",label:"5 Chores in one day",description:"Complete different chores on one calendar day. Repeats count once.",target:5,progress:s=>s.busyDay,test:s=>s.busyDay>=5},
+  {id:'milestone-busyDay-10',icon:"⚡",label:"10 Chores in one day",description:"Complete different chores on one calendar day. Repeats count once.",target:10,progress:s=>s.busyDay,test:s=>s.busyDay>=10},
+  {id:'milestone-busyDay-15',icon:"⚡",label:"15 Chores in one day",description:"Complete different chores on one calendar day. Repeats count once.",target:15,progress:s=>s.busyDay,test:s=>s.busyDay>=15},
+  {id:'milestone-busyDay-20',icon:"⚡",label:"20 Chores in one day",description:"Complete different chores on one calendar day. Repeats count once.",target:20,progress:s=>s.busyDay,test:s=>s.busyDay>=20},
+  {id:'milestone-roomDay-3',icon:"🏡",label:"3 Rooms in one day",description:"Complete chores in different rooms on one day.",target:3,progress:s=>s.roomDay,test:s=>s.roomDay>=3},
+  {id:'milestone-roomDay-5',icon:"🏡",label:"5 Rooms in one day",description:"Complete chores in different rooms on one day.",target:5,progress:s=>s.roomDay,test:s=>s.roomDay>=5},
+  {id:'milestone-tierDay-5',icon:"💎",label:"All five tiers in one day",description:"Complete at least one chore from every tier on one day.",target:5,progress:s=>s.tierDay,test:s=>s.tierDay>=5},
+  { id:'first', description:"Complete your first chore.",      icon:'🥉', label:'Getting Started',   test:s => s.count >= 1 },
+  { id:'streak3', description:"Reach a best streak of 3 consecutive days.",    icon:'🔥', label:'3-Day Streak',       test:s => s.bestStreak >= 3 },
+  { id:'streak7', description:"Reach a best streak of 7 consecutive days.",    icon:'🔥🔥', label:'Week Warrior',     test:s => s.bestStreak >= 7 },
+  { id:'gold5', description:"Complete 5 Gold chores.",      icon:'🥇', label:'Gold Digger',        test:s => s.tierCounts.gold >= 5 },
+  { id:'diamond1', description:"Complete a Diamond chore.",   icon:'💎', label:'Diamond Hands',      test:s => s.tierCounts.diamond >= 1 },
+  { id:'diamond10', description:"Complete 10 Diamond chores.",  icon:'💎💎', label:'Diamond Elite',    test:s => s.tierCounts.diamond >= 10 },
+  { id:'century', description:"Earn 100 lifetime XP.",    icon:'🏆', label:'Century Club',       test:s => s.xp >= 100 },
+  { id:'millennium', description:"Earn 1,000 lifetime XP.", icon:'👑', label:'Household Legend',   test:s => s.xp >= 1000 },
+  { id:'bee', description:"Complete 25 chores.",        icon:'🐝', label:'Busy Bee',           test:s => s.count >= 25 },
+  { id:'combo', description:"Earn a completion combo of at least 3.",      icon:'⚡', label:'Combo Master',       test:s => s.comboMax >= 3 },
+  { id:'questRegular', description:"Complete 10 quests.", icon:'📜', label:'Quest Regular',    test:s => s.questCount >= 10 },
+  { id:'campaign', description:"Complete a seasonal campaign.",   icon:'🍂', label:'Campaign Champion',  test:s => s.campaignCount >= 1 },
+  { id:'bounty', description:"Complete 5 bounty chores.",     icon:'🎯', label:'Bounty Hunter',      test:s => s.bountyCount >= 5 },
+  { id:'teamPlayer', description:"Earn 5 subtask-sharing rewards.", icon:'🤝', label:'Team Player',        test:s => s.helperCount >= 5 },
+  { id:'level5', description:"Reach player level 5.",     icon:'⭐', label:'Rising Star',        test:s => s.level >= 5 },
+  { id:'level10', description:"Reach player level 10.",    icon:'🌟', label:'Household Legend II',test:s => s.level >= 10 },
 ];
 
 // Lifetime level curve: level L requires 25*(L-1)^2 cumulative XP.
@@ -2934,9 +3370,34 @@ function computeStreak(personName){
   return streak;
 }
 
+
+// Historical milestones use local calendar dates, avoiding DST day-length errors.
+function milestoneStats(list){
+ const days=new Map();
+ for(const c of list){
+  const d=new Date(c.ts); if(!Number.isFinite(d.getTime())) continue;
+  const key=Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/86400000;
+  if(!days.has(key)) days.set(key,{chores:new Set(),rooms:new Set(),tiers:new Set()});
+  const day=days.get(key), chore=chores.find(x=>x.id===c.choreId);
+  day.chores.add(c.choreId);
+  if(c.room||chore?.room) day.rooms.add(c.room||chore.room);
+  if(c.tier||chore?.tier) day.tiers.add(c.tier||chore.tier);
+ }
+ let bestStreak=0,run=0,previous=-Infinity;
+ for(const day of [...days.keys()].sort((a,b)=>a-b)){run=day===previous+1?run+1:1;bestStreak=Math.max(bestStreak,run);previous=day;}
+ return {bestStreak,activeDays:days.size,busyDay:Math.max(0,...[...days.values()].map(d=>d.chores.size)),roomDay:Math.max(0,...[...days.values()].map(d=>d.rooms.size)),tierDay:Math.max(0,...[...days.values()].map(d=>d.tiers.size))};
+}
+function renderAchievementsPanel(name){
+ const s=personStats(name), earned=ACHIEVEMENTS.filter(a=>a.test(s)).length;
+ return `<section aria-label="Lifetime achievements"><div class="section-label">Achievements · ${earned}/${ACHIEVEMENTS.length}</div><p class="hint">Lifetime milestones and personal bests. Badges are honours, with no extra XP.</p><div class="achievement-grid">${ACHIEVEMENTS.map(a=>{
+ const done=a.test(s),value=a.progress?Math.min(a.target,a.progress(s)):null;
+ return `<div class="achievement-card ${done?'earned':''}"><div class="achievement-title">${a.icon} ${escapeHtml(a.label)}</div><p>${escapeHtml(a.description||'A lifetime milestone')}</p><strong>${done?'✓ Earned':value!==null?value+' / '+a.target:'Not earned yet'}</strong>${value!==null?`<progress max="${a.target}" value="${value}" aria-label="${escapeHtml(a.label)} progress"></progress>`:''}</div>`;
+ }).join('')}</div></section>`;
+}
+
 function personStats(name){
   const list = completions.filter(c => c.person === name);
-  const tierCounts = { bronze:0, silver:0, gold:0, diamond:0 };
+  const tierCounts = Object.fromEntries(TIERS.map(t => [t.id,0]));
   let xp = 0;
   list.forEach(c => {
     const chore = chores.find(x => x.id === c.choreId);
@@ -2955,7 +3416,7 @@ function personStats(name){
   const level = levelFromXP(xp);
 
   return {
-    count: list.length, xp, tierCounts, streak: computeStreak(name),
+    ...milestoneStats(list), count: list.length, xp, tierCounts, streak: computeStreak(name),
     comboMax, questCount, campaignCount, bountyCount, helperCount, level
   };
 }
@@ -3247,11 +3708,12 @@ function migrateLibrary(){
     const original = chores.find(c => c.id === entry.choreId);
     entry.tier ||= original?.tier || 'bronze';
     entry.room ||= original?.room || 'Whole Home';
-    entry.xp ??= TIER_XP[entry.tier] || 5;
+    entry.xp ??= LEGACY_TIER_XP[entry.tier] || 5;
   }
   for(const item of chores){
-    if(item.libraryRevision === 1) continue;
-    const prior = LEGACY_DEFAULT_CHORES.find(c => c.id === item.id);
+    if(item.libraryRevision >= LIBRARY_REVISION) continue;
+    const previousLibrary = item.libraryRevision === 1 ? PHASE1_DEFAULT_CHORES : LEGACY_DEFAULT_CHORES;
+    const prior = previousLibrary.find(c => c.id === item.id) || PHASE1_DEFAULT_CHORES.find(c => c.id === item.id);
     const next = DEFAULT_CHORES.find(c => c.id === item.id);
     if(!prior || !next) continue;
     // Preserve an in-progress checklist intact until its current run finishes.
@@ -3263,8 +3725,8 @@ function migrateLibrary(){
       if(!(recognizedDefault && key === 'tier') && JSON.stringify(item[key]) !== JSON.stringify(prior[key])) continue;
       if(next[key] === undefined) delete item[key]; else item[key] = clone(next[key]);
     }
-    if(recognizedDefault && next.enabled === false) item.enabled = false;
-    item.libraryRevision = 1;
+    if(!item.libraryRevision && recognizedDefault && next.enabled === false) item.enabled = false;
+    item.libraryRevision = LIBRARY_REVISION;
   }
   if(stateExtras.libraryAdditionsVersion !== 1){
     for(const item of DEFAULT_CHORES.filter(c => c.id.startsWith('p1-'))){
@@ -3283,8 +3745,14 @@ async function fetchSharedState(){
   return data;
 }
 async function pushSharedState(){
+  // Bonus/activity events are supplementary history — cap them so the
+  // synced payload doesn't grow forever. Completions (the real maintenance
+  // record) are intentionally never trimmed.
+  if(activityLog.length > 400) activityLog = activityLog.slice(-400);
+
   if(!firebaseConfigured){
-    localStorage.setItem(LOCAL_STATE_KEY, JSON.stringify(stateSnapshot()));
+    try{ localStorage.setItem(LOCAL_STATE_KEY, JSON.stringify(stateSnapshot())); }
+    catch(e){ throw new Error('Could not save locally — your browser\u2019s storage may be full or restricted (private browsing?).'); }
     return;
   }
   if(!stateETag) throw new Error('Please reconnect before saving.');
@@ -3524,7 +3992,7 @@ async function finalizeCompletion(chore, finisherPerson, contributors, btnEl){
 
   const activityStart = activityLog.length;
   shareLines.forEach(({ person, xp }) => {
-    activityLog.push({ ts: entry.ts, batchTs: entry.ts, person, type:'subtask-share', xp, label: `Helped finish "${chore.name}"`, icon:'🤝' });
+    activityLog.push({ ts: entry.ts, batchTs: entry.ts, person, type:'subtask-share', xp, label: `Helped finish "${escapeHtml(chore.name)}"`, icon:'🤝' });
   });
 
   const combo = applyComboBonus(finisherPerson, entry.ts);
@@ -3678,9 +4146,14 @@ async function resetAlmanac(){
 function openModal(html, wide){
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
-  overlay.innerHTML = `<div class="modal${wide ? ' modal-wide' : ''}">${html}</div>`;
+  overlay.innerHTML = `<div class="modal${wide ? ' modal-wide' : ''}" role="dialog" aria-modal="true" tabindex="-1">${html}</div>`;
   overlay.addEventListener('click', e => { if(e.target === overlay) overlay.remove(); });
+  const onKeydown = e => { if(e.key === 'Escape'){ overlay.remove(); document.removeEventListener('keydown', onKeydown); } };
+  document.addEventListener('keydown', onKeydown);
   document.body.appendChild(overlay);
+  const modalEl = overlay.querySelector('.modal');
+  const firstField = modalEl.querySelector('input, textarea, select, button');
+  (firstField || modalEl).focus();
   return overlay;
 }
 
@@ -3795,7 +4268,7 @@ function openSettingsModal(){
 
     <div class="section-label">Household</div>
     <label>Household name</label>
-    <input type="text" id="settingsHhName" value="${hh.name}" maxlength="40" placeholder="Our Household">
+    <input type="text" id="settingsHhName" value="${escapeHtml(hh.name)}" maxlength="40" placeholder="Our Household">
     <label style="margin-top:10px;">Completion verification</label>
     <p class="hint">Good Faith: completions count right away. Approval: another member confirms before it counts toward the leaderboard — no one can approve their own.</p>
     <div class="lb-range" style="margin-bottom:14px;">
@@ -3890,11 +4363,11 @@ function applySort(list){
   if(sortBy === 'name') arr.sort((a,b) => a.name.localeCompare(b.name));
   if(sortBy === 'room') arr.sort((a,b) => a.room.localeCompare(b.room) || a.name.localeCompare(b.name));
   if(sortBy === 'freq'){
-    const order = { weekly:0, monthly:1, quarterly:2, yearly:3, seasonal:4 };
+    const order = { daily:0, weekly:1, monthly:2, quarterly:3, yearly:4, seasonal:5 };
     arr.sort((a,b) => (order[a.freq]-order[b.freq]) || a.name.localeCompare(b.name));
   }
   if(sortBy === 'tier'){
-    const order = { diamond:0, gold:1, silver:2, bronze:3 };
+    const order = Object.fromEntries(TIERS.map(t => [t.id,t.order]));
     arr.sort((a,b) => (order[a.tier]-order[b.tier]) || a.name.localeCompare(b.name));
   }
   return arr;
@@ -4085,7 +4558,7 @@ function buildActivityFeed(limit){
     const chore = chores.find(x => x.id === c.choreId);
     return {
       ts: c.ts, person: c.person, type:'chore', xp: c.xp,
-      text: `finished <b>${chore ? chore.name : 'a chore'}</b>${c.bounty ? ' 🎯' : ''}`,
+      text: `finished <b>${chore ? escapeHtml(chore.name) : 'a chore'}</b>${c.bounty ? ' 🎯' : ''}`,
       completionId: c.id, pending: c.verified === false
     };
   });
@@ -4106,7 +4579,7 @@ function renderActivityFeed(limit, viewerName){
       ${items.map(it => `
         <div class="activity-item">
           <div class="activity-icon">${ACTIVITY_ICONS[it.type] || '•'}</div>
-          <div class="activity-text"><b>${it.person || 'Someone'}</b> ${it.text}${it.pending ? ' <span class="claim-tag" style="color:var(--due);">⏳ pending</span>' : ''}</div>
+          <div class="activity-text"><b>${escapeHtml(it.person || 'Someone')}</b> ${it.text}${it.pending ? ' <span class="claim-tag" style="color:var(--due);">⏳ pending</span>' : ''}</div>
           <div class="activity-xp">+${it.xp}</div>
           ${it.pending && it.completionId && it.person !== viewerName
             ? `<button class="claim-btn" data-approve="${it.completionId}">✅ Approve</button>`
@@ -4194,9 +4667,9 @@ function renderHomeProgressCard(name){
   const lp = levelProgress(s.xp);
   return `
     <div class="home-progress-card">
-      <div class="profile-avatar" style="width:46px; height:46px; font-size:1.1rem; background:${avatarColor(name)};">${initials(name)}</div>
+      <div class="profile-avatar" style="width:46px; height:46px; font-size:1.1rem; background:${avatarColor(name)};">${playerAvatarHtml(name)}</div>
       <div style="flex:1;">
-        <div style="font-weight:700; font-family:'Fraunces',serif;">${name} <span class="level-badge">LV ${lp.level}</span></div>
+        <div style="font-weight:700; font-family:'Fraunces',serif;">${escapeHtml(name)} <span class="level-badge">LV ${lp.level}</span></div>${playerTitleHtml(name)}
         <div class="level-progress-track"><div class="level-progress-fill" style="width:${lp.pct}%"></div></div>
         <div style="font-size:0.76rem; color:var(--ink-soft); margin-top:4px;">${lp.into}/${lp.needed} XP to Level ${lp.level+1}${s.streak>0 ? ` · 🔥 ${s.streak}d streak` : ''}</div>
       </div>
@@ -4211,7 +4684,7 @@ function renderHouseholdProgressCard(){
     <div class="home-progress-card teaser" data-goto-stats title="See household records in Stats">
       <div class="profile-avatar" style="width:46px; height:46px; font-size:1.2rem; background:var(--ink);">🏡</div>
       <div style="flex:1;">
-        <div style="font-weight:700; font-family:'Fraunces',serif;">${h.name} <span class="level-badge">LV ${lp.level}</span></div>
+        <div style="font-weight:700; font-family:'Fraunces',serif;">${escapeHtml(h.name)} <span class="level-badge">LV ${lp.level}</span></div>
         <div class="level-progress-track"><div class="level-progress-fill" style="width:${lp.pct}%"></div></div>
         <div style="font-size:0.76rem; color:var(--ink-soft); margin-top:4px;">${h.xp} XP total · ${h.memberCount} member${h.memberCount===1?'':'s'} · ~${h.xpPerMember} XP each</div>
       </div>
@@ -4241,9 +4714,9 @@ function openProfileModal(name){
   const items = buildActivityFeed(200).filter(it => it.person === name).slice(0, 10);
   openModal(`
     <div class="profile-header">
-      <div class="profile-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>
+      <div class="profile-avatar" style="background:${avatarColor(name)}">${playerAvatarHtml(name)}</div>
       <div>
-        <h3 style="margin:0;">${name}</h3>
+        <h3 style="margin:0;">${escapeHtml(name)}</h3>
         <span class="level-badge">LV ${lp.level}</span>
         <span style="font-size:0.78rem; color:var(--ink-soft); margin-left:6px;">${s.xp} XP total</span>
       </div>
@@ -4369,7 +4842,8 @@ function choreCardHtml(chore, status, playerName){
   const claimedByOther = chore.claimedBy && !claimExpired && chore.claimedBy !== playerName;
   const claimedByMe = chore.claimedBy && !claimExpired && chore.claimedBy === playerName;
   return `
-    <div class="card tier-${chore.tier || 'bronze'} ${cardClass}">
+    <div class="card tier-${chore.tier || 'bronze'} ${cardClass} ${claimedByMe ? 'has-dibs' : ''}">
+      ${claimedByMe ? `<span class="dibs-bookmark" title="You called dibs" aria-hidden="true"></span>` : ''}
       ${chore.bounty ? `<div class="bounty-ribbon">🎯 BOUNTY ×2</div>` : ''}
       <div class="check-col">
         <button class="check-btn tier-${chore.tier || 'bronze'}" data-done="${chore.id}" title="${status.active ? 'Complete chore' : 'Available again when due'}" aria-label="Complete ${escapeHtml(chore.name)}" ${!status.active || mutationBusy ? 'disabled' : ''}>✓</button>
@@ -4404,13 +4878,94 @@ function choreCardHtml(chore, status, playerName){
         ` : ''}
         <div class="claim-row">
           ${claimedByMe ? `<span class="claim-tag mine">🔒 You called dibs · <button class="claim-btn" data-release="${chore.id}" style="padding:2px 8px;">Release</button></span>` : ''}
-          ${claimedByOther ? `<span class="claim-tag">🔒 Claimed by ${chore.claimedBy} · ${timeAgo(chore.claimedAt)}</span>` : ''}
+          ${claimedByOther ? `<span class="claim-tag">🔒 Claimed by ${escapeHtml(chore.claimedBy)} · ${timeAgo(chore.claimedAt)}</span>` : ''}
           ${!claimedByMe && !claimedByOther ? `<button class="claim-btn" data-claim="${chore.id}">🙋 Call dibs</button>` : ''}
         </div>
       </div>
       <button class="del-x" data-del="${chore.id}" title="Hide this chore (find it again in Settings)">✕</button>
     </div>
   `;
+}
+
+// Pure selector shared by Home and regression tests. Exactly five suggestions
+// at most, with tier variety first and remaining spaces filled by easy chores.
+function selectHomeChores(withStatus, playerName, now = Date.now()){
+  const activeClaim = chore => !!chore.claimedBy && Number.isFinite(chore.claimedAt) && now - chore.claimedAt < 20*60*1000;
+  const due = withStatus.filter(({chore,status}) => chore.enabled !== false && status.active);
+  const dibs = due.filter(({chore}) => playerName && chore.claimedBy === playerName && activeClaim(chore));
+  const urgency = {overdue:0,seasonal:1,due:2};
+  const tierOrder = Object.fromEntries(TIERS.map(t => [t.id,t.order]));
+  const candidates = due.filter(({chore}) => !activeClaim(chore)).sort((a,b) =>
+    (tierOrder[a.chore.tier] ?? 1) - (tierOrder[b.chore.tier] ?? 1) ||
+    (urgency[a.status.state] ?? 3) - (urgency[b.status.state] ?? 3) ||
+    a.chore.name.localeCompare(b.chore.name));
+  const selected = new Map();
+  for(const tier of TIERS){
+    const item = candidates.find(({chore}) => chore.tier === tier.id);
+    if(item) selected.set(item.chore.id,item);
+  }
+  for(const item of candidates){
+    if(selected.size >= 5) break;
+    selected.set(item.chore.id,item);
+  }
+  const suggested = [...selected.values()].sort((a,b) =>
+    (tierOrder[a.chore.tier] ?? 1) - (tierOrder[b.chore.tier] ?? 1) ||
+    a.chore.name.localeCompare(b.chore.name));
+  return {dibs, suggested};
+}
+
+
+
+const REWARDS = [
+ {id:'cap',kind:'hat',label:'Team Cap',symbol:'🧢',field:'count',target:5,requirement:'Complete 5 chores'},
+ {id:'crown',kind:'hat',label:'Champion Crown',symbol:'👑',field:'count',target:100,requirement:'Complete 100 chores'},
+ {id:'wizard',kind:'hat',label:'Top Hat',symbol:'🎩',field:'bestStreak',target:30,requirement:'Reach a 30-day streak'},
+ {id:'workshirt',kind:'outfit',label:'Work Shirt',icon:'icon-chores.svg',field:'count',target:10,requirement:'Complete 10 chores'},
+ {id:'goldshirt',kind:'outfit',label:'Golden Uniform',icon:'icon-chores.svg',field:'count',target:250,requirement:'Complete 250 chores'},
+ {id:'bear',kind:'avatar',label:'Helpful Bear',icon:'icon-bear.svg',field:'count',target:1,requirement:'Complete 1 chore'},
+ {id:'controller',kind:'avatar',label:'Game On',icon:'icon-controller.svg',field:'count',target:10,requirement:'Complete 10 chores'},
+ {id:'cake',kind:'avatar',label:'Sweet Success',icon:'icon-cake.svg',field:'activeDays',target:30,requirement:'Complete chores on 30 different days'},
+ {id:'devil',kind:'avatar',label:'Chore Fiend',icon:'icon-devil.svg',field:'count',target:100,requirement:'Complete 100 chores'},
+ {id:'diamond',kind:'avatar',label:'Diamond Champion',icon:'icon-diamond.svg',field:'diamondCount',target:10,requirement:'Complete 10 Diamond chores'},
+ {id:'starter',kind:'title',label:'Getting Things Done',field:'count',target:10,requirement:'Complete 10 chores'},
+ {id:'regular',kind:'title',label:'Steady Hand',field:'bestStreak',target:7,requirement:'Reach a 7-day streak'},
+ {id:'centurion',kind:'title',label:'Century Champion',field:'count',target:100,requirement:'Complete 100 chores'},
+ {id:'unstoppable',kind:'title',label:'Unstoppable',field:'bestStreak',target:50,requirement:'Reach a 50-day streak'},
+ {id:'veteran',kind:'title',label:'Year-Round Hero',field:'activeDays',target:365,requirement:'Complete chores on 365 different days'}
+];
+function rewardValue(reward,stats){return reward.field==='diamondCount' ? stats.tierCounts.diamond||0 : stats[reward.field]||0;}
+function rewardPreferences(name){
+ try {const p=JSON.parse(localStorage.getItem('chorechamps-rewards:'+encodeURIComponent(name))||'{}');return p&&typeof p==='object'?p:{};}catch(e){return {};}
+}
+function equippedReward(name,kind){
+ if(!name)return null;
+ const id=rewardPreferences(name)[kind],reward=REWARDS.find(r=>r.id===id&&r.kind===kind);
+ return reward&&rewardValue(reward,personStats(name))>=reward.target?reward:null;
+}
+function playerAvatarHtml(name){
+ const r=equippedReward(name,'avatar'),hat=equippedReward(name,'hat'),outfit=equippedReward(name,'outfit');
+ return `<span class="avatar-character" role="img" aria-label="${escapeHtml([r?.label||'Initials',hat?.label,outfit?.label].filter(Boolean).join(', '))}">${r?`<img class="reward-avatar" src="${r.icon}" alt="">`:escapeHtml(initials(name))}${outfit?`<img class="avatar-outfit ${outfit.id==='goldshirt'?'gold-outfit':''}" src="${outfit.icon}" alt="">`:''}${hat?`<span class="avatar-hat" aria-hidden="true">${hat.symbol}</span>`:''}</span>`;
+}
+function playerTitleHtml(name){const r=equippedReward(name,'title');return r?`<div class="reward-title">${r.label}</div>`:'';}
+function equipReward(id,kind){
+ if(!player)return;
+ const reward=REWARDS.find(r=>r.id===id&&r.kind===kind);
+ if(id&&(!reward||rewardValue(reward,personStats(player.name))<reward.target)){showToast('This reward is still locked');return;}
+ const prefs=rewardPreferences(player.name);prefs[kind]=id;
+ try{localStorage.setItem('chorechamps-rewards:'+encodeURIComponent(player.name),JSON.stringify(prefs));}
+ catch(e){showToast('Could not save your reward. Check browser storage.');return;}
+ render();showToast(id?'Reward equipped':'Default restored');
+}
+function renderRewardsPanel(name){
+ if(!name)return '<div class="empty-state">Set your name to start unlocking rewards.<br><button class="btn-primary" id="rewardsStart">Set your name</button></div>';
+ const stats=personStats(name);
+ return `<div class="section-label">Your rewards</div><p>Earn your look by doing chores. No points to spend.</p><p class="hint">Choices are saved for each player on this device.</p><h3>Your avatar preview</h3><p class="hint">Equip unlocked items below to change your look. Until then, your avatar shows your initials.</p><div class="home-progress-card" aria-label="Your avatar preview" style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><div class="profile-avatar" style="width:100px;height:100px;font-size:2.5rem;background:${avatarColor(name)}">${playerAvatarHtml(name)}</div><div><strong>${escapeHtml(name)}</strong>${playerTitleHtml(name)}</div></div>${['avatar','hat','outfit','title'].map(kind=>{
+ const equipped=equippedReward(name,kind);
+ return `<div class="section-label">${({avatar:'Avatars',hat:'Hats',outfit:'Outfits',title:'Titles'})[kind]}</div><button class="btn-plain" data-reward="" data-reward-kind="${kind}" ${!equipped?'disabled':''}>${({avatar:'Use initials',hat:'No hat',outfit:'No outfit',title:'No title'})[kind]}</button><div class="achievement-grid rewards-grid">${REWARDS.filter(r=>r.kind===kind).map(r=>{
+ const value=rewardValue(r,stats),unlocked=value>=r.target,selected=equipped?.id===r.id;
+ return `<div class="achievement-card ${unlocked?'earned':''}">${r.symbol?`<div class="reward-symbol">${r.symbol}</div>`:''}${r.icon?`<img class="reward-art ${r.id==='goldshirt'?'gold-outfit':''}" src="${r.icon}" alt="">`:''}<div class="achievement-title">${r.label}</div><p>${r.requirement}</p><strong>${unlocked?'Unlocked':Math.min(value,r.target)+' / '+r.target}</strong><button class="btn-primary reward-equip" data-reward="${r.id}" data-reward-kind="${kind}" aria-label="Equip ${r.label}" aria-pressed="${!!selected}" ${!unlocked||selected?'disabled':''}>${selected?'Equipped':unlocked?'Equip':'Locked'}</button></div>`;
+ }).join('')}</div>`;
+ }).join('')}`;
 }
 
 function render(){
@@ -4439,12 +4994,12 @@ function render(){
       <div class="list">
         ${board.length===0 ? `<div class="empty-state">No chores logged yet — get out there and claim some XP.</div>` : ''}
         ${board.map((p, i) => `
-          <div class="lb-row" data-profile="${p.name}" style="cursor:pointer;">
+          <div class="lb-row" data-profile="${escapeHtml(p.name)}" style="cursor:pointer;">
             <div class="lb-rank ${i===0?'first':''}">${i+1}</div>
-            <div class="avatar" style="background:${avatarColor(p.name)}">${initials(p.name)}</div>
+            <div class="avatar" style="background:${avatarColor(p.name)}">${playerAvatarHtml(p.name)}</div>
             <div style="flex:1;">
-              <div class="lb-name">${p.name}${i===0 ? '<span class="crown">👑</span>' : ''} <span class="level-badge">LV ${p.level}</span></div>
-              <div class="lb-sub">${p.count} chore${p.count===1?'':'s'} done${p.streak>0 ? ` · 🔥 ${p.streak}d streak` : ''}</div>
+              <div class="lb-name">${escapeHtml(p.name)}${i===0 ? '<span class="crown">👑</span>' : ''} <span class="level-badge">LV ${p.level}</span></div>
+              ${playerTitleHtml(p.name)}<div class="lb-sub">${p.count} chore${p.count===1?'':'s'} done${p.streak>0 ? ` · 🔥 ${p.streak}d streak` : ''}</div>
               ${p.achievements.length ? `<div class="lb-badges">${p.achievements.map(a=>`<span title="${a.label}">${a.icon}</span>`).join(' ')}</div>` : ''}
             </div>
             <div class="lb-points">${p.xp}<span style="font-size:0.7rem; font-weight:600; color:var(--ink-soft);"> XP</span></div>
@@ -4452,10 +5007,12 @@ function render(){
         `).join('')}
       </div>
     `;
+  } else if(view === 'rewards'){
+    bodyHtml = renderRewardsPanel(playerName);
   } else if(view === 'quests'){
     bodyHtml = `
       ${renderCampaignBanner()}
-      ${playerName ? renderQuestsPanel(playerName) : `<p style="font-size:0.85rem; color:var(--ink-soft); font-style:italic;">Set your name (top of the screen) to start tracking quests.</p>`}
+      ${playerName ? renderQuestsPanel(playerName) + renderAchievementsPanel(playerName) : `<p style="font-size:0.85rem; color:var(--ink-soft); font-style:italic;">Set your name (top of the screen) to start tracking quests.</p>`}
     `;
   } else if(view === 'history'){
     const { days } = buildHistory(historyRange);
@@ -4480,7 +5037,7 @@ function render(){
         <div class="home-progress-card" style="margin-bottom:12px;">
           <div class="profile-avatar" style="width:44px; height:44px; font-size:1.1rem; background:var(--ink);">🏡</div>
           <div style="flex:1;">
-            <div style="font-weight:700; font-family:'Fraunces',serif;">${h.name} <span class="level-badge">LV ${lp.level}</span></div>
+            <div style="font-weight:700; font-family:'Fraunces',serif;">${escapeHtml(h.name)} <span class="level-badge">LV ${lp.level}</span></div>
             <div class="level-progress-track"><div class="level-progress-fill" style="width:${lp.pct}%"></div></div>
             <div style="font-size:0.76rem; color:var(--ink-soft); margin-top:4px;">${h.xp} XP total · ${h.memberCount} member${h.memberCount===1?'':'s'} · ~${h.xpPerMember} XP/member</div>
           </div>
@@ -4491,12 +5048,12 @@ function render(){
         ${allTimeBoard.map(p => {
           const s = personStats(p.name);
           return `
-            <div class="lb-row" data-profile="${p.name}" style="cursor:pointer;">
-              <div class="avatar" style="background:${avatarColor(p.name)}">${initials(p.name)}</div>
+            <div class="lb-row" data-profile="${escapeHtml(p.name)}" style="cursor:pointer;">
+              <div class="avatar" style="background:${avatarColor(p.name)}">${playerAvatarHtml(p.name)}</div>
               <div style="flex:1;">
-                <div class="lb-name">${p.name} <span class="level-badge">LV ${p.level}</span></div>
-                <div class="lb-sub">${p.xp} XP total · 🔥 ${p.streak}d best streak · 🏅 ${p.achievements.length} achievements</div>
-                <div class="lb-sub">🥉${s.tierCounts.bronze} · 🥈${s.tierCounts.silver} · 🥇${s.tierCounts.gold} · 💎${s.tierCounts.diamond}</div>
+                <div class="lb-name">${escapeHtml(p.name)} <span class="level-badge">LV ${p.level}</span></div>
+                <div class="lb-sub">${p.xp} XP total · 🔥 ${s.bestStreak}d best streak · 🏅 ${p.achievements.length} achievements</div>
+                <div class="lb-sub">${TIERS.map(t => `${t.icon}${s.tierCounts[t.id]}`).join(' · ')}</div>
               </div>
             </div>
           `;
@@ -4507,21 +5064,23 @@ function render(){
       ${renderActivityFeed(40, playerName)}
     `;
   } else if(view === 'home'){
-    const homeVisible = withStatus.filter(x => x.status.active);
-    const order = { overdue:0, seasonal:1, due:2 };
-    homeVisible.sort((a,b) => (order[a.status.state]??9) - (order[b.status.state]??9));
+    const {dibs, suggested} = selectHomeChores(withStatus, playerName);
     bodyHtml = `
-      ${renderHomeProgressCard(playerName)}
-      ${renderHouseholdProgressCard()}
+      ${dibs.length ? `<section aria-label="Your dibs"><div class="section-label">Your dibs</div><div class="list home-dibs">${dibs.map(({chore,status}) => choreCardHtml(chore,status,playerName)).join('')}</div></section>` : ''}
+      <div class="home-progress-grid">${renderHomeProgressCard(playerName)}${renderHouseholdProgressCard()}</div>
       ${renderPendingApprovalsTeaser(playerName)}
       ${renderCampaignTeaser()}
       ${renderQuestsTeaser(playerName)}
-      <div class="section-label" style="margin-top:16px;">Needs attention</div>
-      <div class="list">
-        ${homeVisible.length===0 ? `<div class="empty-state">Nothing due right now — enjoy that.</div>` : ''}
-        ${homeVisible.map(({chore,status}) => choreCardHtml(chore, status, playerName)).join('')}
-      </div>
+      <section aria-label="Get started">
+        <div class="section-label" style="margin-top:16px;">Get started</div>
+        <div class="list home-suggestions">
+          ${suggested.length ? suggested.map(({chore,status}) => choreCardHtml(chore,status,playerName)).join('') : '<div class="empty-state">No other chores due right now.</div>'}
+        </div>
+        <button class="btn-add view-all-chores" data-view-all-chores>View all chores →</button>
+      </section>
     `;
+
+
   } else {
     const activeFilters = [
       filterRoom !== 'All' ? { key:'room', label: filterRoom } : null,
@@ -4532,7 +5091,10 @@ function render(){
 
     bodyHtml = `
       <input type="text" id="choreSearch" class="settings-search" placeholder="🔍 Search chores…" value="${escapeHtml(searchTerm)}" style="margin-bottom:10px;">
-      <div class="tier-guide">${TIERS.map(t => `<button class="tier-choice tier-${t.id}" data-tier="${t.id}" aria-pressed="${filterTier===t.id}">${t.icon} ${t.label}<strong>${t.xp} XP</strong><small>${enabledChores.filter(c => c.tier === t.id).length} chores</small></button>`).join('')}</div>
+      <select id="fTier" class="sort-select" aria-label="Filter chores by difficulty" style="max-width:100%;margin-bottom:12px;">
+        <option value="All" ${filterTier==='All'?'selected':''}>All difficulties</option>
+        ${TIERS.map(t => `<option value="${t.id}" ${filterTier===t.id?'selected':''}>${t.label} · ${t.xp} XP (${enabledChores.filter(c => c.tier === t.id).length} chores)</option>`).join('')}
+      </select>
       <div class="filter-bar">
         <button class="btn-filter" id="openFilters">⚲ Filters ${activeFilters.length ? `<span class="count">${activeFilters.length}</span>` : ''}</button>
         <select id="fSort" class="sort-select">
@@ -4576,30 +5138,85 @@ function render(){
 
     <div class="player-bar">
       <button class="player-chip" id="playerChip">
-        <span class="avatar" style="background:${playerColor}">${playerName ? initials(playerName) : '?'}</span>
-        ${playerName ? `${playerName} <span class="level-badge">LV ${levelFromXP(personStats(playerName).xp)}</span>` : 'Set your name'}
+        <span class="avatar" style="background:${playerColor}">${playerName ? playerAvatarHtml(playerName) : '?'}</span>
+        ${playerName ? `${escapeHtml(playerName)} <span class="level-badge">LV ${levelFromXP(personStats(playerName).xp)}</span>` : 'Set your name'}
       </button>
-      <button class="notif-toggle" id="notifBtn" title="${notifyEnabled ? 'Notifications on — tap to turn off' : 'Turn on notifications'}">${notifyEnabled ? '🔔' : '🔕'}</button>
-      <button class="notif-toggle" id="shareBtn" title="Invite someone to your almanac">📤</button>
-      <button class="notif-toggle" id="settingsBtn" title="Chore settings">⚙️</button>
+<button class="notif-toggle" id="notifBtn"
+  title="${notifyEnabled ? 'Notifications on — tap to turn off' : 'Turn on notifications'}"
+  aria-label="${notifyEnabled ? 'Turn off notifications' : 'Turn on notifications'}">
+
+  ${notifyEnabled ? `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+      <path d="M10 21h4"/>
+    </svg>
+  ` : `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      <path d="M18.63 18H3c0-2 3-2 3-9a6 6 0 0 1 .26-1.76"/>
+      <path d="M10.3 3.14A6 6 0 0 1 18 9c0 2.09.27 3.52.65 4.5"/>
+      <path d="M2 2l20 20"/>
+    </svg>
+  `}
+</button>
+
+<button class="notif-toggle" id="shareBtn"
+  title="Invite someone to your almanac"
+  aria-label="Share Chore Champs">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="18" cy="5" r="3"/>
+    <circle cx="6" cy="12" r="3"/>
+    <circle cx="18" cy="19" r="3"/>
+    <path d="m8.6 10.5 6.8-4"/>
+    <path d="m8.6 13.5 6.8 4"/>
+  </svg>
+</button>
+
+<button class="notif-toggle" id="settingsBtn"
+  title="Chore settings"
+  aria-label="Chore settings">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21h-4v-.09A1.7 1.7 0 0 0 9 19.35a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.63 15 1.7 1.7 0 0 0 3.07 14H3v-4h.09A1.7 1.7 0 0 0 4.65 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.63 1.7 1.7 0 0 0 10 3.07V3h4v.09A1.7 1.7 0 0 0 15 4.65a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 9 1.7 1.7 0 0 0 20.93 10H21v4h-.09A1.7 1.7 0 0 0 19.4 15z"/>
+  </svg>
+</button>
       ${canInstall ? `<button class="notif-toggle" id="installBtn" title="Install as an app">📲</button>` : ''}
     </div>
 
-    <div class="view-toggle">
-      <button data-view="home" class="${view==='home'?'active':''}">🏠 Home</button>
-      <button data-view="chores" class="${view==='chores'?'active':''}">📋 Chores</button>
-      <button data-view="quests" class="${view==='quests'?'active':''}">🎯 Quests</button>
-      <button data-view="leaderboard" class="${view==='leaderboard'?'active':''}">🏆 Leaderboard</button>
-      <button data-view="history" class="${view==='history'?'active':''}">📊 Stats</button>
-    </div>
+<div class="view-toggle">
+  <button data-view="home" class="${view==='home'?'active':''}">
+    <img class="nav-icon" src="icon-home.svg" width="30" height="30" alt="" aria-hidden="true">
+    <span>Home</span>
+  </button>
+  <button data-view="chores" class="${view==='chores'?'active':''}">
+    <img class="nav-icon" src="icon-chores.svg" width="30" height="30" alt="" aria-hidden="true">
+    <span>Chores</span>
+  </button>
+  <button data-view="quests" class="${view==='quests'?'active':''}">
+    <img class="nav-icon" src="icon-controller.svg" width="30" height="30" alt="" aria-hidden="true">
+    <span>Quests</span>
+  </button>
+<button data-view="rewards" class="${view==='rewards'?'active':''}">
+    <img class="nav-icon" src="icon-cake.svg" width="30" height="30" alt="" aria-hidden="true">
+    <span>Rewards</span>
+  </button>
+  <button data-view="history" class="${view==='history'||view==='leaderboard'?'active':''}">
+    <img class="nav-icon" src="icon-stats.svg" width="30" height="30" alt="" aria-hidden="true">
+    <span>Stats</span>
+  </button>
+</div>
 
+    ${view==='history'||view==='leaderboard' ? `<div class="lb-range" aria-label="Stats sections"><button data-view="history" class="${view==='history'?'active':''}">Stats</button><button data-view="leaderboard" class="${view==='leaderboard'?'active':''}">Leaderboard</button></div>` : ''}
     ${bodyHtml}
   `;
 
   app.querySelectorAll('[data-view]').forEach(el => el.addEventListener('click', () => { view = el.getAttribute('data-view'); render(); }));
+  app.querySelectorAll('[data-view-all-chores]').forEach(el => el.addEventListener('click', () => { view='chores'; searchTerm=''; filterRoom='All'; filterFreq='All'; filterSeason='All'; filterTier='All'; render(); }));
   app.querySelectorAll('[data-goto-quests]').forEach(el => el.addEventListener('click', () => { view = 'quests'; render(); }));
   app.querySelectorAll('[data-goto-stats]').forEach(el => el.addEventListener('click', () => { view = 'history'; render(); }));
   app.querySelector('#undoLastBtn')?.addEventListener('click', undoLastAction);
+  app.querySelectorAll('[data-reward]').forEach(el=>el.addEventListener('click',()=>equipReward(el.dataset.reward,el.dataset.rewardKind)));
+  app.querySelector('#rewardsStart')?.addEventListener('click',()=>ensurePlayer(()=>render()));
   app.querySelector('#playerChip').addEventListener('click', openSwitchPlayer);
   app.querySelector('#notifBtn').addEventListener('click', toggleNotify);
   app.querySelector('#shareBtn').addEventListener('click', shareApp);
@@ -4619,7 +5236,7 @@ function render(){
   } else {
     // 'home' and 'chores' both show chore cards and share these listeners
     if(view === 'chores'){
-      app.querySelectorAll('[data-tier]').forEach(el => el.addEventListener('click', () => { const tier = el.getAttribute('data-tier'); filterTier = filterTier === tier ? 'All' : tier; filterRoom='All'; filterFreq='All'; filterSeason='All'; render(); }));
+      app.querySelector('#fTier').addEventListener('change', e => { filterTier = e.target.value; render(); });
       app.querySelector('#openFilters').addEventListener('click', openFiltersModal);
       app.querySelectorAll('[data-clear]').forEach(el => el.addEventListener('click', () => {
         const key = el.getAttribute('data-clear');
