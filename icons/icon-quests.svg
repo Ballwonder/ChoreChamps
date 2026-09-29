@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<title>Crossed quest swords</title>
+<defs><linearGradient id="blade" x1="24" y1="7" x2="38" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".48" stop-color="#d9eef5"/><stop offset="1" stop-color="#7caabd"/></linearGradient></defs>
+<g stroke="#293e49" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+<g transform="rotate(-43 32 32)">
+<path d="M27 35V14L32 4l5 10v21z" fill="url(#blade)"/><path d="M32 10v23" stroke="#fff" stroke-width="1.5"/>
+<path d="M28 39h8v15h-8z" fill="#ab574c"/><path d="m29 44 6 2m-6 3 6 2" stroke="#f4b58c" stroke-width="1.5"/>
+<path d="m23 33-3 7 5 2 3-4h8l3 4 5-2-3-7-5 2h-8z" fill="#f4ca65"/>
+<path d="m27 54 5-2 5 2-1 6h-8z" fill="#e8b84f"/>
+</g>
+<g transform="rotate(43 32 32)">
+<path d="M27 35V14L32 4l5 10v21z" fill="url(#blade)"/><path d="M32 10v23" stroke="#fff" stroke-width="1.5"/>
+<path d="M28 39h8v15h-8z" fill="#447ca2"/><path d="m29 44 6 2m-6 3 6 2" stroke="#a9d9e8" stroke-width="1.5"/>
+<path d="m23 33-3 7 5 2 3-4h8l3 4 5-2-3-7-5 2h-8z" fill="#f4ca65"/>
+<path d="m27 54 5-2 5 2-1 6h-8z" fill="#e8b84f"/>
+</g></g></svg>
