@@ -1067,6 +1067,7 @@ const FREQS = [
   { id: 'monthly',   label: 'Monthly',   days: 30 },
   { id: 'quarterly', label: 'Quarterly', days: 90 },
   { id: 'yearly',    label: 'Yearly',    days: 365 },
+  { id: 'asNeeded',  label: 'As needed', days: 0 },
 ];
 const SEASONS = ['Spring','Summer','Fall','Winter'];
 const SEASON_ICON = { Spring:'🌱', Summer:'☀️', Fall:'🍂', Winter:'❄️' };
@@ -2109,7 +2110,10 @@ const DEFAULT_CHORES = [
     "name": "Wipe down counters",
     "room": "Kitchen",
     "freq": "daily",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "core"
   },
   {
     "id": "a2",
@@ -2130,21 +2134,30 @@ const DEFAULT_CHORES = [
         "id": "a2-p1-3",
         "name": "Wipe surfaces & clean the floor"
       }
-    ]
+    ],
+    "domain": "Bathroom",
+    "location": "Bathroom",
+    "defaultStatus": "core"
   },
   {
     "id": "a3",
     "name": "Vacuum common areas",
     "room": "Whole Home",
     "freq": "weekly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "core"
   },
   {
     "id": "a4",
     "name": "Change bedsheets",
     "room": "Bedroom",
     "freq": "weekly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Bedrooms",
+    "location": "Bedroom",
+    "defaultStatus": "core"
   },
   {
     "id": "a5",
@@ -2161,7 +2174,10 @@ const DEFAULT_CHORES = [
         "id": "a5-p1-2",
         "name": "Wipe sills & tracks"
       }
-    ]
+    ],
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a6",
@@ -2178,14 +2194,20 @@ const DEFAULT_CHORES = [
         "id": "a6-p1-2",
         "name": "Wipe exterior frames"
       }
-    ]
+    ],
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a7",
     "name": "Change furnace filter",
     "room": "Whole Home",
     "freq": "quarterly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a8",
@@ -2206,21 +2228,30 @@ const DEFAULT_CHORES = [
         "id": "a8-p1-3",
         "name": "Dry, reassemble & put food back"
       }
-    ]
+    ],
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a9",
     "name": "Test smoke & carbon monoxide alarms",
     "room": "Whole Home",
     "freq": "monthly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a10",
     "name": "Flush water heater",
     "room": "Whole Home",
     "freq": "yearly",
-    "tier": "gold"
+    "tier": "gold",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a11",
@@ -2228,7 +2259,13 @@ const DEFAULT_CHORES = [
     "room": "Yard & Exterior",
     "freq": "seasonal",
     "season": "Fall",
-    "tier": "diamond"
+    "tier": "diamond",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "collections": [
+      "fall-ready"
+    ],
+    "defaultStatus": "recommended"
   },
   {
     "id": "a12",
@@ -2236,7 +2273,13 @@ const DEFAULT_CHORES = [
     "room": "Yard & Exterior",
     "freq": "seasonal",
     "season": "Fall",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "collections": [
+      "fall-ready"
+    ],
+    "defaultStatus": "recommended"
   },
   {
     "id": "a13",
@@ -2254,7 +2297,10 @@ const DEFAULT_CHORES = [
         "id": "a13-p1-2",
         "name": "Plant & water"
       }
-    ]
+    ],
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a14",
@@ -2262,7 +2308,10 @@ const DEFAULT_CHORES = [
     "room": "Bedroom",
     "freq": "seasonal",
     "season": "Spring",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Bedrooms",
+    "location": "Bedroom",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a15",
@@ -2270,7 +2319,10 @@ const DEFAULT_CHORES = [
     "room": "Yard & Exterior",
     "freq": "seasonal",
     "season": "Fall",
-    "tier": "diamond"
+    "tier": "diamond",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a16",
@@ -2278,7 +2330,13 @@ const DEFAULT_CHORES = [
     "room": "Yard & Exterior",
     "freq": "seasonal",
     "season": "Fall",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "collections": [
+      "fall-ready"
+    ],
+    "defaultStatus": "recommended"
   },
   {
     "id": "a17",
@@ -2299,7 +2357,10 @@ const DEFAULT_CHORES = [
         "id": "a17-p1-3",
         "name": "Wipe door & replace racks"
       }
-    ]
+    ],
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a18",
@@ -2316,28 +2377,40 @@ const DEFAULT_CHORES = [
         "id": "a18-p1-2",
         "name": "Run the recommended cleaning cycle"
       }
-    ]
+    ],
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a19",
     "name": "Clean microwave",
     "room": "Kitchen",
     "freq": "weekly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "core"
   },
   {
     "id": "a20",
     "name": "Descale coffee maker",
     "room": "Kitchen",
     "freq": "monthly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a21",
     "name": "Clean garbage disposal",
     "room": "Kitchen",
     "freq": "monthly",
-    "tier": "bronze"
+    "tier": "wood",
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a22",
@@ -2354,7 +2427,10 @@ const DEFAULT_CHORES = [
         "id": "a22-p1-2",
         "name": "Fold & put away"
       }
-    ]
+    ],
+    "domain": "Laundry",
+    "location": "Laundry",
+    "defaultStatus": "core"
   },
   {
     "id": "a23",
@@ -2371,7 +2447,10 @@ const DEFAULT_CHORES = [
         "id": "a23-p1-2",
         "name": "Clear exterior outlet & reconnect"
       }
-    ]
+    ],
+    "domain": "Laundry",
+    "location": "Laundry",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a24",
@@ -2388,28 +2467,40 @@ const DEFAULT_CHORES = [
         "id": "a24-p1-2",
         "name": "Run cleaning cycle & dry seals"
       }
-    ]
+    ],
+    "domain": "Laundry",
+    "location": "Laundry",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a25",
     "name": "Scrub grout & tile",
     "room": "Bathroom",
     "freq": "quarterly",
-    "tier": "gold"
+    "tier": "gold",
+    "domain": "Bathroom",
+    "location": "Bathroom",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a26",
     "name": "Descale showerhead",
     "room": "Bathroom",
     "freq": "quarterly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Bathroom",
+    "location": "Bathroom",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a27",
     "name": "Clean bathroom exhaust fan",
     "room": "Bathroom",
     "freq": "quarterly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Bathroom",
+    "location": "Bathroom",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a28",
@@ -2426,14 +2517,20 @@ const DEFAULT_CHORES = [
         "id": "a28-p1-2",
         "name": "Dry fully & remake bed"
       }
-    ]
+    ],
+    "domain": "Bedrooms",
+    "location": "Bedroom",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a29",
     "name": "Dust electronics & TV",
     "room": "Living Room",
     "freq": "monthly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Living Areas",
+    "location": "Living Room",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a30",
@@ -2450,45 +2547,54 @@ const DEFAULT_CHORES = [
         "id": "a30-p1-2",
         "name": "Vacuum crevices & beneath cushions"
       }
-    ]
+    ],
+    "domain": "Living Areas",
+    "location": "Living Room",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a31",
     "name": "Dust shelves & furniture",
     "room": "Whole Home",
     "freq": "weekly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "core"
   },
   {
     "id": "a32",
     "name": "Mop floors",
     "room": "Whole Home",
     "freq": "weekly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "core"
   },
   {
     "id": "a33",
     "name": "Wipe light switches & doorknobs",
     "room": "Whole Home",
     "freq": "weekly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "core"
   },
   {
     "id": "a34",
-    "name": "Wipe ceiling fan blades & light fixtures",
+    "name": "Dust ceiling fan blades",
     "room": "Whole Home",
     "freq": "quarterly",
-    "tier": "silver",
-    "subtasks": [
-      {
-        "id": "a34-p1-1",
-        "name": "Wipe accessible fan blades"
-      },
-      {
-        "id": "a34-p1-2",
-        "name": "Dust & wipe accessible light fixtures"
-      }
-    ]
+    "tier": "wood",
+    "subtasks": [],
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "tags": [
+      "dusting"
+    ],
+    "defaultStatus": "recommended"
   },
   {
     "id": "a35",
@@ -2509,7 +2615,11 @@ const DEFAULT_CHORES = [
         "id": "a35-p1-3",
         "name": "Let dry fully & replace furniture"
       }
-    ]
+    ],
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "coOpEligible": true,
+    "defaultStatus": "recommended"
   },
   {
     "id": "a36",
@@ -2530,7 +2640,10 @@ const DEFAULT_CHORES = [
         "id": "a36-p1-3",
         "name": "Drop off donations or arrange pickup"
       }
-    ]
+    ],
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a37",
@@ -2538,7 +2651,10 @@ const DEFAULT_CHORES = [
     "room": "Whole Home",
     "freq": "seasonal",
     "season": "Fall",
-    "tier": "gold"
+    "tier": "gold",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a38",
@@ -2546,7 +2662,10 @@ const DEFAULT_CHORES = [
     "room": "Whole Home",
     "freq": "seasonal",
     "season": "Spring",
-    "tier": "gold"
+    "tier": "gold",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a39",
@@ -2554,7 +2673,10 @@ const DEFAULT_CHORES = [
     "room": "Whole Home",
     "freq": "seasonal",
     "season": "Winter",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a40",
@@ -2562,7 +2684,10 @@ const DEFAULT_CHORES = [
     "room": "Whole Home",
     "freq": "seasonal",
     "season": "Spring",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a41",
@@ -2579,28 +2704,40 @@ const DEFAULT_CHORES = [
         "id": "a41-p1-2",
         "name": "Mow & tidy equipment"
       }
-    ]
+    ],
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "core"
   },
   {
     "id": "a42",
     "name": "Edge & trim lawn borders",
     "room": "Yard & Exterior",
     "freq": "weekly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "core"
   },
   {
     "id": "a43",
     "name": "Weed garden beds",
     "room": "Yard & Exterior",
     "freq": "weekly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "core"
   },
   {
     "id": "a44",
     "name": "Check garden watering needs",
     "room": "Yard & Exterior",
     "freq": "daily",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "core"
   },
   {
     "id": "a45",
@@ -2617,14 +2754,20 @@ const DEFAULT_CHORES = [
         "id": "a45-p1-2",
         "name": "Collect & compost clippings"
       }
-    ]
+    ],
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a46",
     "name": "Fertilize lawn",
     "room": "Yard & Exterior",
     "freq": "quarterly",
-    "tier": "gold"
+    "tier": "gold",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a47",
@@ -2645,7 +2788,10 @@ const DEFAULT_CHORES = [
         "id": "a47-p1-3",
         "name": "Put items & equipment away"
       }
-    ]
+    ],
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a48",
@@ -2666,35 +2812,58 @@ const DEFAULT_CHORES = [
         "id": "a48-p1-3",
         "name": "Let cure & put furniture back"
       }
-    ]
+    ],
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a49",
     "name": "Service lawn mower & equipment",
     "room": "Yard & Exterior",
     "freq": "yearly",
-    "tier": "gold"
+    "tier": "gold",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a50",
     "name": "Inspect roof & siding",
     "room": "Yard & Exterior",
     "freq": "yearly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a51",
     "name": "Inspect for pests & termites",
     "room": "Yard & Exterior",
     "freq": "yearly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a52",
-    "name": "Inspect & repair fencing",
+    "name": "Inspect fence for damage",
     "room": "Yard & Exterior",
     "freq": "yearly",
-    "tier": "gold"
+    "tier": "bronze",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "subtasks": [],
+    "tags": [
+      "exterior",
+      "fence"
+    ],
+    "requirements": [
+      "fence"
+    ],
+    "defaultStatus": "optional"
   },
   {
     "id": "a53",
@@ -2702,7 +2871,10 @@ const DEFAULT_CHORES = [
     "room": "Yard & Exterior",
     "freq": "seasonal",
     "season": "Spring",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a54",
@@ -2710,7 +2882,10 @@ const DEFAULT_CHORES = [
     "room": "Yard & Exterior",
     "freq": "seasonal",
     "season": "Fall",
-    "tier": "gold"
+    "tier": "gold",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a55",
@@ -2718,7 +2893,13 @@ const DEFAULT_CHORES = [
     "room": "Yard & Exterior",
     "freq": "seasonal",
     "season": "Fall",
-    "tier": "diamond"
+    "tier": "diamond",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "collections": [
+      "fall-ready"
+    ],
+    "defaultStatus": "recommended"
   },
   {
     "id": "a56",
@@ -2726,7 +2907,10 @@ const DEFAULT_CHORES = [
     "room": "Yard & Exterior",
     "freq": "seasonal",
     "season": "Spring",
-    "tier": "gold"
+    "tier": "gold",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a57",
@@ -2734,7 +2918,13 @@ const DEFAULT_CHORES = [
     "room": "Yard & Exterior",
     "freq": "seasonal",
     "season": "Fall",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "collections": [
+      "fall-ready"
+    ],
+    "defaultStatus": "recommended"
   },
   {
     "id": "a58",
@@ -2751,56 +2941,80 @@ const DEFAULT_CHORES = [
         "id": "a58-p1-2",
         "name": "Sweep & put items away"
       }
-    ]
+    ],
+    "domain": "Garage & Storage",
+    "location": "Garage",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a59",
     "name": "Check garage door & tracks",
     "room": "Garage",
     "freq": "yearly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Garage & Storage",
+    "location": "Garage",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a60",
     "name": "Wash vehicle exterior",
     "room": "Vehicles",
     "freq": "monthly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a61",
     "name": "Vacuum vehicle & wipe interior",
     "room": "Vehicles",
     "freq": "monthly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a62",
     "name": "Check tire pressure",
     "room": "Vehicles",
     "freq": "monthly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a63",
     "name": "Check fluid levels",
     "room": "Vehicles",
     "freq": "monthly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a64",
     "name": "Check whether tire rotation is due",
     "room": "Vehicles",
     "freq": "quarterly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a65",
     "name": "Check whether oil service is due",
     "room": "Vehicles",
     "freq": "quarterly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a66",
@@ -2821,7 +3035,11 @@ const DEFAULT_CHORES = [
         "id": "a66-p1-3",
         "name": "Dry fully & put items back"
       }
-    ]
+    ],
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "coOpEligible": true,
+    "defaultStatus": "recommended"
   },
   {
     "id": "a67",
@@ -2829,7 +3047,10 @@ const DEFAULT_CHORES = [
     "room": "Vehicles",
     "freq": "seasonal",
     "season": "Spring",
-    "tier": "gold"
+    "tier": "gold",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a68",
@@ -2837,7 +3058,10 @@ const DEFAULT_CHORES = [
     "room": "Vehicles",
     "freq": "seasonal",
     "season": "Fall",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a69",
@@ -2845,28 +3069,40 @@ const DEFAULT_CHORES = [
     "room": "Vehicles",
     "freq": "seasonal",
     "season": "Winter",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a70",
     "name": "Renew registration & inspection",
     "room": "Vehicles",
     "freq": "yearly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Vehicles",
+    "location": "Vehicles",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a71",
     "name": "Wash trash & recycling bins",
     "room": "Whole Home",
     "freq": "monthly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Garbage & Recycling",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a72",
     "name": "Inspect fire extinguishers per label",
     "room": "Whole Home",
     "freq": "monthly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a73",
@@ -2874,7 +3110,10 @@ const DEFAULT_CHORES = [
     "room": "Whole Home",
     "freq": "quarterly",
     "tier": "silver",
-    "enabled": false
+    "enabled": false,
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a74",
@@ -2882,7 +3121,10 @@ const DEFAULT_CHORES = [
     "room": "Bathroom",
     "freq": "weekly",
     "tier": "gold",
-    "enabled": false
+    "enabled": false,
+    "domain": "Bathroom",
+    "location": "Bathroom",
+    "defaultStatus": "core"
   },
   {
     "id": "a75",
@@ -2899,7 +3141,10 @@ const DEFAULT_CHORES = [
         "id": "a75-p1-2",
         "name": "Wipe appliance fronts & handles"
       }
-    ]
+    ],
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "core"
   },
   {
     "id": "a76",
@@ -2916,7 +3161,10 @@ const DEFAULT_CHORES = [
         "id": "a76-p1-2",
         "name": "Wash emptied containers & wipe spills"
       }
-    ]
+    ],
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "core"
   },
   {
     "id": "a77",
@@ -2933,7 +3181,10 @@ const DEFAULT_CHORES = [
         "id": "a77-p1-2",
         "name": "Put away & hang clean towels"
       }
-    ]
+    ],
+    "domain": "Laundry",
+    "location": "Laundry",
+    "defaultStatus": "core"
   },
   {
     "id": "a78",
@@ -2941,14 +3192,20 @@ const DEFAULT_CHORES = [
     "room": "Whole Home",
     "freq": "weekly",
     "tier": "silver",
-    "enabled": false
+    "enabled": false,
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "core"
   },
   {
     "id": "a79",
     "name": "Tidy bedroom & clear surfaces",
     "room": "Bedroom",
     "freq": "weekly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Bedrooms",
+    "location": "Bedroom",
+    "defaultStatus": "core"
   },
   {
     "id": "a80",
@@ -2969,7 +3226,10 @@ const DEFAULT_CHORES = [
         "id": "a80-p1-3",
         "name": "Unpack & put away"
       }
-    ]
+    ],
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "core"
   },
   {
     "id": "a81",
@@ -2986,7 +3246,10 @@ const DEFAULT_CHORES = [
         "id": "a81-p1-2",
         "name": "Serve & store leftovers"
       }
-    ]
+    ],
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "core"
   },
   {
     "id": "a82",
@@ -3007,7 +3270,10 @@ const DEFAULT_CHORES = [
         "id": "a82-p1-3",
         "name": "Dry & put items back"
       }
-    ]
+    ],
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a83",
@@ -3028,7 +3294,11 @@ const DEFAULT_CHORES = [
         "id": "a83-p1-3",
         "name": "Organize & put food back"
       }
-    ]
+    ],
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "coOpEligible": true,
+    "defaultStatus": "recommended"
   },
   {
     "id": "a84",
@@ -3036,7 +3306,10 @@ const DEFAULT_CHORES = [
     "room": "Kitchen",
     "freq": "quarterly",
     "tier": "diamond",
-    "enabled": false
+    "enabled": false,
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a85",
@@ -3057,7 +3330,11 @@ const DEFAULT_CHORES = [
         "id": "a85-p1-3",
         "name": "Arrange keepers & bag donations"
       }
-    ]
+    ],
+    "domain": "Bedrooms",
+    "location": "Bedroom",
+    "coOpEligible": true,
+    "defaultStatus": "recommended"
   },
   {
     "id": "a86",
@@ -3074,7 +3351,10 @@ const DEFAULT_CHORES = [
         "id": "a86-p1-2",
         "name": "Wipe shelves & organize keepers"
       }
-    ]
+    ],
+    "domain": "Bathroom",
+    "location": "Bathroom",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a87",
@@ -3092,7 +3372,10 @@ const DEFAULT_CHORES = [
         "id": "a87-p1-2",
         "name": "Dry fully & rehang"
       }
-    ]
+    ],
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a88",
@@ -3113,31 +3396,31 @@ const DEFAULT_CHORES = [
         "id": "a88-p1-3",
         "name": "Allow to dry fully"
       }
-    ]
+    ],
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a89",
-    "name": "Scrub hard floors & trim",
+    "name": "Deep-scrub hard floors",
     "room": "Whole Home",
     "freq": "quarterly",
     "tier": "gold",
-    "subtasks": [
-      {
-        "id": "a89-p1-1",
-        "name": "Scrub hard floors with a suitable cleaner"
-      },
-      {
-        "id": "a89-p1-2",
-        "name": "Clean baseboards & trim"
-      }
-    ]
+    "subtasks": [],
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a90",
     "name": "Check bathroom for leaks & mildew",
     "room": "Bathroom",
     "freq": "quarterly",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Bathroom",
+    "location": "Bathroom",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a91",
@@ -3146,93 +3429,847 @@ const DEFAULT_CHORES = [
     "freq": "seasonal",
     "season": "Spring",
     "tier": "gold",
-    "enabled": false
+    "enabled": false,
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
   },
   {
     "id": "a92",
     "name": "Shoes off & stowed at the door",
     "room": "Whole Home",
     "freq": "daily",
-    "tier": "bronze"
+    "tier": "wood",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "core"
   },
   {
     "id": "a93",
     "name": "Tidy up living room clutter",
     "room": "Living Room",
     "freq": "daily",
-    "tier": "bronze"
+    "tier": "wood",
+    "domain": "Living Areas",
+    "location": "Living Room",
+    "defaultStatus": "core"
   },
   {
     "id": "a94",
     "name": "Wipe up spills right away",
     "room": "Whole Home",
     "freq": "daily",
-    "tier": "bronze",
-    "enabled": false
+    "tier": "wood",
+    "enabled": false,
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "core"
   },
   {
     "id": "a95",
     "name": "Sweep up stray food scraps",
     "room": "Kitchen",
     "freq": "daily",
-    "tier": "bronze",
-    "enabled": false
+    "tier": "wood",
+    "enabled": false,
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "core"
   },
   {
     "id": "a96",
     "name": "Clear hair from sink & shower drains",
     "room": "Bathroom",
     "freq": "weekly",
-    "tier": "bronze"
+    "tier": "wood",
+    "domain": "Bathroom",
+    "location": "Bathroom",
+    "defaultStatus": "core"
   },
   {
     "id": "a97",
     "name": "Sort through the mail",
     "room": "Whole Home",
     "freq": "weekly",
-    "tier": "bronze"
+    "tier": "wood",
+    "domain": "Household Admin",
+    "location": "Whole Home",
+    "defaultStatus": "core"
   },
   {
     "id": "p1-dishes",
     "name": "Wash dishes or run dishwasher",
     "room": "Kitchen",
     "freq": "daily",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "core"
   },
   {
     "id": "p1-unload",
     "name": "Put away clean dishes",
     "room": "Kitchen",
     "freq": "daily",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Kitchen",
+    "location": "Kitchen",
+    "defaultStatus": "core"
   },
   {
     "id": "p1-rubbish",
     "name": "Take out trash & recycling",
     "room": "Whole Home",
     "freq": "weekly",
-    "tier": "bronze"
+    "tier": "wood",
+    "domain": "Garbage & Recycling",
+    "location": "Whole Home",
+    "defaultStatus": "core"
   },
   {
     "id": "p1-bed",
     "name": "Make the bed",
     "room": "Bedroom",
     "freq": "daily",
-    "tier": "bronze"
+    "tier": "bronze",
+    "domain": "Bedrooms",
+    "location": "Bedroom",
+    "defaultStatus": "core"
   },
   {
     "id": "p1-lint",
     "name": "Clear dryer lint screen before use",
     "room": "Laundry",
     "freq": "daily",
-    "tier": "bronze"
+    "tier": "wood",
+    "domain": "Laundry",
+    "location": "Laundry",
+    "defaultStatus": "core"
   },
   {
     "id": "p1-walls",
     "name": "Wash walls & remove marks",
     "room": "Whole Home",
     "freq": "quarterly",
-    "tier": "silver"
+    "tier": "silver",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "defaultStatus": "recommended"
+  },
+  {
+    "id": "lib-fence-repair",
+    "name": "Repair or replace fence sections",
+    "room": "Yard & Exterior",
+    "domain": "Yard & Garden",
+    "location": "Yard & Exterior",
+    "freq": "yearly",
+    "tier": "diamond",
+    "type": "maintenance",
+    "tags": [
+      "exterior",
+      "fence",
+      "project"
+    ],
+    "requirements": [
+      "fence"
+    ],
+    "coOpEligible": true,
+    "defaultStatus": "optional",
+    "subtasks": [
+      {
+        "id": "lib-fence-repair-1",
+        "name": "Assess damaged sections"
+      },
+      {
+        "id": "lib-fence-repair-2",
+        "name": "Repair or replace boards/posts"
+      }
+    ],
+    "enabled": false
+  },
+  {
+    "id": "lib-light-fixtures",
+    "name": "Clean light fixtures & bulbs",
+    "room": "Whole Home",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "freq": "quarterly",
+    "tier": "bronze",
+    "tags": [
+      "dusting"
+    ],
+    "defaultStatus": "recommended",
+    "subtasks": []
+  },
+  {
+    "id": "lib-bathroom-deep",
+    "name": "Bathroom deep clean",
+    "room": "Bathroom",
+    "domain": "Bathroom",
+    "location": "Bathroom",
+    "freq": "quarterly",
+    "tier": "gold",
+    "type": "maintenance",
+    "tags": [
+      "bathroom",
+      "deep-clean"
+    ],
+    "defaultStatus": "recommended",
+    "subtasks": [
+      {
+        "id": "lib-bathroom-deep-1",
+        "name": "Scrub grout & tile"
+      },
+      {
+        "id": "lib-bathroom-deep-2",
+        "name": "Treat mold/mildew spots"
+      },
+      {
+        "id": "lib-bathroom-deep-3",
+        "name": "Deep-clean fixtures & fan"
+      }
+    ]
+  },
+  {
+    "id": "lib-baseboards",
+    "name": "Wipe baseboards & trim",
+    "room": "Whole Home",
+    "domain": "Home Maintenance",
+    "location": "Whole Home",
+    "freq": "quarterly",
+    "tier": "wood",
+    "tags": [
+      "dusting"
+    ],
+    "defaultStatus": "recommended",
+    "subtasks": []
+  },
+  {
+    "id": "lib-pet-litter-scoop",
+    "name": "Scoop cat litter",
+    "room": "Whole Home",
+    "domain": "Pets",
+    "freq": "daily",
+    "tier": "wood",
+    "tags": [
+      "pet"
+    ],
+    "requirements": [
+      "cat"
+    ],
+    "defaultStatus": "optional",
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-pet-litter-change",
+    "name": "Change litter box filling",
+    "room": "Whole Home",
+    "domain": "Pets",
+    "freq": "weekly",
+    "tier": "bronze",
+    "tags": [
+      "pet"
+    ],
+    "requirements": [
+      "cat"
+    ],
+    "defaultStatus": "optional",
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-pet-litter-deep",
+    "name": "Deep-clean litter box",
+    "room": "Whole Home",
+    "domain": "Pets",
+    "freq": "monthly",
+    "tier": "silver",
+    "tags": [
+      "pet"
+    ],
+    "requirements": [
+      "cat"
+    ],
+    "defaultStatus": "optional",
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-pet-yard-waste",
+    "name": "Pick up dog waste from yard",
+    "room": "Yard & Exterior",
+    "domain": "Pets",
+    "freq": "daily",
+    "tier": "wood",
+    "tags": [
+      "pet"
+    ],
+    "requirements": [
+      "dog"
+    ],
+    "defaultStatus": "optional",
+    "location": "Yard & Exterior",
+    "enabled": false
+  },
+  {
+    "id": "lib-pet-bowls",
+    "name": "Wash pet food & water bowls",
+    "room": "Whole Home",
+    "domain": "Pets",
+    "freq": "weekly",
+    "tier": "wood",
+    "tags": [
+      "pet"
+    ],
+    "requirements": [
+      "pet"
+    ],
+    "defaultStatus": "optional",
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-pet-feeding-area",
+    "name": "Clean pet feeding area",
+    "room": "Whole Home",
+    "domain": "Pets",
+    "freq": "weekly",
+    "tier": "bronze",
+    "tags": [
+      "pet"
+    ],
+    "requirements": [
+      "pet"
+    ],
+    "defaultStatus": "optional",
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-pet-bedding",
+    "name": "Wash pet bedding",
+    "room": "Whole Home",
+    "domain": "Pets",
+    "freq": "monthly",
+    "tier": "bronze",
+    "tags": [
+      "pet"
+    ],
+    "requirements": [
+      "pet"
+    ],
+    "defaultStatus": "optional",
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-pet-hair",
+    "name": "Vacuum up pet hair",
+    "room": "Whole Home",
+    "domain": "Pets",
+    "freq": "weekly",
+    "tier": "bronze",
+    "tags": [
+      "pet"
+    ],
+    "requirements": [
+      "pet"
+    ],
+    "defaultStatus": "optional",
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-compost-night",
+    "name": "Take out compost/green bin",
+    "room": "Whole Home",
+    "domain": "Garbage & Recycling",
+    "freq": "weekly",
+    "tier": "wood",
+    "tags": [
+      "garbage"
+    ],
+    "requirements": [
+      "compost"
+    ],
+    "defaultStatus": "optional",
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-bins-back",
+    "name": "Bring bins back from curb",
+    "room": "Whole Home",
+    "domain": "Garbage & Recycling",
+    "freq": "weekly",
+    "tier": "wood",
+    "tags": [
+      "garbage"
+    ],
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-sump-pump",
+    "name": "Test sump pump",
+    "room": "Whole Home",
+    "domain": "Home Maintenance",
+    "freq": "quarterly",
+    "tier": "bronze",
+    "type": "maintenance",
+    "tags": [
+      "hvac"
+    ],
+    "requirements": [
+      "sump-pump"
+    ],
+    "defaultStatus": "optional",
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-under-sink",
+    "name": "Inspect under sinks for leaks",
+    "room": "Whole Home",
+    "domain": "Home Maintenance",
+    "freq": "quarterly",
+    "tier": "bronze",
+    "type": "maintenance",
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-caulk-check",
+    "name": "Check bathroom/kitchen caulking",
+    "room": "Whole Home",
+    "domain": "Home Maintenance",
+    "freq": "yearly",
+    "tier": "bronze",
+    "type": "maintenance",
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-roof-inspect",
+    "name": "Ground-level roof & siding inspection",
+    "room": "Whole Home",
+    "domain": "Home Maintenance",
+    "freq": "yearly",
+    "tier": "silver",
+    "type": "maintenance",
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-hvac-arrange",
+    "name": "Arrange furnace/AC professional service",
+    "room": "Whole Home",
+    "domain": "Home Maintenance",
+    "freq": "yearly",
+    "tier": "wood",
+    "type": "maintenance",
+    "tags": [
+      "hvac",
+      "scheduling"
+    ],
+    "defaultStatus": "recommended",
+    "subtasks": [],
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-vehicle-arrange",
+    "name": "Schedule vehicle service appointment",
+    "room": "Vehicles",
+    "domain": "Vehicles",
+    "freq": "quarterly",
+    "tier": "wood",
+    "type": "admin",
+    "tags": [
+      "vehicle",
+      "scheduling"
+    ],
+    "requirements": [
+      "vehicle"
+    ],
+    "defaultStatus": "optional",
+    "location": "Vehicles",
+    "enabled": false
+  },
+  {
+    "id": "lib-admin-documents",
+    "name": "Organize important documents",
+    "room": "Whole Home",
+    "domain": "Household Admin",
+    "freq": "quarterly",
+    "tier": "silver",
+    "type": "admin",
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-admin-subscriptions",
+    "name": "Review recurring subscriptions",
+    "room": "Whole Home",
+    "domain": "Household Admin",
+    "freq": "quarterly",
+    "tier": "bronze",
+    "type": "admin",
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-admin-insurance",
+    "name": "Review insurance policies",
+    "room": "Whole Home",
+    "domain": "Household Admin",
+    "freq": "yearly",
+    "tier": "silver",
+    "type": "admin",
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-admin-renew",
+    "name": "Renew vehicle/household documents",
+    "room": "Whole Home",
+    "domain": "Household Admin",
+    "freq": "yearly",
+    "tier": "bronze",
+    "type": "admin",
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-admin-tax-gather",
+    "name": "Gather tax documents",
+    "room": "Whole Home",
+    "domain": "Household Admin",
+    "freq": "yearly",
+    "tier": "silver",
+    "type": "admin",
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-admin-tax-file",
+    "name": "File/submit taxes",
+    "room": "Whole Home",
+    "domain": "Household Admin",
+    "freq": "yearly",
+    "tier": "gold",
+    "type": "admin",
+    "defaultStatus": "recommended",
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-admin-paperwork-reset",
+    "name": "Annual household paperwork reset",
+    "room": "Whole Home",
+    "domain": "Household Admin",
+    "freq": "yearly",
+    "tier": "silver",
+    "type": "admin",
+    "defaultStatus": "recommended",
+    "coOpEligible": true,
+    "location": "Whole Home"
+  },
+  {
+    "id": "lib-season-footwear-store",
+    "name": "Store summer footwear",
+    "room": "Bedroom",
+    "domain": "Bedrooms",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "wood",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "defaultStatus": "recommended",
+    "location": "Bedroom",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-footwear-out",
+    "name": "Bring out winter footwear",
+    "room": "Bedroom",
+    "domain": "Bedrooms",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "wood",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "defaultStatus": "recommended",
+    "location": "Bedroom",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-clothing-store",
+    "name": "Store summer clothing",
+    "room": "Bedroom",
+    "domain": "Bedrooms",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "bronze",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "coOpEligible": true,
+    "defaultStatus": "recommended",
+    "location": "Bedroom",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-clothing-out",
+    "name": "Bring out winter clothing",
+    "room": "Bedroom",
+    "domain": "Bedrooms",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "bronze",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "coOpEligible": true,
+    "defaultStatus": "recommended",
+    "location": "Bedroom",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-coats",
+    "name": "Bring out coats",
+    "room": "Bedroom",
+    "domain": "Bedrooms",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "wood",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "defaultStatus": "recommended",
+    "location": "Bedroom",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-accessories",
+    "name": "Bring out hats, gloves & scarves",
+    "room": "Bedroom",
+    "domain": "Bedrooms",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "wood",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "defaultStatus": "recommended",
+    "location": "Bedroom",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-patio-store",
+    "name": "Store patio furniture",
+    "room": "Yard & Exterior",
+    "domain": "Yard & Garden",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "silver",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "requirements": [
+      "yard"
+    ],
+    "coOpEligible": true,
+    "defaultStatus": "recommended",
+    "location": "Yard & Exterior",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-garden-cleanup",
+    "name": "Final fall garden cleanup",
+    "room": "Yard & Exterior",
+    "domain": "Yard & Garden",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "gold",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "requirements": [
+      "garden"
+    ],
+    "coOpEligible": true,
+    "defaultStatus": "recommended",
+    "location": "Yard & Exterior",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-flowerbeds",
+    "name": "Trim back flower beds",
+    "room": "Yard & Exterior",
+    "domain": "Yard & Garden",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "silver",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "requirements": [
+      "garden"
+    ],
+    "defaultStatus": "recommended",
+    "location": "Yard & Exterior",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-tools-store",
+    "name": "Store garden tools for winter",
+    "room": "Yard & Exterior",
+    "domain": "Yard & Garden",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "wood",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "requirements": [
+      "garden"
+    ],
+    "defaultStatus": "recommended",
+    "location": "Yard & Exterior",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-ice-melt",
+    "name": "Stock ice melt / rock salt",
+    "room": "Garage",
+    "domain": "Garage & Storage",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "wood",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "defaultStatus": "recommended",
+    "location": "Garage",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-season-winter-vehicle",
+    "name": "Prep winter vehicle equipment",
+    "room": "Vehicles",
+    "domain": "Vehicles",
+    "freq": "seasonal",
+    "season": "Fall",
+    "tier": "bronze",
+    "tags": [
+      "seasonal-swap"
+    ],
+    "defaultStatus": "recommended",
+    "location": "Vehicles",
+    "collections": [
+      "fall-ready"
+    ]
+  },
+  {
+    "id": "lib-garage-cleanout",
+    "name": "Full garage cleanout",
+    "room": "Garage",
+    "domain": "Garage & Storage",
+    "freq": "yearly",
+    "tier": "diamond",
+    "coOpEligible": true,
+    "defaultStatus": "recommended",
+    "subtasks": [
+      {
+        "id": "lib-garage-cleanout-1",
+        "name": "Sort keep/donate/discard"
+      },
+      {
+        "id": "lib-garage-cleanout-2",
+        "name": "Clean & organize shelving"
+      }
+    ],
+    "location": "Garage"
+  },
+  {
+    "id": "lib-large-declutter",
+    "name": "Whole-home large declutter",
+    "room": "Whole Home",
+    "domain": "Home Maintenance",
+    "freq": "yearly",
+    "tier": "diamond",
+    "coOpEligible": true,
+    "defaultStatus": "optional",
+    "subtasks": [
+      {
+        "id": "lib-large-declutter-1",
+        "name": "Sort keep/donate/discard by room"
+      },
+      {
+        "id": "lib-large-declutter-2",
+        "name": "Haul away donations/discards"
+      }
+    ],
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-hosting-prep",
+    "name": "Prepare home for hosting guests",
+    "room": "Whole Home",
+    "domain": "Living Areas",
+    "freq": "asNeeded",
+    "tier": "gold",
+    "coOpEligible": true,
+    "defaultStatus": "optional",
+    "subtasks": [
+      {
+        "id": "lib-hosting-prep-1",
+        "name": "Tidy & stage common areas"
+      },
+      {
+        "id": "lib-hosting-prep-2",
+        "name": "Prep guest bathroom & bedding"
+      }
+    ],
+    "location": "Whole Home",
+    "enabled": false
+  },
+  {
+    "id": "lib-furniture-move",
+    "name": "Move/reorganize furniture",
+    "room": "Living Room",
+    "domain": "Living Areas",
+    "freq": "asNeeded",
+    "tier": "gold",
+    "coOpEligible": true,
+    "defaultStatus": "optional",
+    "location": "Living Room",
+    "enabled": false
   }
 ];
 
@@ -3300,9 +4337,14 @@ const ACHIEVEMENTS = [
   { id:'questRegular', description:"Complete 10 quests.", icon:'📜', label:'Quest Regular',    test:s => s.questCount >= 10 },
   { id:'campaign', description:"Complete a seasonal campaign.",   icon:'🍂', label:'Campaign Champion',  test:s => s.campaignCount >= 1 },
   { id:'bounty', description:"Complete 5 bounty chores.",     icon:'🎯', label:'Bounty Hunter',      test:s => s.bountyCount >= 5 },
-  { id:'teamPlayer', description:"Earn 5 subtask-sharing rewards.", icon:'🤝', label:'Team Player',        test:s => s.helperCount >= 5 },
+  { id:'helpingHand', description:"Earn 5 subtask-sharing rewards.", icon:'🤝', label:'Helping Hand',        test:s => s.helperCount >= 5 },
   { id:'level5', description:"Reach player level 5.",     icon:'⭐', label:'Rising Star',        test:s => s.level >= 5 },
   { id:'level10', description:"Reach player level 10.",    icon:'🌟', label:'Household Legend II',test:s => s.level >= 10 },
+  { id:'teamPlayer', description:"Complete your first co-op job with another member.", icon:'🤝', label:'Team Player', test:s => s.coOpCount >= 1 },
+  { id:'coop10', description:"Complete 10 co-op jobs.", icon:'👯', label:'Dynamic Duo', target:10, progress:s => s.coOpCount, test:s => s.coOpCount >= 10 },
+  { id:'hq10', description:"Contribute to 10 household quests.", icon:'🏠', label:'House United', target:10, progress:s => s.householdQuestCount, test:s => s.householdQuestCount >= 10 },
+  { id:'allHands', description:"Contribute to a collection alongside another member.", icon:'🙌', label:'All Hands', test:s => s.allHands },
+  { id:'fallReady', description:"Help complete the Fall Ready collection.", icon:'🍂', label:'Fall Ready 2026', test:s => s.fallReady },
 ];
 
 // Lifetime level curve: level L requires 25*(L-1)^2 cumulative XP.
@@ -3449,11 +4491,18 @@ function personStats(name){
   const campaignCount = bonusEntries.filter(a => a.type === 'campaign').length;
   const bountyCount = list.filter(c => c.bounty).length;
   const helperCount = bonusEntries.filter(a => a.type === 'subtask-share').length;
+  const coOpCount = completions.filter(c => Array.isArray(c.participants) && c.participants.length >= 2 && c.participants.includes(name)).length;
+  const hqEntries = activityLog.filter(a => a.type === 'household-quest' && (a.contributors || []).includes(name));
+  const collectionEntries = activityLog.filter(a => a.type === 'collection' && (a.contributors || []).includes(name));
+  const householdQuestCount = hqEntries.length;
+  const allHands = collectionEntries.some(a => (a.contributors || []).length >= 2);
+  const fallReady = collectionEntries.some(a => a.collectionId === 'fall-ready');
   const level = levelFromXP(xp);
 
   return {
     ...milestoneStats(list), count: list.length, xp, tierCounts, streak: computeStreak(name),
-    comboMax, questCount, campaignCount, bountyCount, helperCount, level
+    comboMax, questCount, campaignCount, bountyCount, helperCount, level,
+    coOpCount, householdQuestCount, allHands, fallReady
   };
 }
 
@@ -3531,6 +4580,254 @@ function checkRoomClearBonus(room, name, batchTs){
   return room;
 }
 
+// ======================================================================
+// LIBRARY V1 + CO-OP FOUNDATION
+// Everything below is additive: old chores/completions without the new
+// metadata keep working via fallbacks.
+// ======================================================================
+
+// Prior name/tier of existing default chores that Library V1 retiered or
+// split, so a household is only updated if it still has the untouched default.
+const LIBV1_PRIOR = {"a21": {"name": "Clean garbage disposal", "tier": "bronze"}, "a34": {"name": "Wipe ceiling fan blades & light fixtures", "tier": "silver"}, "a52": {"name": "Inspect & repair fencing", "tier": "gold"}, "a89": {"name": "Scrub hard floors & trim", "tier": "gold"}, "a92": {"name": "Shoes off & stowed at the door", "tier": "bronze"}, "a93": {"name": "Tidy up living room clutter", "tier": "bronze"}, "a94": {"name": "Wipe up spills right away", "tier": "bronze"}, "a95": {"name": "Sweep up stray food scraps", "tier": "bronze"}, "a96": {"name": "Clear hair from sink & shower drains", "tier": "bronze"}, "a97": {"name": "Sort through the mail", "tier": "bronze"}, "p1-rubbish": {"name": "Take out trash & recycling", "tier": "bronze"}, "p1-lint": {"name": "Clear dryer lint screen before use", "tier": "bronze"}};
+const LIBV1_META_KEYS = ['domain','location','type','tags','requirements','collections','coOpEligible','defaultStatus'];
+
+function applyLibraryV1(){
+  if(stateExtras.libraryV1Version === 1) return;
+  const isFreshSeed = chores.length && chores.every(c => DEFAULT_CHORES.some(d => d.id === c.id)) && chores.length === DEFAULT_CHORES.length;
+  for(const def of DEFAULT_CHORES){
+    const existing = chores.find(c => c.id === def.id);
+    if(existing){
+      // Additive metadata only — never overwrite anything the household set.
+      for(const key of LIBV1_META_KEYS){
+        if(existing[key] === undefined && def[key] !== undefined) existing[key] = clone(def[key]);
+      }
+      const prior = LIBV1_PRIOR[def.id];
+      if(prior && existing.name === prior.name && existing.tier === prior.tier && !subtaskProgress[def.id]?.doneIds?.length){
+        existing.name = def.name; existing.tier = def.tier;
+        if(def.subtasks) existing.subtasks = clone(def.subtasks); else delete existing.subtasks;
+      }
+    } else if(def.id.startsWith('lib-')){
+      // New library tasks arrive available-but-off for an existing household, so
+      // Due Now never floods with dozens of never-done tasks.
+      const added = clone(def);
+      if(!isFreshSeed) added.enabled = false;
+      chores.push(added);
+    }
+  }
+  stateExtras.libraryV1Version = 1;
+}
+
+function choreDomain(chore){ return chore.domain || chore.room || 'Whole Home'; }
+function completionPeople(entry){
+  return Array.isArray(entry.participants) && entry.participants.length ? entry.participants : [entry.person];
+}
+
+// ---------------- Co-op join ----------------
+async function joinChore(id){
+  return ensurePlayer(async () => {
+    await refreshShared();
+    const chore = chores.find(c => c.id === id);
+    if(!chore || !chore.coOpEligible) return;
+    const claimLive = chore.claimedBy && !(chore.claimedAt && Date.now() - chore.claimedAt > 20*60*1000);
+    const people = new Set(Array.isArray(chore.coOpParticipants) ? chore.coOpParticipants : []);
+    if(claimLive) people.add(chore.claimedBy);
+    people.add(player.name);
+    chore.coOpParticipants = [...people];
+    if(!claimLive){ chore.claimedBy = player.name; chore.claimedAt = Date.now(); }
+    await saveSharedState();
+    showToast(`You joined "${chore.name}" — ${chore.coOpParticipants.length} working together`);
+    render();
+  });
+}
+
+async function enableRecommended(){
+  await refreshShared();
+  let n = 0;
+  chores.forEach(c => {
+    if(c.enabled === false && ['core','recommended'].includes(c.defaultStatus) && !(c.requirements && c.requirements.length) && DEFAULT_CHORES.some(d => d.id === c.id && d.enabled !== false)){
+      delete c.enabled; n++;
+    }
+  });
+  await saveSharedState();
+  if(settingsOverlay) renderSettingsModal();
+  showToast(n ? `Turned on ${n} recommended library task${n===1?'':'s'}` : 'All recommended tasks are already on');
+}
+
+// ---------------- Household (co-op) quests ----------------
+function periodWindow(kind){
+  const today = startOfDay(new Date());
+  const monday = new Date(today); monday.setDate(monday.getDate() - (today.getDay()+6)%7);
+  if(kind === 'day') return { start: today.getTime(), end: today.getTime() + 86400000, key: today.toISOString().slice(0,10) };
+  if(kind === 'weekend'){
+    const sat = new Date(monday); sat.setDate(sat.getDate() + 5);
+    return { start: sat.getTime(), end: sat.getTime() + 2*86400000, key: isoWeekKey(today) + '-weekend' };
+  }
+  return { start: monday.getTime(), end: monday.getTime() + 7*86400000, key: isoWeekKey(today) };
+}
+function choreForCompletion(c){ return chores.find(x => x.id === c.choreId); }
+
+const HOUSEHOLD_QUESTS = [
+  { id:'weekend-reset', scope:'household', icon:'🏠', title:'Weekend Reset', period:'weekend',
+    desc:'Complete chores together this weekend', target:12, minParticipants:2, minContributionPerPlayer:1, reward:50,
+    metric: list => list.length },
+  { id:'divide-conquer', scope:'household', icon:'🧭', title:'Divide & Conquer', period:'week',
+    desc:'Cover different areas of the home this week', unit:'areas', target:5, minParticipants:2, minContributionPerPlayer:1, reward:40,
+    metric: list => new Set(list.map(c => c.room || choreForCompletion(c)?.room).filter(Boolean)).size },
+  { id:'house-in-order', scope:'household', icon:'🔧', title:'House in Order', period:'week',
+    desc:'Complete maintenance chores together this week', unit:'maintenance', target:4, minParticipants:2, minContributionPerPlayer:1, reward:40,
+    metric: list => list.filter(c => { const ch = choreForCompletion(c); return ch && (ch.type === 'maintenance' || ch.domain === 'Home Maintenance'); }).length },
+  { id:'sunday-sprint', scope:'household', icon:'⚡', title:'Sunday Sprint', period:'day',
+    desc:'Sunday only: knock out chores as a household', target:6, minParticipants:2, minContributionPerPlayer:1, reward:30,
+    available: () => new Date().getDay() === 0, metric: list => list.length },
+  { id:'better-together', scope:'household', icon:'🤝', title:'Better Together', period:'week',
+    desc:'Complete household chores with 2+ members contributing', target:10, minParticipants:2, minContributionPerPlayer:1, reward:40,
+    metric: list => list.length },
+  { id:'fall-push', scope:'household', icon:'🍂', title:'Fall Push', period:'week',
+    desc:'Finish Fall Ready tasks together this week', unit:'Fall Ready', target:5, minParticipants:2, minContributionPerPlayer:1, reward:50,
+    available: () => getSeason(new Date()) === 'Fall',
+    metric: list => list.filter(c => (choreForCompletion(c)?.collections || []).includes('fall-ready')).length },
+];
+
+function computeHouseholdQuestProgress(q){
+  const win = periodWindow(q.period);
+  const unverified = unverifiedCompletionIds();
+  const list = completions.filter(c => c.person && c.ts >= win.start && c.ts < win.end && !unverified.has(c.id));
+  const contributions = {};
+  list.forEach(c => completionPeople(c).forEach(p => { if(p) contributions[p] = (contributions[p] || 0) + 1; }));
+  const value = q.metric(list);
+  const qualifying = Object.keys(contributions).filter(p => contributions[p] >= (q.minContributionPerPlayer || 1));
+  const teamworkMet = qualifying.length >= (q.minParticipants || 1);
+  const available = q.available ? q.available() : true;
+  return { key: `hq:${q.id}:${win.key}`, value, target: q.target, contributions, qualifying,
+    teamworkMet, done: available && value >= q.target && teamworkMet, available };
+}
+
+function checkAndAwardHouseholdQuests(batchTs){
+  const awarded = [];
+  HOUSEHOLD_QUESTS.forEach(q => {
+    const p = computeHouseholdQuestProgress(q);
+    if(!p.done || activityLog.some(a => a.key === p.key)) return;
+    activityLog.push({ ts: batchTs, batchTs, household:true, type:'household-quest', xp:q.reward,
+      label:`Household quest complete: ${q.title}`, key:p.key, icon:'🤝', contributors:p.qualifying });
+    awarded.push(q);
+  });
+  return awarded;
+}
+
+// ---------------- Collections ----------------
+const COLLECTIONS = [
+  { id:'fall-ready', label:'Fall Ready', icon:'🍂', season:'Fall', reward:75,
+    minis:[
+      { id:'yard', label:'Yard Close-Out', ids:['lib-season-flowerbeds','lib-season-garden-cleanup','a55','lib-season-tools-store'] },
+      { id:'exterior', label:'Exterior Prep', ids:['a11','a16','a12','lib-season-patio-store'] },
+      { id:'swap', label:'Cold Weather Swap', ids:['lib-season-footwear-store','lib-season-footwear-out','lib-season-clothing-store','lib-season-clothing-out','lib-season-coats','lib-season-accessories'] },
+      { id:'snow', label:'Snow Ready', ids:['a57','lib-season-ice-melt','lib-season-winter-vehicle'] },
+    ] },
+];
+
+// Progress is measured against the household's ACTIVE tasks only, so a home
+// with no garden can still reach 100%.
+function computeCollectionProgress(col){
+  const today = startOfDay(new Date());
+  if(getSeason(today) !== col.season) return { active:false };
+  const cycleId = seasonCycleId(today);
+  const contributions = {};
+  const unverified = unverifiedCompletionIds();
+  let total = 0, done = 0;
+  const minis = col.minis.map(mini => {
+    const applicable = mini.ids.map(id => chores.find(c => c.id === id)).filter(c => c && c.enabled !== false);
+    const finished = applicable.filter(c => {
+      const last = lastCompletion(c.id);
+      return last && seasonCycleId(new Date(last.ts)) === cycleId;
+    });
+    applicable.forEach(c => {
+      const ids = choreHistoryIds(c.id);
+      completions.filter(e => ids.includes(e.choreId) && seasonCycleId(new Date(e.ts)) === cycleId && !unverified.has(e.id))
+        .forEach(e => completionPeople(e).forEach(p => { if(p) contributions[p] = (contributions[p] || 0) + 1; }));
+    });
+    total += applicable.length; done += finished.length;
+    return { id:mini.id, label:mini.label, total:applicable.length, done:finished.length,
+      complete: applicable.length > 0 && finished.length === applicable.length };
+  });
+  return { active:true, cycleId, minis, total, done, contributions, complete: total > 0 && done === total };
+}
+
+function checkCollections(batchTs){
+  const awarded = [];
+  COLLECTIONS.forEach(col => {
+    const p = computeCollectionProgress(col);
+    if(!p.active || !p.complete) return;
+    const key = `collection:${col.id}:${p.cycleId}`;
+    if(activityLog.some(a => a.key === key)) return;
+    activityLog.push({ ts: batchTs, batchTs, household:true, type:'collection', collectionId:col.id, xp:col.reward,
+      label:`${col.label} ${p.cycleId.split('-')[1]} complete!`, key, icon:col.icon, contributors:Object.keys(p.contributions) });
+    awarded.push(col);
+  });
+  return awarded;
+}
+
+function contributionLine(contributions){
+  const names = Object.keys(contributions).sort((a,b) => contributions[b] - contributions[a]);
+  return names.map(n => `${escapeHtml(n)} — ${contributions[n]}`).join(' · ');
+}
+
+function renderHouseholdQuestCard(q){
+  const p = computeHouseholdQuestProgress(q);
+  const pct = Math.min(100, Math.round((p.value / q.target) * 100));
+  const doneKey = activityLog.some(a => a.key === p.key);
+  const members = Object.keys(p.contributions).length;
+  return `
+    <div class="quest-card">
+      <div class="quest-title"><span>${q.icon} ${q.title}${doneKey ? ' ✅' : ''}</span><span class="quest-reward">+${q.reward} Household XP</span></div>
+      <div style="font-size:0.72rem; color:var(--ink-soft); font-weight:700; letter-spacing:0.03em; margin-top:2px;">HOUSEHOLD QUEST${p.available ? '' : ' · not active today'}</div>
+      <div style="font-size:0.8rem; margin-top:4px;">${q.desc}</div>
+      <div class="quest-track"><div class="quest-fill ${doneKey ? 'complete' : ''}" style="width:${pct}%"></div></div>
+      <div style="font-size:0.78rem; margin-top:4px;"><b>${Math.min(p.value, q.target)} / ${q.target}</b>${q.unit ? ' ' + q.unit : ''}${!doneKey && p.value >= q.target && !p.teamworkMet ? ` · needs ${q.minParticipants} members contributing` : ''}</div>
+      ${members ? `<div style="font-size:0.74rem; color:var(--ink-soft); margin-top:2px;">${contributionLine(p.contributions)}</div>` : ''}
+    </div>`;
+}
+
+function renderHouseholdQuestsPanel(){
+  return `<div class="section-label">Household quests</div>` +
+    `<p style="font-size:0.78rem; color:var(--ink-soft); margin:-4px 0 8px;">Work toward these together — any mix of contributions counts.</p>` +
+    HOUSEHOLD_QUESTS.map(renderHouseholdQuestCard).join('');
+}
+
+function renderCollectionsPanel(){
+  const cards = COLLECTIONS.map(col => {
+    const p = computeCollectionProgress(col);
+    if(!p.active) return '';
+    const pct = p.total ? Math.round((p.done / p.total) * 100) : 0;
+    const finished = activityLog.some(a => a.key === `collection:${col.id}:${p.cycleId}`);
+    return `
+      <div class="campaign-banner">
+        <div class="campaign-title">${col.icon} ${col.label.toUpperCase()}${finished ? ' — complete!' : ''}</div>
+        <div class="campaign-sub"><b>${p.done} / ${p.total}</b> household tasks done${finished ? '' : ` · +${col.reward} Household XP when complete`}</div>
+        <div class="campaign-track"><div class="campaign-fill" style="width:${pct}%"></div></div>
+        ${Object.keys(p.contributions).length ? `<div class="campaign-sub" style="margin-top:6px;">Together: ${contributionLine(p.contributions)}</div>` : ''}
+        <div style="margin-top:8px; font-size:0.82rem; line-height:1.6;">
+          ${p.minis.filter(m => m.total > 0).map(m => `${m.complete ? '✓' : '○'} ${m.label} ${m.complete ? '' : `${m.done}/${m.total}`}`).join('<br>')}
+        </div>
+      </div>`;
+  }).join('');
+  return cards ? `<div class="section-label">Collections</div>${cards}` : '';
+}
+
+function renderHouseholdQuestTeaser(){
+  const rows = HOUSEHOLD_QUESTS.map(q => ({ q, p: computeHouseholdQuestProgress(q) }))
+    .filter(x => x.p.available && !activityLog.some(a => a.key === x.p.key));
+  if(!rows.length) return '';
+  rows.sort((a,b) => (b.p.value/b.q.target) - (a.p.value/a.q.target));
+  const { q, p } = rows[0];
+  const members = Object.keys(p.contributions).length;
+  return `
+    <div class="quest-card teaser" data-goto-quests>
+      <div class="quest-title"><span>🤝 Household Quest: ${q.title}</span><span class="quest-reward">${Math.min(p.value, q.target)} / ${q.target}</span></div>
+      <div style="font-size:0.78rem; color:var(--ink-soft); margin-top:4px;">${members ? `${members} member${members===1?'':'s'} contributing` : 'Nobody has started yet — work on it together'}</div>
+    </div>`;
+}
+
+
 function currentSeasonalCycle(){
   const today = startOfDay(new Date());
   const season = getSeason(today);
@@ -3580,7 +4877,7 @@ async function claimChore(id){
 async function releaseClaim(id){
   await refreshShared();
   const chore = chores.find(c => c.id === id);
-  if(chore){ delete chore.claimedBy; delete chore.claimedAt; }
+  if(chore){ delete chore.claimedBy; delete chore.claimedAt; delete chore.coOpParticipants; }
   await saveSharedState();
   render();
 }
@@ -3723,6 +5020,7 @@ function applyState(data){
   }
   activityLog = events || [];
   migrateLibrary();
+  applyLibraryV1();
   ensureHouseholdDefaults();
 }
 // Household identity + verification settings ride along in stateExtras, so
@@ -3874,6 +5172,7 @@ async function undoLastAction(){
     if(action.previousClaim.claimedBy) Object.assign(chore, action.previousClaim);
     else { delete chore.claimedBy; delete chore.claimedAt; }
   }
+  if(chore){ if(action.previousCoOp) chore.coOpParticipants = clone(action.previousCoOp); else delete chore.coOpParticipants; }
   await saveSharedState();
   knownCompletionKeys = new Set(completions.map(keyFor));
   lastAction = null;
@@ -3917,6 +5216,10 @@ function lastDoneLabel(last){
 function getStatus(chore){
   const today = startOfDay(new Date());
   const last = lastCompletion(chore.id);
+
+  if(chore.freq === 'asNeeded'){
+    return { active:false, state:'fresh', label: last ? `done ${relTime(last.ts)}` : 'As needed — no schedule' };
+  }
 
   if(chore.freq === 'seasonal'){
     const currentlyInSeason = getSeason(today) === chore.season;
@@ -3995,6 +5298,10 @@ function openSwitchPlayer(){
 // { personName: subtaskCount } map when XP should be split across everyone
 // who helped finish a multi-step chore.
 async function finalizeCompletion(chore, finisherPerson, contributors, btnEl){
+  const coOpPeople = (chore.coOpEligible && Array.isArray(chore.coOpParticipants) && chore.coOpParticipants.length)
+    ? [...new Set([...chore.coOpParticipants, finisherPerson])] : null;
+  if(!contributors && coOpPeople && coOpPeople.length >= 2) contributors = Object.fromEntries(coOpPeople.map(p => [p, 1]));
+  const previousCoOp = chore.coOpParticipants ? clone(chore.coOpParticipants) : null;
   const affectedPeople = [...new Set([finisherPerson, ...(contributors ? Object.keys(contributors) : [])])];
   const before = {};
   affectedPeople.forEach(p => {
@@ -4020,11 +5327,12 @@ async function finalizeCompletion(chore, finisherPerson, contributors, btnEl){
   }
 
   const entry = { id: crypto.randomUUID(), choreId: chore.id, ts: Date.now(), person: finisherPerson, tier:chore.tier, room:chore.room, xp: finisherXP, bounty: !!chore.bounty };
+  if(coOpPeople && coOpPeople.length >= 2) entry.participants = coOpPeople;
   if(isApprovalMode()) entry.verified = false; // pending — still counts personally, excluded from competitive totals until approved
   const previousClaim = {claimedBy:chore.claimedBy || null, claimedAt:chore.claimedAt || null};
   completions.push(entry);
   knownCompletionKeys.add(keyFor(entry));
-  delete chore.claimedBy; delete chore.claimedAt;
+  delete chore.claimedBy; delete chore.claimedAt; delete chore.coOpParticipants;
   delete subtaskProgress[chore.id];
 
   const activityStart = activityLog.length;
@@ -4036,12 +5344,14 @@ async function finalizeCompletion(chore, finisherPerson, contributors, btnEl){
   const roomCleared = checkRoomClearBonus(chore.room, finisherPerson, entry.ts);
   const newQuests = checkAndAwardQuests(finisherPerson, entry.ts);
   const campaignDone = checkCampaignBonus(finisherPerson, entry.ts);
+  const hqDone = checkAndAwardHouseholdQuests(entry.ts);
+  const collectionsDone = checkCollections(entry.ts);
 
   activityLog.slice(activityStart).forEach(event => { event.completionId = entry.id; });
   await saveSharedState();
   lastAction = {id:entry.id, choreId:chore.id, ts:entry.ts, person:finisherPerson,
     prevSubtaskSnapshot:finalizeCompletion._pendingSnapshot || null,
-    previousSubtasks:clone(chore.subtasks || null), previousClaim};
+    previousSubtasks:clone(chore.subtasks || null), previousClaim, previousCoOp};
   finalizeCompletion._pendingSnapshot = null;
   persistUndo();
 
@@ -4052,6 +5362,9 @@ async function finalizeCompletion(chore, finisherPerson, contributors, btnEl){
   if(roomCleared) highlights.push(`${roomCleared} cleared`);
   newQuests.forEach(q => highlights.push(`Quest complete: ${q.label}`));
   if(campaignDone) highlights.push('Seasonal campaign complete!');
+  if(entry.participants) highlights.push(`🤝 Co-op: ${entry.participants.join(' + ')}`);
+  hqDone.forEach(q => highlights.push(`🤝 ${q.title} (+${q.reward} Household XP)`));
+  collectionsDone.forEach(c => highlights.push(`${c.icon} ${c.label} complete! (+${c.reward} Household XP)`));
   const campaignAfter = currentSeasonalCycle();
   if(!campaignDone && campaignAfter.done > campaignBefore.done) highlights.push(`Seasonal campaign ${campaignAfter.done}/${campaignAfter.total}`);
   const quests = computeQuestStats(finisherPerson);
@@ -4314,6 +5627,7 @@ function openSettingsModal(){
     </div>
 
     <div class="section-label">Chores</div>
+    <button class="btn-add" id="settingsRecommended" style="margin-bottom:8px;">Turn on recommended library tasks</button>
     <p class="hint">Turn chores off if they don\u2019t apply to your household — nothing is lost, you can turn them back on anytime. Custom chores can be deleted for good with the trash icon.</p>
     <input type="text" id="settingsSearch" class="settings-search" placeholder="Search chores…" value="${settingsSearchTerm}">
     <div class="modal-scroll"><div id="settingsList">${settingsListHtml()}</div></div>
@@ -4331,6 +5645,7 @@ function openSettingsModal(){
   settingsOverlay.querySelector('#settingsHhName').addEventListener('change', e => updateHouseholdName(e.target.value));
   settingsOverlay.querySelectorAll('[data-vmode]').forEach(el => el.addEventListener('click', () => setVerificationMode(el.getAttribute('data-vmode'))));
   settingsOverlay.querySelector('#settingsReset').addEventListener('click', resetAlmanac);
+  settingsOverlay.querySelector('#settingsRecommended').addEventListener('click', enableRecommended);
   settingsOverlay.querySelector('#settingsDone').onclick = () => { settingsOverlay.remove(); settingsOverlay = null; render(); };
 }
 
@@ -4400,7 +5715,7 @@ function applySort(list){
   if(sortBy === 'name') arr.sort((a,b) => a.name.localeCompare(b.name));
   if(sortBy === 'room') arr.sort((a,b) => a.room.localeCompare(b.room) || a.name.localeCompare(b.name));
   if(sortBy === 'freq'){
-    const order = { daily:0, weekly:1, monthly:2, quarterly:3, yearly:4, seasonal:5 };
+    const order = { daily:0, weekly:1, monthly:2, quarterly:3, yearly:4, seasonal:5, asNeeded:6 };
     arr.sort((a,b) => (order[a.freq]-order[b.freq]) || a.name.localeCompare(b.name));
   }
   if(sortBy === 'tier'){
@@ -4489,7 +5804,7 @@ function computeHouseholdTotals(){
     xp += (c.xp != null ? c.xp : (TIER_XP[c.tier] || 5));
   });
   activityLog.forEach(a => {
-    if(!a.person) return;
+    if(!a.person && !a.household) return;
     if(a.completionId && unverified.has(a.completionId)) return;
     xp += a.xp || 0;
   });
@@ -4587,7 +5902,7 @@ function timeAgo(ts){
 
 const ACTIVITY_ICONS = {
   chore:'✅', combo:'⚡', roomClear:'🧹', quest:'📜', campaign:'🍂',
-  'subtask-share':'🤝', achievement:'🏅'
+  'subtask-share':'🤝', achievement:'🏅', 'household-quest':'🤝', collection:'🍂'
 };
 
 function buildActivityFeed(limit){
@@ -4600,7 +5915,7 @@ function buildActivityFeed(limit){
     };
   });
   const bonusItems = activityLog.map(a => ({
-    ts: a.ts, person: a.person, type: a.type, xp: a.xp, text: a.label,
+    ts: a.ts, person: a.person, household: !!a.household, type: a.type, xp: a.xp, text: a.label,
     pending: a.completionId ? completions.find(c => c.id === a.completionId)?.verified === false : false
   }));
   return [...choreItems, ...bonusItems].sort((a,b) => b.ts - a.ts).slice(0, limit);
@@ -4616,7 +5931,7 @@ function renderActivityFeed(limit, viewerName){
       ${items.map(it => `
         <div class="activity-item">
           <div class="activity-icon">${ACTIVITY_ICONS[it.type] || '•'}</div>
-          <div class="activity-text"><b>${escapeHtml(it.person || 'Someone')}</b> ${it.text}${it.pending ? ' <span class="claim-tag" style="color:var(--due);">⏳ pending</span>' : ''}</div>
+          <div class="activity-text"><b>${it.household ? 'Household' : escapeHtml(it.person || 'Someone')}</b> ${it.text}${it.pending ? ' <span class="claim-tag" style="color:var(--due);">⏳ pending</span>' : ''}</div>
           <div class="activity-xp">+${it.xp}</div>
           ${it.pending && it.completionId && it.person !== viewerName
             ? `<button class="claim-btn" data-approve="${it.completionId}">✅ Approve</button>`
@@ -4878,6 +6193,8 @@ function choreCardHtml(chore, status, playerName){
   const claimExpired = chore.claimedAt && (Date.now() - chore.claimedAt > 20*60*1000);
   const claimedByOther = chore.claimedBy && !claimExpired && chore.claimedBy !== playerName;
   const claimedByMe = chore.claimedBy && !claimExpired && chore.claimedBy === playerName;
+  const coPeople = (chore.coOpEligible && Array.isArray(chore.coOpParticipants) && !claimExpired) ? chore.coOpParticipants : [];
+  const coJoined = !!playerName && (coPeople.includes(playerName) || (claimedByMe && coPeople.length));
   return `
     <div class="card tier-${chore.tier || 'bronze'} ${cardClass} ${claimedByMe ? 'has-dibs' : ''}">
       ${claimedByMe ? `<span class="dibs-bookmark" title="You called dibs" aria-hidden="true"></span>` : ''}
@@ -4917,6 +6234,7 @@ function choreCardHtml(chore, status, playerName){
           ${claimedByMe ? `<span class="claim-tag mine">🔒 You called dibs · <button class="claim-btn" data-release="${chore.id}" style="padding:2px 8px;">Release</button></span>` : ''}
           ${claimedByOther ? `<span class="claim-tag">🔒 Claimed by ${escapeHtml(chore.claimedBy)} · ${timeAgo(chore.claimedAt)}</span>` : ''}
           ${!claimedByMe && !claimedByOther ? `<button class="claim-btn" data-claim="${chore.id}">🙋 Call dibs</button>` : ''}
+          ${coPeople.length >= 2 ? `<span class="claim-tag mine">🤝 CO-OP · ${coPeople.map(escapeHtml).join(' + ')}</span>` : (chore.coOpEligible && (claimedByOther || claimedByMe) ? `<button class="claim-btn" data-join="${chore.id}">🤝 Join task</button>` : (chore.coOpEligible && !chore.claimedBy ? `<span class="claim-tag">🤝 Co-op friendly</span>` : ''))}
         </div>
       </div>
       <button class="del-x" data-del="${chore.id}" title="Hide this chore (find it again in Settings)">✕</button>
@@ -5049,6 +6367,8 @@ function render(){
   } else if(view === 'quests'){
     bodyHtml = `
       ${renderCampaignBanner()}
+      ${renderCollectionsPanel()}
+      ${renderHouseholdQuestsPanel()}
       ${playerName ? renderQuestsPanel(playerName) + renderAchievementsPanel(playerName) : `<p style="font-size:0.85rem; color:var(--ink-soft); font-style:italic;">Set your name (top of the screen) to start tracking quests.</p>`}
     `;
   } else if(view === 'history'){
@@ -5108,6 +6428,7 @@ function render(){
       ${renderPendingApprovalsTeaser(playerName)}
       ${renderCampaignTeaser()}
       ${renderQuestsTeaser(playerName)}
+      ${renderHouseholdQuestTeaser()}
       <section aria-label="Get started">
         <div class="section-label" style="margin-top:16px;">Get started</div>
         <div class="list home-suggestions">
@@ -5305,6 +6626,7 @@ function render(){
       toggleSubtask(choreId, subtaskId);
     }));
     app.querySelectorAll('[data-claim]').forEach(el => el.addEventListener('click', () => claimChore(el.getAttribute('data-claim'))));
+    app.querySelectorAll('[data-join]').forEach(el => el.addEventListener('click', () => joinChore(el.getAttribute('data-join'))));
     app.querySelectorAll('[data-release]').forEach(el => el.addEventListener('click', (e) => { e.stopPropagation(); releaseClaim(el.getAttribute('data-release')); }));
     app.querySelectorAll('[data-detail]').forEach(el => el.addEventListener('click', () => openChoreDetailModal(el.getAttribute('data-detail'))));
   }
@@ -5409,6 +6731,8 @@ undoLastAction = guardedMutation(undoLastAction);
 approveCompletion = guardedMutation(approveCompletion, true);
 updateHouseholdName = guardedMutation(updateHouseholdName);
 setVerificationMode = guardedMutation(setVerificationMode);
+joinChore = guardedMutation(joinChore, true);
+enableRecommended = guardedMutation(enableRecommended);
 try { lastAction = JSON.parse(sessionStorage.getItem(UNDO_KEY) || 'null'); } catch(e){}
 
 
