@@ -1055,6 +1055,18 @@ const ORIGINAL_HTML = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 // this — it looks like: https://YOUR-PROJECT-default-rtdb.firebaseio.com
 // ====================================================================
 const FIREBASE_DB_URL = 'https://chore-champs-2fbea-default-rtdb.firebaseio.com/';
+const FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyA9lQBztjMJQ8omnLf4UlWPiJQAUW2U7Y4',
+  authDomain: 'chore-champs-2fbea.firebaseapp.com',
+  databaseURL: 'https://chore-champs-2fbea-default-rtdb.firebaseio.com',
+  projectId: 'chore-champs-2fbea',
+  storageBucket: 'chore-champs-2fbea.firebasestorage.app',
+  messagingSenderId: '160633035011',
+  appId: '1:160633035011:web:a42457ea1e50f4e35b7136'
+};
+const FCM_SDK_VERSION = '12.19.0';
+const FCM_VAPID_KEY = 'BDt4dDl_yU3ur1hl0VeSnsHHFoEFQOJb7kbBffPGBXtlCjiEfnarddeRVvHaYiWb9a2ESZC2h06Oj1qDFcSZpk8';
+const FCM_DEVICE_ID_KEY = 'chore-champs-fcm-device-id-v1';
 
 const SHARED_STATE_URL = FIREBASE_DB_URL.replace(/\/$/, '') + '/state.json';
 const PLAYER_KEY = 'almanac-player';       // personal, per-device — stored in localStorage
@@ -4966,7 +4978,157 @@ function canNotify(category, dedupKey, cooldownMs){
 }
 function notificationDiagnostics(){
   const supported = typeof Notification !== 'undefined';
-  return { supported, permission: supported ? Notification.permission : 'unsupported', swRegistered: 'serviceWorker' in navigator };
+  const backgroundPushSupported = !!window.isSecureContext && 'serviceWorker' in navigator && 'PushManager' in window;
+  return {
+    supported,
+    permission: supported ? Notification.permission : 'unsupported',
+    backgroundPushSupported: fcmBrowserSupported === false ? false : backgroundPushSupported
+  };
+}
+let fcmBrowserSupported = null;
+let fcmClientPromise = null;
+let foregroundMessageListenerReady = false;
+let fcmRegistrationMessage = '';
+function storedNotificationDeviceId(){
+  try{ return localStorage.getItem(FCM_DEVICE_ID_KEY); }catch(e){ return null; }
+}
+function getOrCreateNotificationDeviceId(){
+  let id = storedNotificationDeviceId();
+  if(id) return id;
+  if(typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function') throw new Error('This browser cannot create a persistent device ID.');
+  const values = new Uint8Array(16);
+  crypto.getRandomValues(values);
+  id = Array.from(values, value => value.toString(16).padStart(2, '0')).join('');
+  try{ localStorage.setItem(FCM_DEVICE_ID_KEY, id); }
+  catch(e){ throw new Error('Could not save this device ID in browser storage.'); }
+  return id;
+}
+async function getFirebaseMessagingClient(){
+  if(!fcmClientPromise){
+    fcmClientPromise = (async () => {
+      const baseUrl = `https://www.gstatic.com/firebasejs/${FCM_SDK_VERSION}/`;
+      const [appSdk, messagingSdk] = await Promise.all([
+        import(`${baseUrl}firebase-app.js`),
+        import(`${baseUrl}firebase-messaging.js`)
+      ]);
+      const supported = await messagingSdk.isSupported();
+      fcmBrowserSupported = supported;
+      if(!supported) throw new Error('Firebase Cloud Messaging is not supported in this browser.');
+      const app = appSdk.getApps().length ? appSdk.getApp() : appSdk.initializeApp(FIREBASE_CONFIG);
+      const messaging = messagingSdk.getMessaging(app);
+      return {messaging, messagingSdk};
+    })();
+  }
+  try{ return await fcmClientPromise; }
+  catch(error){ fcmClientPromise = null; throw error; }
+}
+function handleForegroundPush(payload){
+  const data = payload.data || {};
+  const notification = payload.notification || {};
+  const title = notification.title || data.title || 'Chore Champs';
+  const body = notification.body || data.body || '';
+  const category = NOTIF_CATEGORIES.some(item => item.id === data.category) ? data.category : null;
+  const messageId = data.messageId || payload.messageId;
+  notify(title, body, {
+    category,
+    dedupKey:messageId ? `fcm:${messageId}` : undefined,
+    forceToast:true,
+    suppressSystemNotification:true
+  });
+}
+async function installForegroundMessageListener(client){
+  if(foregroundMessageListenerReady) return;
+  client.messagingSdk.onMessage(client.messaging, handleForegroundPush);
+  foregroundMessageListenerReady = true;
+}
+async function enablePushNotifications(){
+  const diag = notificationDiagnostics();
+  if(!diag.supported){
+    fcmRegistrationMessage = 'Push notifications are not supported in this browser.';
+    showToast(fcmRegistrationMessage);
+    return;
+  }
+  if(!diag.backgroundPushSupported){
+    fcmRegistrationMessage = 'This browser or connection does not support background push.';
+    showToast(fcmRegistrationMessage);
+    return;
+  }
+  if(Notification.permission === 'denied'){
+    fcmRegistrationMessage = 'Permission is blocked. Re-enable notifications in this site’s browser settings.';
+    showToast(fcmRegistrationMessage);
+    return;
+  }
+
+  fcmRegistrationMessage = 'Registering this device for push notifications…';
+  try{
+    const permission = Notification.permission === 'granted'
+      ? 'granted'
+      : await Notification.requestPermission();
+    if(permission !== 'granted'){
+      fcmRegistrationMessage = 'Notification permission was not granted.';
+      showToast(fcmRegistrationMessage);
+      return;
+    }
+    const registration = await ensureChoreServiceWorkerRegistration();
+    await navigator.serviceWorker.ready;
+    const client = await getFirebaseMessagingClient();
+    const token = await client.messagingSdk.getToken(client.messaging, {
+      vapidKey: FCM_VAPID_KEY,
+      serviceWorkerRegistration: registration
+    });
+    if(!token) throw new Error('Firebase did not return a device registration token.');
+
+    const deviceId = getOrCreateNotificationDeviceId();
+    const record = {
+      token,
+      player: player && player.name ? player.name : '',
+      enabled: true,
+      platform: navigator.userAgentData && navigator.userAgentData.platform
+        ? navigator.userAgentData.platform
+        : navigator.platform || 'unknown',
+      updatedAt: Date.now()
+    };
+    const saved = await persistNotificationDevice(deviceId, record);
+    if(!saved){
+      fcmRegistrationMessage = 'A push token was created, but its device registration could not be saved.';
+      return;
+    }
+    await installForegroundMessageListener(client);
+    console.info('[Chore Champs FCM] Device registration token (copy into Firebase Console > Send test message):', token);
+    fcmRegistrationMessage = 'This device is registered for FCM push notifications.';
+    showToast('Push notifications enabled on this device.');
+  }catch(error){
+    console.error('[Chore Champs FCM] Device registration failed.', error);
+    fcmBrowserSupported = error && error.message && error.message.includes('not supported') ? false : fcmBrowserSupported;
+    fcmRegistrationMessage = error && error.message
+      ? `Push registration failed: ${error.message}`
+      : 'Push registration failed. Check this browser’s notification and service-worker support.';
+    showToast(fcmRegistrationMessage);
+  }
+}
+async function restoreForegroundPushListener(){
+  const deviceId = storedNotificationDeviceId();
+  const devices = stateExtras.notificationDevices;
+  if(!deviceId || !devices || !devices[deviceId] || !devices[deviceId].enabled ||
+    typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+  try{
+    const record = clone(devices[deviceId]);
+    const client = await getFirebaseMessagingClient();
+    await installForegroundMessageListener(client);
+    const registration = await ensureChoreServiceWorkerRegistration();
+    await navigator.serviceWorker.ready;
+    const token = await client.messagingSdk.getToken(client.messaging, {
+      vapidKey: FCM_VAPID_KEY,
+      serviceWorkerRegistration: registration
+    });
+    if(token && token !== record.token && !mutationBusy && !pollBusy){
+      record.token = token;
+      record.updatedAt = Date.now();
+      await persistNotificationDevice(deviceId, record);
+    }
+  }catch(error){
+    console.warn('[Chore Champs FCM] Foreground message handling could not be restored.', error);
+  }
 }
 function minsToTime(m){ const h=Math.floor(m/60), mm=m%60; return String(h).padStart(2,'0')+':'+String(mm).padStart(2,'0'); }
 function timeToMins(t){ if(!t) return null; const [h,m]=t.split(':').map(Number); return h*60+m; }
@@ -4976,8 +5138,8 @@ function keyFor(c){ return `${c.choreId}|${c.ts}|${c.person}`; }
 function notify(title, body, opts){
   opts = opts || {};
   if((opts.category || opts.dedupKey) && !canNotify(opts.category, opts.dedupKey, opts.cooldownMs)) return;
-  if(!lastAction) showToast(body || title);
-  if(notifyEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted'){
+  if(!lastAction || opts.forceToast) showToast(body || title);
+  if(!opts.suppressSystemNotification && notifyEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted'){
     try{
       const n = new Notification(title, { body: body || '' });
       if(opts.onClick) n.onclick = () => { try{ window.focus(); }catch(e){} opts.onClick(); n.close(); };
@@ -4986,8 +5148,8 @@ function notify(title, body, opts){
 }
 
 // ---------------- Proactive local notification checks ----------------
-// These only fire while the app is open/active — there is no push/background
-// infrastructure yet (see Settings diagnostics for an honest status readout).
+// These only fire while the app is open/active. They are separate from FCM
+// delivery, which still needs a remote sender for scheduled reminders.
 function checkGarbageNight(){
   chores.filter(c => c.enabled !== false && c.domain === 'Garbage & Recycling' && c.freq !== 'asNeeded').forEach(c => {
     const s = getStatus(c);
@@ -5221,6 +5383,16 @@ async function loadState(){
   if(lastAction && !completions.some(c => c.id === lastAction.id)){ lastAction = null; persistUndo(); }
 }
 async function saveSharedState(){ await pushSharedState(); }
+async function persistNotificationDevice(deviceId, record){
+  return guardedMutation(async () => {
+    if(!stateExtras.notificationDevices || typeof stateExtras.notificationDevices !== 'object' || Array.isArray(stateExtras.notificationDevices)){
+      stateExtras.notificationDevices = {};
+    }
+    stateExtras.notificationDevices[deviceId] = clone(record);
+    await saveSharedState();
+    return true;
+  })();
+}
 
 
 function savePlayer(){
@@ -5764,20 +5936,32 @@ function openSettingsModal(){
 function renderNotificationSettings(){
   const diag = notificationDiagnostics();
   const prefs = notifPrefs();
+  const deviceId = storedNotificationDeviceId();
+  const device = deviceId && stateExtras.notificationDevices && stateExtras.notificationDevices[deviceId];
   const permLabel = !diag.supported ? '✕ Not supported in this browser'
     : diag.permission === 'granted' ? '✓ Allowed'
     : diag.permission === 'denied' ? '✕ Blocked — re-enable it in your browser\u2019s site settings'
     : '○ Not yet requested';
+  const deviceLabel = fcmRegistrationMessage || (device && device.enabled
+    ? diag.permission === 'granted' ? '✓ Registered on this device' : '⚠ Registration saved; browser permission is not currently granted'
+    : '○ Not registered on this device');
+  const backgroundLabel = !diag.backgroundPushSupported
+    ? '✕ Not supported in this browser or connection'
+    : fcmBrowserSupported === false ? '✕ Firebase reports this browser is unsupported'
+    : fcmBrowserSupported === true ? '✓ Supported'
+    : '○ Browser APIs available; Firebase support is checked when enabled';
   return `
     <div class="section-label">Notifications</div>
     <div class="hint" style="line-height:1.8; margin-bottom:8px;">
       <b>Browser permission:</b> ${permLabel}<br>
-      <b>Push service:</b> ⚠ Not configured — alerts are local-only for now<br>
-      <b>Background notifications:</b> ✕ Not available while Chore Champs is fully closed (needs a server component)
+      <b>FCM device registration:</b> ${escapeHtml(deviceLabel)}<br>
+      <b>Background push support:</b> ${backgroundLabel}<br>
+      <b>Remote sender:</b> Not configured — scheduled push reminders are not available
     </div>
-    <p class="hint">Local alerts work while this tab or app is open or was recently active. They can\u2019t reach you after the app is closed — that\u2019s a current limitation, not a bug.</p>
+    <p class="hint">Push registration lets this device receive Firebase test messages. “Test Local Notification” checks only local notification behavior; automatic reminders still need a remote sender.</p>
     <div class="claim-row" style="margin:6px 0 14px; flex-wrap:wrap;">
       <button class="claim-btn" id="notifToggleBtn">${notifyEnabled ? '🔔 Notifications on' : '🔕 Turn on notifications'}</button>
+      <button class="claim-btn" id="notifPushBtn">Enable Push Notifications</button>
       <button class="claim-btn" id="notifTestBtn">Test Local Notification</button>
     </div>
     <label>Alert me about</label>
@@ -5801,6 +5985,7 @@ function renderNotificationSettings(){
 function reopenSettings(){ if(settingsOverlay){ settingsOverlay.remove(); settingsOverlay = null; } openSettingsModal(); }
 function wireNotificationSettingsListeners(overlay){
   overlay.querySelector('#notifToggleBtn').addEventListener('click', async () => { await toggleNotify(); reopenSettings(); });
+  overlay.querySelector('#notifPushBtn').addEventListener('click', async () => { await enablePushNotifications(); reopenSettings(); });
   overlay.querySelector('#notifTestBtn').addEventListener('click', () => {
     if(typeof Notification === 'undefined'){ showToast('Notifications aren\u2019t supported in this browser'); return; }
     if(Notification.permission !== 'granted'){ showToast('Turn on notifications first so the browser allows a test'); return; }
@@ -6866,6 +7051,21 @@ function startPolling(){
 
 let deferredInstallPrompt = null;
 let canInstall = false;
+let appServiceWorkerRegistrationPromise = null;
+
+function ensureChoreServiceWorkerRegistration(){
+  if(!('serviceWorker' in navigator)){
+    return Promise.reject(new Error('This browser does not support service workers.'));
+  }
+  if(!appServiceWorkerRegistrationPromise){
+    appServiceWorkerRegistrationPromise = navigator.serviceWorker.register('./service-worker.js')
+      .catch(error => {
+        appServiceWorkerRegistrationPromise = null;
+        throw error;
+      });
+  }
+  return appServiceWorkerRegistrationPromise;
+}
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -6880,7 +7080,9 @@ window.addEventListener('appinstalled', () => {
 });
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    ensureChoreServiceWorkerRegistration().catch(error => {
+      console.warn('[Chore Champs] Service worker registration failed.', error);
+    });
   });
 }
 
@@ -6946,6 +7148,7 @@ try { lastAction = JSON.parse(sessionStorage.getItem(UNDO_KEY) || 'null'); } cat
 (async function init(){
   await loadState();
   render();
+  restoreForegroundPushListener();
   startPolling();
   ensurePlayer(() => {});
   setTimeout(runProactiveNotificationChecks, 4000); // let state settle first
