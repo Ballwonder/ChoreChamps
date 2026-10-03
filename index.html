@@ -4768,7 +4768,7 @@ function checkCollections(batchTs){
 
 function contributionLine(contributions){
   const names = Object.keys(contributions).sort((a,b) => contributions[b] - contributions[a]);
-  return names.map(n => `${escapeHtml(n)} — ${contributions[n]}`).join(' · ');
+  return names.map(n => `${miniAvatarHtml(n)} ${escapeHtml(n)} — ${contributions[n]}`).join(' &nbsp; ');
 }
 
 function renderHouseholdQuestCard(q){
@@ -4909,7 +4909,7 @@ function showLevelUpBanner(name, newLevel){
   document.body.appendChild(banner);
   requestAnimationFrame(() => banner.classList.add('show'));
   setTimeout(() => { banner.classList.remove('show'); setTimeout(() => banner.remove(), 400); }, 3200);
-  notify('🎉 Level Up!', `${name} reached Level ${newLevel}`);
+  notify('🎉 Level Up!', `${name} reached Level ${newLevel}`, { category:'achievements' });
 }
 
 function earnedAchievements(name){
@@ -4917,13 +4917,122 @@ function earnedAchievements(name){
   return ACHIEVEMENTS.filter(a => a.test(s));
 }
 
+const NOTIF_PREFS_KEY = 'almanac-notif-prefs';
+const NOTIF_DEDUP_KEY = 'almanac-notif-dedup';
+const NOTIF_CATEGORIES = [
+  {id:'garbage', label:'Garbage & recycling'},
+  {id:'seasonal', label:'Seasonal maintenance'},
+  {id:'householdQuests', label:'Household quests'},
+  {id:'coop', label:'Co-op / help requests'},
+  {id:'achievements', label:'Achievements & rewards'},
+];
+const INTENSITY_LEVELS = {
+  quiet: ['garbage','seasonal'],
+  normal: ['garbage','seasonal','achievements','householdQuests'],
+  gameMode: ['garbage','seasonal','achievements','householdQuests','coop'],
+};
+function notifPrefs(){
+  const defaults = { intensity:'normal', quietStart:null, quietEnd:null,
+    categories:{garbage:true,seasonal:true,householdQuests:true,coop:true,achievements:true} };
+  try {
+    const stored = JSON.parse(localStorage.getItem(NOTIF_PREFS_KEY) || 'null');
+    if(stored && typeof stored === 'object') return Object.assign({}, defaults, stored, {categories: Object.assign({}, defaults.categories, stored.categories||{})});
+  } catch(e){}
+  return defaults;
+}
+function saveNotifPrefs(prefs){ try{ localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(prefs)); }catch(e){} }
+function inQuietHours(prefs){
+  if(prefs.quietStart==null || prefs.quietEnd==null) return false;
+  const now = new Date(), mins = now.getHours()*60+now.getMinutes();
+  const s=prefs.quietStart, e=prefs.quietEnd;
+  return s<e ? (mins>=s && mins<e) : (mins>=s || mins<e);
+}
+// Gate a proactive notification: is its category turned on, allowed at the
+// current intensity, outside quiet hours, and not sent again too recently?
+function canNotify(category, dedupKey, cooldownMs){
+  if(category){
+    const prefs = notifPrefs();
+    if(!prefs.categories[category]) return false;
+    if(!(INTENSITY_LEVELS[prefs.intensity]||INTENSITY_LEVELS.normal).includes(category)) return false;
+    if(inQuietHours(prefs)) return false;
+  }
+  if(dedupKey){
+    let hist = {}; try{ hist = JSON.parse(localStorage.getItem(NOTIF_DEDUP_KEY) || '{}'); }catch(e){}
+    if(Date.now() - (hist[dedupKey]||0) < (cooldownMs||3600000)) return false;
+    hist[dedupKey] = Date.now();
+    try{ localStorage.setItem(NOTIF_DEDUP_KEY, JSON.stringify(hist)); }catch(e){}
+  }
+  return true;
+}
+function notificationDiagnostics(){
+  const supported = typeof Notification !== 'undefined';
+  return { supported, permission: supported ? Notification.permission : 'unsupported', swRegistered: 'serviceWorker' in navigator };
+}
+function minsToTime(m){ const h=Math.floor(m/60), mm=m%60; return String(h).padStart(2,'0')+':'+String(mm).padStart(2,'0'); }
+function timeToMins(t){ if(!t) return null; const [h,m]=t.split(':').map(Number); return h*60+m; }
+
 function keyFor(c){ return `${c.choreId}|${c.ts}|${c.person}`; }
 
-function notify(title, body){
+function notify(title, body, opts){
+  opts = opts || {};
+  if((opts.category || opts.dedupKey) && !canNotify(opts.category, opts.dedupKey, opts.cooldownMs)) return;
   if(!lastAction) showToast(body || title);
   if(notifyEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted'){
-    try{ new Notification(title, { body: body || '' }); } catch(e){}
+    try{
+      const n = new Notification(title, { body: body || '' });
+      if(opts.onClick) n.onclick = () => { try{ window.focus(); }catch(e){} opts.onClick(); n.close(); };
+    } catch(e){}
   }
+}
+
+// ---------------- Proactive local notification checks ----------------
+// These only fire while the app is open/active — there is no push/background
+// infrastructure yet (see Settings diagnostics for an honest status readout).
+function checkGarbageNight(){
+  chores.filter(c => c.enabled !== false && c.domain === 'Garbage & Recycling' && c.freq !== 'asNeeded').forEach(c => {
+    const s = getStatus(c);
+    if(!s.active) return;
+    notify('🗑️ ' + c.name, `${c.name} is due — worth putting out tonight if that's your night.`,
+      { category:'garbage', dedupKey:'garbage:'+c.id, cooldownMs:20*3600000, onClick:() => { view='chores'; render(); } });
+  });
+}
+function checkSeasonalNudge(){
+  COLLECTIONS.forEach(col => {
+    const p = computeCollectionProgress(col);
+    if(!p.active || p.complete) return;
+    const remaining = p.total - p.done;
+    if(remaining > 0 && remaining <= 3){
+      notify(`${col.icon} ${col.label}`, `${remaining} job${remaining===1?'':'s'} left to finish ${col.label}.`,
+        { category:'seasonal', dedupKey:'collection:'+col.id+':'+p.cycleId, cooldownMs:24*3600000, onClick:() => { view='quests'; render(); } });
+    }
+  });
+}
+function checkHouseholdQuestNudge(){
+  HOUSEHOLD_QUESTS.forEach(q => {
+    const p = computeHouseholdQuestProgress(q);
+    if(!p.available || p.done) return;
+    const remaining = q.target - p.value;
+    if(remaining > 0 && remaining <= 2){
+      notify('🤝 ' + q.title, `${remaining} more chore${remaining===1?'':'s'} would finish ${q.title}.`,
+        { category:'householdQuests', dedupKey:'hq:'+q.id+':'+p.key, cooldownMs:6*3600000, onClick:() => { view='quests'; render(); } });
+    }
+  });
+}
+function checkCoOpHelpWanted(){
+  if(!player) return;
+  chores.forEach(c => {
+    if(c.enabled === false || !c.coOpEligible || !c.claimedBy || c.claimedBy === player.name) return;
+    const claimAge = c.claimedAt ? Date.now() - c.claimedAt : 0;
+    const alreadyIn = Array.isArray(c.coOpParticipants) && c.coOpParticipants.includes(player.name);
+    if(claimAge > 30*60000 && claimAge < 20*3600000 && !alreadyIn){
+      notify('🤝 Help wanted', `${c.claimedBy} could use a hand with ${c.name}.`,
+        { category:'coop', dedupKey:'coophelp:'+c.id, cooldownMs:12*3600000, onClick:() => { view='chores'; render(); } });
+    }
+  });
+}
+function runProactiveNotificationChecks(){
+  if(!notifyEnabled) return;
+  try{ checkGarbageNight(); checkSeasonalNudge(); checkHouseholdQuestNudge(); checkCoOpHelpWanted(); }catch(e){}
 }
 
 async function toggleNotify(){
@@ -5626,6 +5735,8 @@ function openSettingsModal(){
       <button data-vmode="approval" class="${vMode==='approval'?'active':''}">✅ Approval</button>
     </div>
 
+    ${renderNotificationSettings()}
+
     <div class="section-label">Chores</div>
     <button class="btn-add" id="settingsRecommended" style="margin-bottom:8px;">Turn on recommended library tasks</button>
     <p class="hint">Turn chores off if they don\u2019t apply to your household — nothing is lost, you can turn them back on anytime. Custom chores can be deleted for good with the trash icon.</p>
@@ -5638,6 +5749,7 @@ function openSettingsModal(){
     </div>
   `, true);
   wireSettingsListeners(settingsOverlay.querySelector('#settingsList'));
+  wireNotificationSettingsListeners(settingsOverlay);
   settingsOverlay.querySelector('#settingsSearch').addEventListener('input', e => {
     settingsSearchTerm = e.target.value;
     renderSettingsModal();
@@ -5647,6 +5759,75 @@ function openSettingsModal(){
   settingsOverlay.querySelector('#settingsReset').addEventListener('click', resetAlmanac);
   settingsOverlay.querySelector('#settingsRecommended').addEventListener('click', enableRecommended);
   settingsOverlay.querySelector('#settingsDone').onclick = () => { settingsOverlay.remove(); settingsOverlay = null; render(); };
+}
+
+function renderNotificationSettings(){
+  const diag = notificationDiagnostics();
+  const prefs = notifPrefs();
+  const permLabel = !diag.supported ? '✕ Not supported in this browser'
+    : diag.permission === 'granted' ? '✓ Allowed'
+    : diag.permission === 'denied' ? '✕ Blocked — re-enable it in your browser\u2019s site settings'
+    : '○ Not yet requested';
+  return `
+    <div class="section-label">Notifications</div>
+    <div class="hint" style="line-height:1.8; margin-bottom:8px;">
+      <b>Browser permission:</b> ${permLabel}<br>
+      <b>Push service:</b> ⚠ Not configured — alerts are local-only for now<br>
+      <b>Background notifications:</b> ✕ Not available while Chore Champs is fully closed (needs a server component)
+    </div>
+    <p class="hint">Local alerts work while this tab or app is open or was recently active. They can\u2019t reach you after the app is closed — that\u2019s a current limitation, not a bug.</p>
+    <div class="claim-row" style="margin:6px 0 14px; flex-wrap:wrap;">
+      <button class="claim-btn" id="notifToggleBtn">${notifyEnabled ? '🔔 Notifications on' : '🔕 Turn on notifications'}</button>
+      <button class="claim-btn" id="notifTestBtn">Test Local Notification</button>
+    </div>
+    <label>Alert me about</label>
+    <div class="tier-guide" style="grid-template-columns:repeat(2,minmax(0,1fr)); margin-bottom:10px;">
+      ${NOTIF_CATEGORIES.map(c => `<button class="tier-choice" data-notif-cat="${c.id}" aria-pressed="${!!prefs.categories[c.id]}">${prefs.categories[c.id] ? '✓' : '○'} ${c.label}</button>`).join('')}
+    </div>
+    <label>Intensity</label>
+    <div class="lb-range" style="margin-bottom:10px;">
+      <button data-intensity="quiet" class="${prefs.intensity==='quiet'?'active':''}">Quiet</button>
+      <button data-intensity="normal" class="${prefs.intensity==='normal'?'active':''}">Normal</button>
+      <button data-intensity="gameMode" class="${prefs.intensity==='gameMode'?'active':''}">Game Mode</button>
+    </div>
+    <label>Quiet hours (optional)</label>
+    <div style="display:flex; gap:8px; align-items:center; margin-bottom:16px;">
+      <input type="time" id="notifQuietStart" value="${prefs.quietStart!=null?minsToTime(prefs.quietStart):''}" style="flex:1; padding:7px; border-radius:6px; border:1px solid var(--line);">
+      <span class="hint" style="margin:0;">to</span>
+      <input type="time" id="notifQuietEnd" value="${prefs.quietEnd!=null?minsToTime(prefs.quietEnd):''}" style="flex:1; padding:7px; border-radius:6px; border:1px solid var(--line);">
+    </div>
+  `;
+}
+function reopenSettings(){ if(settingsOverlay){ settingsOverlay.remove(); settingsOverlay = null; } openSettingsModal(); }
+function wireNotificationSettingsListeners(overlay){
+  overlay.querySelector('#notifToggleBtn').addEventListener('click', async () => { await toggleNotify(); reopenSettings(); });
+  overlay.querySelector('#notifTestBtn').addEventListener('click', () => {
+    if(typeof Notification === 'undefined'){ showToast('Notifications aren\u2019t supported in this browser'); return; }
+    if(Notification.permission !== 'granted'){ showToast('Turn on notifications first so the browser allows a test'); return; }
+    try{ new Notification('🔔 Test Local Notification', { body: 'If you can see this, local alerts are working on this device.' }); }
+    catch(e){ showToast('Could not show a test notification'); }
+  });
+  overlay.querySelectorAll('[data-notif-cat]').forEach(el => el.addEventListener('click', () => {
+    const prefs = notifPrefs();
+    const id = el.getAttribute('data-notif-cat');
+    prefs.categories[id] = !prefs.categories[id];
+    saveNotifPrefs(prefs);
+    reopenSettings();
+  }));
+  overlay.querySelectorAll('[data-intensity]').forEach(el => el.addEventListener('click', () => {
+    const prefs = notifPrefs();
+    prefs.intensity = el.getAttribute('data-intensity');
+    saveNotifPrefs(prefs);
+    reopenSettings();
+  }));
+  const applyQuiet = () => {
+    const prefs = notifPrefs();
+    prefs.quietStart = timeToMins(overlay.querySelector('#notifQuietStart').value);
+    prefs.quietEnd = timeToMins(overlay.querySelector('#notifQuietEnd').value);
+    saveNotifPrefs(prefs);
+  };
+  overlay.querySelector('#notifQuietStart').addEventListener('change', applyQuiet);
+  overlay.querySelector('#notifQuietEnd').addEventListener('change', applyQuiet);
 }
 
 function openFiltersModal(){
@@ -5931,7 +6112,7 @@ function renderActivityFeed(limit, viewerName){
       ${items.map(it => `
         <div class="activity-item">
           <div class="activity-icon">${ACTIVITY_ICONS[it.type] || '•'}</div>
-          <div class="activity-text"><b>${it.household ? 'Household' : escapeHtml(it.person || 'Someone')}</b> ${it.text}${it.pending ? ' <span class="claim-tag" style="color:var(--due);">⏳ pending</span>' : ''}</div>
+          <div class="activity-text">${it.household ? '<b>Household</b>' : miniAvatarHtml(it.person||'?') + ' <b>'+escapeHtml(it.person || 'Someone')+'</b>'} ${it.text}${it.pending ? ' <span class="claim-tag" style="color:var(--due);">⏳ pending</span>' : ''}</div>
           <div class="activity-xp">+${it.xp}</div>
           ${it.pending && it.completionId && it.person !== viewerName
             ? `<button class="claim-btn" data-approve="${it.completionId}">✅ Approve</button>`
@@ -6275,6 +6456,7 @@ const REWARDS = [
  {id:'cap',kind:'hat',label:'Team Cap',symbol:'🧢',field:'count',target:5,requirement:'Complete 5 chores'},
  {id:'crown',kind:'hat',label:'Champion Crown',symbol:'👑',field:'count',target:100,requirement:'Complete 100 chores'},
  {id:'wizard',kind:'hat',label:'Top Hat',symbol:'🎩',field:'bestStreak',target:30,requirement:'Reach a 30-day streak'},
+ {id:'duobandana',kind:'hat',label:'Duo Bandana',symbol:'🎽',field:'coOpCount',target:5,requirement:'Complete 5 co-op jobs together'},
  {id:'workshirt',kind:'outfit',label:'Work Shirt',icon:'icons/icon-chores.svg',field:'count',target:10,requirement:'Complete 10 chores'},
  {id:'goldshirt',kind:'outfit',label:'Golden Uniform',icon:'icons/icon-chores.svg',field:'count',target:250,requirement:'Complete 250 chores'},
  {id:'bear',kind:'avatar',label:'Helpful Bear',icon:'icons/icon-bear.svg',field:'count',target:1,requirement:'Complete 1 chore'},
@@ -6286,11 +6468,28 @@ const REWARDS = [
  {id:'regular',kind:'title',label:'Steady Hand',field:'bestStreak',target:7,requirement:'Reach a 7-day streak'},
  {id:'centurion',kind:'title',label:'Century Champion',field:'count',target:100,requirement:'Complete 100 chores'},
  {id:'unstoppable',kind:'title',label:'Unstoppable',field:'bestStreak',target:50,requirement:'Reach a 50-day streak'},
- {id:'veteran',kind:'title',label:'Year-Round Hero',field:'activeDays',target:365,requirement:'Complete chores on 365 different days'}
+ {id:'veteran',kind:'title',label:'Year-Round Hero',field:'activeDays',target:365,requirement:'Complete chores on 365 different days'},
+ {id:'bettertogether',kind:'title',label:'Better Together',field:'coOpCount',target:1,requirement:'Complete 1 co-op job with another member'},
+ {id:'harvestcrown',kind:'hat',label:'Harvest Crown',symbol:'🍁',field:'fallReady',target:1,requirement:'Help complete the Fall Ready collection'}
 ];
-function rewardValue(reward,stats){return reward.field==='diamondCount' ? stats.tierCounts.diamond||0 : stats[reward.field]||0;}
+function rewardValue(reward,stats){
+  if(reward.field==='diamondCount') return stats.tierCounts.diamond||0;
+  const v = stats[reward.field];
+  return typeof v === 'boolean' ? (v?1:0) : (v||0);
+}
+// Equip choices live in shared state (stateExtras.rewardPrefs), keyed by
+// player name — same trust model the rest of the app already uses for
+// identity. A player's existing on-device choices are migrated in once,
+// the first time this runs for them, so nothing is lost.
 function rewardPreferences(name){
- try {const p=JSON.parse(localStorage.getItem('chorechamps-rewards:'+encodeURIComponent(name))||'{}');return p&&typeof p==='object'?p:{};}catch(e){return {};}
+  if(!name) return {};
+  if(!stateExtras.rewardPrefs) stateExtras.rewardPrefs = {};
+  if(!stateExtras.rewardPrefs[name]){
+    let legacy = {};
+    try { legacy = JSON.parse(localStorage.getItem('chorechamps-rewards:'+encodeURIComponent(name)) || '{}'); } catch(e){}
+    stateExtras.rewardPrefs[name] = (legacy && typeof legacy === 'object') ? legacy : {};
+  }
+  return stateExtras.rewardPrefs[name];
 }
 function equippedReward(name,kind){
  if(!name)return null;
@@ -6302,23 +6501,31 @@ function playerAvatarHtml(name){
  return `<span class="avatar-character" role="img" aria-label="${escapeHtml([r?.label||'Initials',hat?.label,outfit?.label].filter(Boolean).join(', '))}">${r?`<img class="reward-avatar" src="${r.icon}" alt="">`:escapeHtml(initials(name))}${outfit?`<img class="avatar-outfit ${outfit.id==='goldshirt'?'gold-outfit':''}" src="${outfit.icon}" alt="">`:''}${hat?`<span class="avatar-hat" aria-hidden="true">${hat.symbol}</span>`:''}</span>`;
 }
 function playerTitleHtml(name){const r=equippedReward(name,'title');return r?`<div class="reward-title">${r.label}</div>`:'';}
-function equipReward(id,kind){
+// Small inline avatar for compact contexts (activity feed, contribution lines).
+function miniAvatarHtml(name){
+  return `<span class="avatar" style="width:20px;height:20px;font-size:0.6rem;display:inline-flex;vertical-align:-5px;background:${avatarColor(name)}">${playerAvatarHtml(name)}</span>`;
+}
+async function equipReward(id,kind){
  if(!player)return;
  const reward=REWARDS.find(r=>r.id===id&&r.kind===kind);
  if(id&&(!reward||rewardValue(reward,personStats(player.name))<reward.target)){showToast('This reward is still locked');return;}
  const prefs=rewardPreferences(player.name);prefs[kind]=id;
- try{localStorage.setItem('chorechamps-rewards:'+encodeURIComponent(player.name),JSON.stringify(prefs));}
- catch(e){showToast('Could not save your reward. Check browser storage.');return;}
- render();showToast(id?'Reward equipped':'Default restored');
+ try{localStorage.removeItem('chorechamps-rewards:'+encodeURIComponent(player.name));}catch(e){}
+ await saveSharedState();
+ showToast(id?'Reward equipped':'Default restored');
 }
+equipReward = guardedMutation(equipReward, true);
 function renderRewardsPanel(name){
  if(!name)return '<div class="empty-state">Set your name to start unlocking rewards.<br><button class="btn-primary" id="rewardsStart">Set your name</button></div>';
  const stats=personStats(name);
- return `<div class="section-label">Your rewards</div><p>Earn your look by doing chores. No points to spend.</p><p class="hint">Choices are saved for each player on this device.</p><h3>Your avatar preview</h3><p class="hint">Equip unlocked items below to change your look. Until then, your avatar shows your initials.</p><div class="home-progress-card" aria-label="Your avatar preview" style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><div class="profile-avatar" style="width:100px;height:100px;font-size:2.5rem;background:${avatarColor(name)}">${playerAvatarHtml(name)}</div><div><strong>${escapeHtml(name)}</strong>${playerTitleHtml(name)}</div></div>${['avatar','hat','outfit','title'].map(kind=>{
+ const lp=levelProgress(stats.xp);
+ const hasAnyEquipped=['avatar','hat','outfit','title'].some(k=>equippedReward(name,k));
+ const previewCopy=hasAnyEquipped?'Equip unlocked items to customize your look further.':'Choose an avatar and equip unlocked items to make it yours.';
+ return `<div class="section-label">Your rewards</div><p>Earn your look by doing chores. No points to spend.</p><p class="hint">Your choices follow you to any device signed in as ${escapeHtml(name)}.</p><h3>Your avatar preview</h3><p class="hint">${previewCopy}</p><div class="home-progress-card" aria-label="Your avatar preview" style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:12px 16px;"><div class="profile-avatar" style="width:64px;height:64px;font-size:1.6rem;flex-shrink:0;background:${avatarColor(name)}">${playerAvatarHtml(name)}</div><div style="min-width:0;"><strong style="font-size:1.05rem;">${escapeHtml(name)}</strong><div class="level-badge" style="margin-left:6px;">LV ${lp.level}</div>${playerTitleHtml(name)}</div></div>${['avatar','hat','outfit','title'].map(kind=>{
  const equipped=equippedReward(name,kind);
  return `<div class="section-label">${({avatar:'Avatars',hat:'Hats',outfit:'Outfits',title:'Titles'})[kind]}</div><button class="btn-plain" data-reward="" data-reward-kind="${kind}" ${!equipped?'disabled':''}>${({avatar:'Use initials',hat:'No hat',outfit:'No outfit',title:'No title'})[kind]}</button><div class="achievement-grid rewards-grid">${REWARDS.filter(r=>r.kind===kind).map(r=>{
  const value=rewardValue(r,stats),unlocked=value>=r.target,selected=equipped?.id===r.id;
- return `<div class="achievement-card ${unlocked?'earned':''}">${r.symbol?`<div class="reward-symbol">${r.symbol}</div>`:''}${r.icon?`<img class="reward-art ${r.id==='goldshirt'?'gold-outfit':''}" src="${r.icon}" alt="">`:''}<div class="achievement-title">${r.label}</div><p>${r.requirement}</p><strong>${unlocked?'Unlocked':Math.min(value,r.target)+' / '+r.target}</strong><button class="btn-primary reward-equip" data-reward="${r.id}" data-reward-kind="${kind}" aria-label="Equip ${r.label}" aria-pressed="${!!selected}" ${!unlocked||selected?'disabled':''}>${selected?'Equipped':unlocked?'Equip':'Locked'}</button></div>`;
+ return `<div class="achievement-card ${unlocked?'earned':''}">${r.symbol?`<div class="reward-symbol">${r.symbol}</div>`:''}${r.icon?`<img class="reward-art ${r.id==='goldshirt'?'gold-outfit':''}" src="${r.icon}" alt="">`:''}<div class="achievement-title">${r.label}</div><p>${unlocked?r.requirement:'🔒 '+r.requirement}</p><strong>${unlocked?'Unlocked':Math.min(value,r.target)+' / '+r.target}</strong><button class="btn-primary reward-equip" data-reward="${r.id}" data-reward-kind="${kind}" aria-label="Equip ${r.label}" aria-pressed="${!!selected}" ${!unlocked||selected?'disabled':''}>${selected?'Equipped':unlocked?'Equip':'Locked'}</button></div>`;
  }).join('')}</div>`;
  }).join('')}`;
 }
@@ -6741,6 +6948,8 @@ try { lastAction = JSON.parse(sessionStorage.getItem(UNDO_KEY) || 'null'); } cat
   render();
   startPolling();
   ensurePlayer(() => {});
+  setTimeout(runProactiveNotificationChecks, 4000); // let state settle first
+  setInterval(runProactiveNotificationChecks, 10*60000); // proactive checks are low-frequency, separate from the 15s sync poll
 })();
 </script>
 </body>
